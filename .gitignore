@@ -1,3 +1,5 @@
 *.o
 .depend
 interpret
+core
+core.*
