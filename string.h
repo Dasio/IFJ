@@ -16,6 +16,7 @@
   String initEmptyString();
   String initString(char *src);
 
+  void printString(String *dst);
   bool appendToString(String *dst, char *src);
   bool truncateString(String *dst, unsigned size);
 
