@@ -12,7 +12,7 @@ String initEmptyString() {
 }
 
 String initString(char *src) {
-  //assert(src != NULL);
+  assert(src);
 
   String str = initEmptyString(&str);
   appendToString(&str, src);
