@@ -18,7 +18,7 @@ depend: .depend
 
 .depend: $(SRCS)
 	rm -f ./.depend
-	$(CC) $(CFLAGS) -MM $^>>./.depend;
+	$(CC) -MM $^>>./.depend;
 
 clean:
 	$(RM) $(OBJS) *.o
