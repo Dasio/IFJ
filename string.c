@@ -11,6 +11,16 @@ String initEmptyString() {
   return str;
 }
 
-String initString(char *src);
+String initString(char *src) {
+  String str;
+  initEmptyString(&str);
+  appendToString(&str, src);
+  return str;
+}
+
+bool appendToString(String *dst, char *src) {
+  // FIXME : Dummy
+  return true;
+}
 
 // TODO: Function definitions
