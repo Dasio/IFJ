@@ -5,14 +5,13 @@ LDFLAGS=
 #LDLIBS=-lpthread
 
 BIN=interpret
-SRCS=system.c dummy.c interpret.c
 SRCS=$(wildcard *.c)
 OBJS=$(subst .c,.o,$(SRCS))
 
 all: $(BIN)
 
-$(BIN): $(OBJS)
-	$(CC) $(LDFLAGS) -o $(BIN) $(OBJS) $(LDLIBS)
+$(BIN): $(OBJS) lib.a
+	$(CC) $(LDFLAGS) -o $(BIN) interpret.o lib.a $(LDLIBS)
 
 depend: .depend
 
@@ -20,8 +19,16 @@ depend: .depend
 	rm -f ./.depend
 	$(CC) -MM $^>>./.depend;
 
+.PHONY: test
+
+lib.a: $(filter-out interpret.o, $(wildcard *.o))
+	ar -rcs $@ $(filter-out interpret.o, $(OBJS))
+
+test: all
+	$(MAKE) -C unit_tests
+
 clean:
-	$(RM) $(OBJS) *.o
+	$(RM) *.o *.a $(BIN)
 
 dist-clean: clean
 	$(RM) *~ .dependtool
