@@ -29,6 +29,7 @@ test: all
 
 clean:
 	$(RM) *.o *.a $(BIN)
+	$(MAKE) -C unit_tests clean
 
 dist-clean: clean
 	$(RM) *~ .dependtool
