@@ -1,6 +1,6 @@
 CC=gcc
 RM=rm -f
-CFLAGS=-g -ffast-math -Ofast -std=c99 -pedantic -Wall -Wextra
+CFLAGS=-g -ffast-math -Ofast -std=c11 -pedantic -Wall -Wextra
 LDFLAGS=
 #LDLIBS=-lpthread
 
