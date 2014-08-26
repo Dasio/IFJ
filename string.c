@@ -14,7 +14,7 @@ String initEmptyString() {
 String initString(char *src) {
   assert(src);
 
-  String str = initEmptyString(&str);
+  String str = initEmptyString();
   appendToString(&str, src);
   return str;
 }
