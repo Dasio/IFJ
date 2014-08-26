@@ -28,7 +28,7 @@ test: all
 	$(MAKE) -C unit_tests
 
 clean:
-	$(RM) *.o *.a $(BIN)
+	$(RM) *.o *.a $(BIN) core*
 	$(MAKE) -C unit_tests clean
 
 dist-clean: clean
