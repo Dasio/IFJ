@@ -19,17 +19,36 @@ String initString(char *src) {
   return str;
 }
 
-bool appendToString(String *dst, char *src) {
+void printString(String *dst) {
+  assert(dst);
+  if(dst->length > 0)
+    printf("%s\n", dst->data);
+}
+
+bool appendCharsToString(String *dst, char *src) {
   assert(dst);
   assert(src);
   // FIXME : Dummy
   return true;
 }
 
-void printString(String *dst) {
+bool appendStringToString(String *dst, String *src) {
   assert(dst);
-  if(dst->length > 0)
-    printf("%s\n", dst->data);
+  assert(src);
+  // FIXME : Dummy
+  return true;
+}
+
+// Do not use! Use streq()
+bool equalsStringChars(String *str1, char *str2) {
+  assert(str1); assert(str2);
+  return (strcmp(str1, str2) == 0);
+}
+
+// Do not use! Use streq()
+bool equalsStringString(String *str1, String *str2) {
+  assert(str1); assert(str2);
+  return (strcmp(str1, str2->data) == 0);
 }
 
 // TODO: Function definitions
