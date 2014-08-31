@@ -7,8 +7,8 @@
 
   typedef struct String
   {
-    unsigned length;
-    unsigned allocated_size;
+    size_t length;
+    size_t allocated_size;
     char *data;
   } String;
 
@@ -16,8 +16,8 @@
   String initString(char *src);
 
   void printString(String *dst);
-  bool appendCharsToString(String *dst, char *src);
-  bool appendStringToString(String *dst, String *src);
+  void appendCharsToString(String *dst, char *src);
+  void appendStringToString(String *dst, String *src);
 
 #define appendToString(dst, src) _Generic((src),                \
                                 String *: appendStringToString, \
@@ -31,7 +31,7 @@
   bool equalsStringString(String *str1, String *str2);
 
   //static void reallocString(String *dst, unsigned newSize);
-  bool truncateString(String *dst, unsigned size);
+  bool truncateString(String *dst, size_t size);
   void destroyString(String *dst);
 
 #endif

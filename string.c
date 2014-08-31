@@ -25,18 +25,16 @@ void printString(String *dst) {
     printf("%s\n", dst->data);
 }
 
-bool appendCharsToString(String *dst, char *src) {
+void appendCharsToString(String *dst, char *src) {
   assert(dst);
   assert(src);
   // FIXME : Dummy
-  return true;
 }
 
-bool appendStringToString(String *dst, String *src) {
+void appendStringToString(String *dst, String *src) {
   assert(dst);
   assert(src);
   // FIXME : Dummy
-  return true;
 }
 
 // Do not use! Use streq()
