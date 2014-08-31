@@ -7,8 +7,8 @@
 
   typedef struct String
   {
-    size_t length;
-    size_t allocated_size;
+    uint32_t length;
+    uint32_t allocated_size;
     char *data;
   } String;
 
