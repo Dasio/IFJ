@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <assert.h>
 #include <string.h>
+#include <stdint.h>
 
 #ifndef SYSTEM_H
 #define SYSTEM_H
