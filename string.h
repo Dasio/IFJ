@@ -9,7 +9,6 @@
   {
     unsigned length;
     unsigned allocated_size;
-    bool allocated;
     char *data;
   } String;
 

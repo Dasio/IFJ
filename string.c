@@ -6,8 +6,8 @@ String initEmptyString() {
     .allocated_size = STRING_INIT_ALLOC_SIZE,
     .data    = calloc(STRING_INIT_ALLOC_SIZE, sizeof(char))
   };
+  MALLOC_TEST(str.data);
 
-  str.data ? str.allocated = true : fprintf(stderr, "ERROR\n");
   return str;
 }
 
@@ -15,7 +15,7 @@ String initString(char *src) {
   assert(src);
 
   String str = initEmptyString();
-  appendToString(&str, src);
+  appendCharsToString(&str, src);
   return str;
 }
 
@@ -42,13 +42,13 @@ bool appendStringToString(String *dst, String *src) {
 // Do not use! Use streq()
 bool equalsStringChars(String *str1, char *str2) {
   assert(str1); assert(str2);
-  return (strcmp(str1, str2) == 0);
+  return (strcmp(str1->data, str2) == 0);
 }
 
 // Do not use! Use streq()
 bool equalsStringString(String *str1, String *str2) {
   assert(str1); assert(str2);
-  return (strcmp(str1, str2->data) == 0);
+  return (strcmp(str1->data, str2->data) == 0);
 }
 
 // TODO: Function definitions
