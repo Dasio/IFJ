@@ -4,3 +4,4 @@ interpret
 core
 core.*
 *.a
+.*project
