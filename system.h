@@ -11,4 +11,6 @@
 
   // typedefy
 
+#define MALLOC_TEST(ptr) do {if(!ptr) {fprintf(stderr, "ERROR\n"); exit(1);}} while(0)
+
 #endif
