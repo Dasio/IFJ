@@ -25,7 +25,7 @@ lib.a: $(filter-out interpret.o, $(wildcard *.o))
 	ar -rcs $@ $(filter-out interpret.o, $(OBJS))
 
 test: all
-	$(MAKE) -C unit_tests
+	$(MAKE) -C unit_tests -B
 
 clean:
 	$(RM) *.o *.a $(BIN) core*
