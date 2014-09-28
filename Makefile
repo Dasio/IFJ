@@ -7,8 +7,6 @@ LDFLAGS=
 BIN=interpret
 SRCS=$(wildcard *.c)
 OBJS=$(subst .c,.o,$(SRCS))
-TEST_FILES=$(wildcard ./unit_tests/test*.c)
-TEST_SRCS=string.c
 
 all: $(BIN)
 
@@ -26,15 +24,16 @@ depend: .depend
 lib.a: $(filter-out interpret.o, $(wildcard *.o))
 	ar -rcs $@ $(filter-out interpret.o, $(OBJS))
 
-test: all
-	$(MAKE) -C unit_tests -B
+playground: all
+	$(MAKE) -C playground
 
-testx: $(TEST_FILES) $(TEST_SRCS)
-	$(CC) $(CFLAGS) $(TEST_FILES) $(TEST_SRCS) -o test
+test: all
+	$(MAKE) -C unit_tests
 
 clean:
 	$(RM) *.o *.a $(BIN) core*
 	$(MAKE) -C unit_tests clean
+	$(MAKE) -C playground clean
 
 dist-clean: clean
 	$(RM) *~ .dependtool

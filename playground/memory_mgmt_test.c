@@ -17,4 +17,5 @@ int main() {
 
 	printAllMemoryItems();
 	cleanAllMemory();
+
 }

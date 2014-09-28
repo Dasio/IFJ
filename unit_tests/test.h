@@ -18,18 +18,18 @@ static inline void printResult(const char *name, bool result)
 	{
 		printf(ANSI_COLOR_GREEN "[ OK ] " ANSI_COLOR_RESET);
 		testPassed++;
-	} 
+	}
 	else
 	{
 		printf(ANSI_COLOR_RED "[ FAIL ] " ANSI_COLOR_RESET);
 		testFailed++;
-	} 
+	}
 	printf("%s\n",name);
 }
 
 #define ADD_TEST_SUITE(suitName) testSuites[testSuitesCount++] = suitName;
 #define START_TEST_SUITE(suitName)	void suitName() { \
-	printf(ANSI_COLOR_YELLOW "%s started\n" ANSI_COLOR_RESET ,#suitName);	
+	printf(ANSI_COLOR_YELLOW "%s started\n" ANSI_COLOR_RESET ,#suitName);
 #define END_TEST_SUITE \
 	printf("Passed = %d    Failed = %d\n",testPassed,testFailed);	\
 	}

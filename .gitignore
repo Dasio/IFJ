@@ -5,3 +5,5 @@ core
 core.*
 *.a
 .*project
+test
+_test

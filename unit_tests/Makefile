@@ -4,15 +4,15 @@ CFLAGS=-g -ffast-math -Ofast -std=c11 -pedantic -Wall -Wextra
 LDFLAGS=
 LDLIBS=../lib.a
 
+TEST_SRCS=$(wildcard test_*.c)
 
-SRCS=$(wildcard *.c)
-BINS=$(basename $(SRCS))
-OBJS=$(subst .c,.o,$(SRCS))
+all: test
 
-run_all: $(BINS)
+test: $(TEST_SRCS)
+	$(CC) $(CFLAGS) test.c $(TEST_SRCS) ../lib.a -o test
 
 clean:
-	$(RM) $(OBJS) *.o $(BINS)
+	$(RM) $(OBJS) *.o test
 
 dist-clean: clean
 	$(RM) *~ .dependtool
