@@ -35,7 +35,4 @@ static inline void printResult(const char *name, bool result)
 	}
 #define TEST_EXPR(name,value) printResult(name,value);
 
-
-
-
 #endif
