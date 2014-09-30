@@ -13,6 +13,8 @@
 	typedef struct {
 		/** Allocated capacity, including uninitialized */
 		uint32_t capacity;
+		/** Used capacity */
+		uint32_t used;
 		/** Size of each element in vector (sizeof()) */
 		uint8_t atomic_size;
 		/** Pointer to beginning */
