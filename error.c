@@ -21,7 +21,7 @@ void printErrorDetails(const char *description)
     fprintf(stderr,"%s in file \"%s\" at line: %u\n",description,error.file,error.line);
 }
 
-void setErrorDetails(EErrorStates state, uint32_t line, char *file)
+void setErrorDetails(EErrorStates state, unsigned line, char *file)
 {
     error.state = state;
     error.line = line;

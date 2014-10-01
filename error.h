@@ -37,7 +37,7 @@ void printErrorDetails(const char *description);
  * @param line  At which line error occured
  * @param file In which file error occured
  */
-void setErrorDetails(EErrorStates state, uint32_t line, char *file);
+void setErrorDetails(EErrorStates state, unsigned line, char *file);
 
 /**
  * @return lastError
