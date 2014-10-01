@@ -7,8 +7,8 @@
 
 #include "system.h"
 
-#ifndef VECTOR_H_
-#define VECTOR_H_
+#ifndef VECTOR_H
+#define VECTOR_H
 
 	typedef struct {
 		/** Allocated capacity, including uninitialized */
@@ -53,10 +53,10 @@ GenVectorPrototypes(double)
 	type##Vector * init##type##Vector(uint32_t initial_size) {		\
 		if(initial_size == 0)										\
 			initial_size = VECTOR_INIT_SIZE;						\
-		type##Vector * tmp = malloc(sizeof(type) * initial_size);	\
+		type##Vector * tmp = malloc(sizeof(type##Vector));			\
 		tmp->capacity = VECTOR_INIT_SIZE;							\
 		tmp->atomic_size = sizeof(type);							\
-		tmp->array = NULL;											\
+		tmp->array = malloc(tmp->atomic_size * initial_size);		\
 		return tmp;													\
 	}
 	// etc.

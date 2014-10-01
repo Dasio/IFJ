@@ -5,8 +5,8 @@
  *      Author: Adam Lucansky <xlucan01@stud.fit.vutbr.cz>
  */
 
-#ifndef MEMORY_MGMT_H_
-#define MEMORY_MGMT_H_
+#ifndef MEMORY_MGMT_H
+#define MEMORY_MGMT_H
 
 struct mem_item;
 typedef struct mem_item MemItem;
