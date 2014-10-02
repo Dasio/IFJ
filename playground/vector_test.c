@@ -2,7 +2,7 @@
 #include "../vector.h"
 
 int main() {
-	TokenVector * vector = initintVector(8);
+	TokenVector * vector = initTokenVector(8);
 
 	Token t = {.attr = 1};
 
