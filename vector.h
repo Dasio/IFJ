@@ -62,12 +62,12 @@ GenVectorPrototypes(double)
 	// etc.
 
 // Kandidati na makro/funkciu
+// #type#VectorAt(uint32_t, #type#Vector *);
 // #type#VectorAppend(#type#Vector *, type *)
 // #type#VectorFree(#type#Vector *);
 // #type#VectorFront(#type#Vector *);
 // #type#VectorBack(#type#Vector *);
 // #type#VectorSize(#type#Vector *);
-// #type#VectorCapacity(#type#Vector *);
 
 // ! Neskor prirobit makra, aby sa dalo volat append(tokenVector, token);
 // Ukazka generickeho makra

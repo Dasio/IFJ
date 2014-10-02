@@ -9,7 +9,8 @@ int main() {
 	// Invaliduje ukazatele
 	TokenVectorAppend(vector, &t);
 
-	Token * t2 = TokenVectorGet(0, vector);
+	// Premenovane na At miesto Get
+	Token * t2 = TokenVectorAt(0, vector);
 	//t2->attr vrati 1
 
 	// vracia ukazetel na dany prvok v poli
