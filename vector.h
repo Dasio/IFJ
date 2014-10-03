@@ -33,14 +33,14 @@
  * @param  type Type for generalization
  */
 #define GenVectorPrototypes(type) 		\
-	typedef Vector type##Vector;		\
-	type##Vector * init##type##Vector();
+	typedef Vector #type#Vector;
+//	#type#Vector * init#type#Vector();
 
 ///////////////////////////////////
 // Definition of Vector subtypes //
 ///////////////////////////////////
-GenVectorPrototypes(int)
-GenVectorPrototypes(double)
+GenVectorPrototypes(Int)
+GenVectorPrototypes(Double)
 // ADD HERE EVERY TYPE THAT NEEDS TO HAVE *Vector
 // ALSO IN VECTOR.C
 
@@ -48,24 +48,42 @@ GenVectorPrototypes(double)
  * Generates functions for appropriate type
  * @param  type Type for generalization
  */
-#define GenVectorFunctions(type) 									\
-	/** Initialized vector with initial_size, if zero, uses default */ \
-	type##Vector * init##type##Vector(uint32_t initial_size) {		\
-		if(initial_size == 0)										\
-			initial_size = VECTOR_INIT_SIZE;						\
-		type##Vector * tmp = malloc(sizeof(type##Vector));			\
-		tmp->capacity = VECTOR_INIT_SIZE;							\
-		tmp->atomic_size = sizeof(type);							\
-		tmp->array = malloc(tmp->atomic_size * initial_size);		\
-		return tmp;													\
+#define GenVectorFunctions(type) 											\
+	/** Initialized vector with initial_size, if zero, uses default */ 		\
+	#type#Vector * init#type#Vector(uint32_t initial_size) {				\
+		if(initial_size == 0)												\
+			initial_size = VECTOR_INIT_SIZE;								\
+		#type#Vector * tmp = malloc(sizeof(#type#Vector));					\
+		tmp->capacity = initial_size;										\
+		tmp->atomic_size = sizeof(type);									\
+		tmp->array = malloc(tmp->capacity * tmp->atomic_size);				\
+		return tmp;															\
+	}																		\
+	/** Add Value to end ofvector */								 		\
+	void #type#VectorAppend(#type#Vector * Vect, ##type Value) {			\
+		if(Vect->capacity == Vect->atomic_size)								\
+		{																	\
+			Vect->capacity *= 2;											\
+			realloc(Vect->array, Vect->capacity * Vect->atomic_size);		\
+		}																	\
+		Vect->atomic_size++;												\
+		Vect->array[Vect->atomic_size] = Value;								\
+		return;																\
+	}																		\
+	/** Return pointer to Last Value */								 		\
+	##type * #type#VectorLast(#type#Vector * Vect) {						\								\
+		return Vect->array + Vect->capacity * Vect->atomic_size;			\
+	}																		\
+	/** Free array from Vector */									 		\
+	#type#VectorFree(#type#Vector * Vect) {									\
+		free(Vect->array);													\
 	}
-	// etc.
 
-// Kandidati na makro/funkciu
+
 // #type#VectorAt(uint32_t, #type#Vector *);
-// #type#VectorAppend(#type#Vector *, type *)
-// #type#VectorFree(#type#Vector *);
-// #type#VectorFront(#type#Vector *);
+// Kandidati na makro/funkciu
+// 
+// #type#VectorFirst(#type#Vector *);
 // #type#VectorBack(#type#Vector *);
 // #type#VectorSize(#type#Vector *);
 

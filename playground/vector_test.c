@@ -1,25 +1,30 @@
 #include "../system.h"
 #include "../vector.h"
+NewVectorType(Int);
+GenVectorFunctions(Int);
 
 int main() {
-	TokenVector * vector = initTokenVector(8);
+	IntVector * vector = initIntVector(8);
 
-	Token t = {.attr = 1};
+	//int t = {.attr = 1};
 
 	// Invaliduje ukazatele
-	TokenVectorAppend(vector, &t);
+	IntVectorAppend(vector, 10);
 
 	// Premenovane na At miesto Get
-	Token * t2 = TokenVectorAt(0, vector);
+	//int * t2 = IntVectorAt(0, vector);
 	//t2->attr vrati 1
 
 	// vracia ukazetel na dany prvok v poli
-	TokenVectorFront(vector);
-	TokenVectorBack(vector);
+	int * tmp = IntVectorLast(vector);
+	printf("cislo %d\n", *tmp);
+	char a;
+	scanf("%c", &a);
+	//IntVectorBack(vector);
 
 	// vracia uint32_t
 	//TokenVectorCapacity(vector);
 	//TokenVectorSize(vector);
 
-	TokenVectorFree(vector);
+	IntVectorFree(vector);
 }
