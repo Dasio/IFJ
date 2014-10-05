@@ -73,7 +73,7 @@
 		if(Vect->capacity == Vect->used)									\
 		{																	\
 			Vect->capacity *= 2;											\
-			Vector->array = realloc(Vect->array, Vect->capacity * Vect->atomic_size);	\
+			Vect->array = realloc(Vect->array, Vect->capacity * Vect->atomic_size);	\
 			if (Vect->array == NULL) printf("ERROR realloc 1\n");			\
 		}																	\
 		/* tmp - pointer on last Value */									\
