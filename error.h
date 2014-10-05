@@ -9,6 +9,7 @@
 typedef enum
 {
     ERR_None, /**< ERR_None */
+    ERR_Allocation, /**<ERR_Allocation */
     ERR_Unknown, /**< ERR_Unknown */
 } EErrorStates;
 

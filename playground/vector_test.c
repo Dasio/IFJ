@@ -1,6 +1,6 @@
 #include "../system.h"
 #include "../vector.h"
-NewVectorType(int);
+NewVectorType(int)
 
 #define WriteLast	\
 	tmp = intVectorLast(vector);	\

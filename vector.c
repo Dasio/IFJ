@@ -12,5 +12,5 @@
 //GenVectorFunctions(int)
 //GenVectorFunctions(double)
 
-NewVectorType(int);
+NewVectorType(int)
 

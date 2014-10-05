@@ -6,6 +6,7 @@
  */
 
 #include "system.h"
+#include "error.h"
 
 #ifndef VECTOR_H
 #define VECTOR_H
@@ -60,12 +61,12 @@
 		if(initial_size == 0)												\
 			initial_size = VECTOR_DEFAULT_SIZE;								\
 		type##Vector *Vect = malloc(sizeof(type##Vector));					\
-		if (Vect == NULL) printf("ERROR malloc 1\n");						\
+		if (Vect == NULL) setError(ERR_Allocation)						\
 		Vect->used = 0;														\
 		Vect->capacity = initial_size;										\
 		Vect->atomic_size = sizeof(type);									\
 		Vect->array = malloc(Vect->capacity * Vect->atomic_size);			\
-		if (Vect->array == NULL) printf("ERROR malloc 2\n");				\
+		if (Vect->array == NULL) setError(ERR_Allocation)				\
 		return Vect;														\
 	}																		\
 	/** Add Value to end of vector */								 		\
@@ -74,20 +75,21 @@
 		{																	\
 			Vect->capacity *= 2;											\
 			Vect->array = realloc(Vect->array, Vect->capacity * Vect->atomic_size);	\
-			if (Vect->array == NULL) printf("ERROR realloc 1\n");			\
+			if (Vect->array == NULL) setError(ERR_Allocation)				\
 		}																	\
 		/* tmp - pointer on last Value */									\
-		type *tmp = Vect->array + Vect->used * Vect->atomic_size;			\
+		type *tmp = (type*)Vect->array + Vect->used;						\
 		*tmp = Value;														\
 		Vect->used++;														\
 	}																		\
 	/** Return pointer to Last Value */								 		\
 	type *type##VectorLast(type##Vector *Vect) {							\
-		return Vect->array + (Vect->used-1) * Vect->atomic_size;			\
+		return (type*)Vect->array + (Vect->used-1);							\
 	}																		\
 	/** Free array from Vector */									 		\
 	void type##VectorFree(type##Vector *Vect) {								\
-		free(Vect->array);													\
+		if(Vect == NULL) return;											\
+		if(Vect->array) free(Vect->array);									\
 		free(Vect);															\
 	}																		\
 	type *type##VectorFirst(type##Vector *Vect){							\
@@ -95,7 +97,7 @@
 	}																		\
 	type *type##VectorPop(type##Vector *Vect) {								\
 		Vect->used--; /* Mark last value as invalid and return its address*/\
-		return Vect->array + Vect->used * Vect->atomic_size;				\
+		return (type*)Vect->array + Vect->used;								\
 	}
 
 
