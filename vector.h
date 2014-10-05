@@ -9,29 +9,32 @@
 
 #ifndef VECTOR_H
 #define VECTOR_H
+#define VECTOR_DEFAULT_SIZE 8
 
 	typedef struct {
-		/** Allocated capacity, including uninitialized */
+		/** Allocated elements, including uninitialized */
 		uint32_t capacity;
-		/** Used capacity */
+
+		/** Used elements */
 		uint32_t used;
+
 		/** Size of each element in vector (sizeof()) */
 		uint8_t atomic_size;
-		/** Pointer to beginning */
+
+		/** Pointer to beginning of array */
 		void *array;
 	} Vector;
 
-
-#define VECTOR_DEFAULT_SIZE 8
-#define NewVectorType(type) \
-	GenVectorPrototypes(type) \
-	GenVectorFunctions(type)
 
 /**
  * Macro called from header file to generate appropriate prototypes
  * for define type
  * @param  type Type for generalization
  */
+
+#define NewVectorType(type) \
+	GenVectorPrototypes(type) \
+	GenVectorFunctions(type)
 
 #define GenVectorPrototypes(type) 		\
 	typedef Vector type##Vector;
@@ -70,7 +73,7 @@
 		if(Vect->capacity == Vect->used)									\
 		{																	\
 			Vect->capacity *= 2;											\
-			realloc(Vect->array, Vect->capacity * Vect->atomic_size);		\
+			Vector->array = realloc(Vect->array, Vect->capacity * Vect->atomic_size);	\
 			if (Vect->array == NULL) printf("ERROR realloc 1\n");			\
 		}																	\
 		/* tmp - pointer on last Value */									\
@@ -86,13 +89,19 @@
 	void type##VectorFree(type##Vector *Vect) {								\
 		free(Vect->array);													\
 		free(Vect);															\
+	}																		\
+	type *type##VectorFirst(type##Vector *Vect){							\
+		return Vect->array;													\
+	}																		\
+	type *type##VectorPop(type##Vector *Vect) {								\
+		Vect->used--; /* Mark last value as invalid and return its address*/\
+		return Vect->array + Vect->used * Vect->atomic_size;				\
 	}
 
 
 // ##type##VectorAt(uint32_t, ##type##Vector *);
 // Kandidati na makro/funkciu
 // 
-// ##type##VectorFirst(##type##Vector *);
 // ##type##VectorBack(##type##Vector *);
 // ##type##VectorSize(##type##Vector *);
 
