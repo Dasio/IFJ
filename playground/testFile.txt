@@ -1,0 +1,10 @@
+integer a := 005274;
+boolean b;  		{comment test}
+		{tabs and whitespaces are ignored}
+var c = 000;
+a := 056;
+function factorial(n : integer) : real;
+if a <> 0 then
+begin
+	b = b/ a;
+end
