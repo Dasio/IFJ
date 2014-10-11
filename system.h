@@ -8,10 +8,14 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
-  // TODO Makro na malloc test alebo memory management
+#include "error.h"
 
-  // typedefy
+#define MALLOC_TEST(ptr) do {if(ptr == NULL) setError(ERR_Allocation); } while(0)
 
-#define MALLOC_TEST(ptr) do {if(!ptr) {fprintf(stderr, "ERROR\n"); exit(1);}} while(0)
+// https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/Typeof.html#Typeof
+#define max(a, b) \
+	({  typeof (a) _a = (a); \
+		typeof (b) _b = (b); \
+			_a > _b ? _a : _b; })
 
 #endif
