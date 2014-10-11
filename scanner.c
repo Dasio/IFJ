@@ -56,9 +56,6 @@ int ParseToTokens(Token *token)
 		if (token->state == SOS_identifier) {
 			IsKeyword(token);
 		}
-		if (token->state == SOS_number) {
-			CheckNulls(token->str);
-		}
 		printf("Token->state: %d and token attribute %s\n",token->state,token->str);
 	} while (token->state != SOS_EOF);
 
@@ -67,25 +64,15 @@ int ParseToTokens(Token *token)
 
 Token *GetToken (Token *actToken)
 {
-	char symbol = fgetc(sourceFile);
-
+	int symbol = fgetc(sourceFile);
 	
 	//Read next symbol and check the EOF		
 	while (symbol != EOF) {
-		/* Filter whitespace characters between tokens, check end character of token
-			and filter comments */
-		if (isspace(symbol)) {
-			if (actToken->state != SOS_start && actToken->state != SOS_leftCurlyBrace) {
-				return actToken;
-			}
-			symbol = fgetc(sourceFile);
-			continue;			;
-		}
 		// automat of states 
 		switch (actToken->state) {
 			case (SOS_start): {
 				//printf("SOS_start\n");
-				
+				//ignores whitespaces
 				if (isspace(symbol)) {
 					break;
 				}
@@ -96,7 +83,7 @@ Token *GetToken (Token *actToken)
 					break;
 				}
 				else if (symbol >= '0' && symbol <= '9') {
-					actToken->state = SOS_number;
+					actToken->state = SOS_integer;
 					actToken->str[0] = symbol;
 					//printf("number\n");
 					break;
@@ -187,7 +174,8 @@ Token *GetToken (Token *actToken)
 						}
 						default:
 							actToken->state = SOS_error;
-							printf("Cannot identify");
+							printf("\nWrong start symbol\n");
+							return actToken;
 					}
 					break;
 				}
@@ -199,10 +187,85 @@ Token *GetToken (Token *actToken)
 					//printf("assignment\n");
 					FillString(actToken->str,symbol);
 					return actToken;
-				 }
+				}
 				else {
 					ungetc(symbol,sourceFile);
 					return actToken;
+				}
+			}
+			case (SOS_double): {
+				if (symbol >= '0' && symbol <= '9') {
+					FillString(actToken->str,symbol);
+					break;
+				}
+				else {
+					switch (symbol) {
+						case 'e':
+						case 'E': {
+							actToken->state = SOS_doubleE;
+							FillString(actToken->str,symbol);
+							break;
+						}
+						default: {
+							ungetc(symbol,sourceFile);
+							return actToken;
+						}
+					}
+					break;
+				}
+			}
+			case (SOS_doubleDot): {
+				if (symbol >= '0' && symbol <= '9') {
+					actToken->state = SOS_double;
+					FillString(actToken->str,symbol);
+					break;
+				}
+				else {
+					actToken->state = SOS_error;
+					printf("Wrong decimal part of number\n");
+					ungetc(symbol,sourceFile);
+					return actToken;
+				}
+			}
+			case (SOS_doubleE): {
+				if (symbol >= '0' && symbol <= '9') {
+					actToken->state = SOS_doubleEValue;
+					FillString(actToken->str,symbol);
+					break;
+				}
+				else if (symbol == '+' || symbol == '-') {
+					actToken->state = SOS_doubleESign;
+					FillString(actToken->str,symbol);
+					break;
+				}
+				else {
+					actToken->state = SOS_error;
+					printf("\nWrong E exponent value with double\n");
+					ungetc(symbol,sourceFile);
+					return actToken;
+				}
+			}
+			case (SOS_doubleESign): {
+				if (symbol >= '0' && symbol <= '9') {
+					actToken->state = SOS_doubleEValue;
+					FillString(actToken->str,symbol);
+					break;
+				}
+				else {
+					actToken->state = SOS_error;
+					printf("\nWrong exponent value with double\n");
+					ungetc(symbol,sourceFile);
+					return actToken;
+				}
+			}
+			case (SOS_doubleEValue): {
+				if (symbol >='0' && symbol <= '9') { //what about nulls in 20.2E+005
+					FillString(actToken->str,symbol);
+					break;
+				}
+				else {
+					ungetc(symbol,sourceFile);
+					return actToken;					
 				}
 			}
 			case (SOS_greater): {
@@ -228,7 +291,7 @@ Token *GetToken (Token *actToken)
 					return actToken;
 				}
 			}
-			/*Ignoring comments*/
+			/*Ignoring comments until right curly brace is read*/
 			case (SOS_leftCurlyBrace): {
 				if (symbol == '}') {
 					actToken->state = SOS_start;
@@ -254,20 +317,74 @@ Token *GetToken (Token *actToken)
 					return actToken;
 				}
 			}
-			case (SOS_number): {
+			case (SOS_integer): {
 				if (symbol >= '0' && symbol <= '9') {
-					//actToken->state = SOS_number;
+					if (actToken->str[0] != '0')
+						FillString(actToken->str,symbol);
+					break;
+				}
+				else {
+					switch (symbol) {
+						case 'e':
+						case 'E': {
+							actToken->state = SOS_integerE;
+							FillString(actToken->str,symbol);
+							break;
+						}
+						case '.': {
+							actToken->state = SOS_doubleDot;
+							FillString(actToken->str,symbol);
+							break;
+						}
+						default: {
+							ungetc(symbol,sourceFile);
+							return actToken;
+						}
+					}
+					break;
+				}
+			}
+			//expects value of exponent, otherwise, an error occurs
+			case (SOS_integerE): {
+				if (symbol >= '0' && symbol <= '9') {
+					actToken->state = SOS_integerEValue;
 					FillString(actToken->str,symbol);
 					break;
 				}
-				else if ((symbol >= 'a' && symbol <= 'z') || (symbol >= 'A' && symbol <= 'Z') || (symbol == '_')) {
-					actToken->state = SOS_identifier;
+				else if (symbol == '+' || symbol == '-') {
+					actToken->state = SOS_integerESign;
+					FillString(actToken->str,symbol);
+					break;
+				}
+				else {
+					actToken->state = SOS_error;
+					printf("\nWrong E exponent value\n");
+					ungetc(symbol,sourceFile);
+					return actToken;
+				}
+			}
+			//expects value of exponent, otherwise, an error occurs
+			case (SOS_integerESign): {
+				if (symbol >= '0' && symbol <= '9') {
+					actToken->state = SOS_integerEValue;
+					FillString(actToken->str,symbol);
+					break;
+				}
+				else {
+					actToken->state = SOS_error;
+					printf("\nWrong exponent value with integer\n");
+					ungetc(symbol,sourceFile);
+					return actToken;
+				}
+			}
+			case (SOS_integerEValue): {
+				if (symbol >='0' && symbol <= '9') { //what about nulls in 20E+005
 					FillString(actToken->str,symbol);
 					break;
 				}
 				else {
 					ungetc(symbol,sourceFile);
-					return actToken;
+					return actToken;					
 				}
 			}
 			default:
@@ -396,28 +513,6 @@ void EmptyToken(Token *actToken) //Empty used token for next usage
 
 	for (int i = 0; i < ARR_SIZE; i++)
 		actToken->str[i] = '\0';
-	return;
-}
-
-void CheckNulls(char *stringOfNumbers)
-{
-	int i = 0;
-	int j = 0;
-	//count the number of nulls
-	for (i = 0; stringOfNumbers[i] == '0'; i++)
-		;
-	//the number consists only of nulls eg.: "00000" transforms to "0"
-	if (stringOfNumbers[i] == '\0') {
-		stringOfNumbers[1] = '\0';
-	}
-	//if the number is not just '0', it deletes nuls in the beggining
-	else if (i) {
-		do {
-		stringOfNumbers[j++] = stringOfNumbers[i++];
-		//printf("%s jes\n",stringOfNumbers);
-		} while (stringOfNumbers[i] != '\0');
-		stringOfNumbers[j] = '\0';
-	}
 	return;
 }
 
