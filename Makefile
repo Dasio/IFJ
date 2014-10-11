@@ -1,4 +1,9 @@
-CC=gcc
+ifneq ($(wildcard /usr/local/bin/gcc-4.9),)
+	CC=gcc-4.9
+else
+	CC=gcc
+endif
+
 RM=rm -f
 CFLAGS=-g -ffast-math -Ofast -std=c11 -pedantic -Wall -Wextra -ftrapv -fstack-protector-all
 LDFLAGS=
