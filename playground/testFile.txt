@@ -1,8 +1,10 @@
-integer a := 005274;
+integer a := _05274;
 boolean b;  		{comment test}
 		{tabs and whitespaces are ignored}
 var c = 000;
-a := 056;
+a := 20e+50;
+b := 20.11887e50
+c := 20.3e-25
 function factorial(n : integer) : real;
 if a <> 0 then
 begin
