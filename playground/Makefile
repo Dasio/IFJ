@@ -1,4 +1,4 @@
-CC=clang
+CC=gcc
 RM=rm -f
 CFLAGS=-g -ffast-math -std=c11 -pedantic -Wall -Wextra
 LDFLAGS=
