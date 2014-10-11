@@ -1,6 +1,5 @@
 #include "../system.h"
 #include "../vector.h"
-NewVectorType(int)
 
 #define WriteLast	\
 	tmp = intVectorLast(vector);	\
@@ -56,7 +55,7 @@ int main() {
 	//TokenVectorCapacity(vector);
 	//TokenVectorSize(vector);
 	//
-	
+
 
 	tmp = intVectorLast(vector);
 	printf("Last number %d\n", *tmp);
