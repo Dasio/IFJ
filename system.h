@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdint.h>
+#include <limits.h>
 
 #ifndef SYSTEM_H
 #define SYSTEM_H
