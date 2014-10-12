@@ -39,7 +39,7 @@ int OpenFile(const char* file)
 	}
 	return 1;
 }
-int CloseFile(FILE *filename) 
+int CloseFile(FILE *filename)
 {
 	if(fclose(filename) == EOF) {
 		fprintf(stderr, "Cannot close the file.\n");
@@ -65,10 +65,10 @@ int ParseToTokens(Token *token)
 Token *GetToken (Token *actToken)
 {
 	int symbol = fgetc(sourceFile);
-	
-	//Read next symbol and check the EOF		
+
+	//Read next symbol and check the EOF
 	while (symbol != EOF) {
-		// automat of states 
+		// automat of states
 		switch (actToken->state) {
 			case (SOS_start): {
 				//printf("SOS_start\n");
@@ -136,7 +136,7 @@ Token *GetToken (Token *actToken)
 							actToken->state = SOS_leftSquareBrace;
 							actToken->str[0] = symbol;
 							return actToken;
-						}					
+						}
 						/*case '-': {
 							actToken->state = SOS_minus;
 							actToken->str[0] = symbol;
@@ -166,7 +166,7 @@ Token *GetToken (Token *actToken)
 							actToken->state = SOS_rightSquareBrace;
 							actToken->str[0] = symbol;
 							return actToken;
-						}										
+						}
 						case ';': {
 							actToken->state = SOS_semicolon;
 							actToken->str[0] = symbol;
@@ -265,7 +265,7 @@ Token *GetToken (Token *actToken)
 				}
 				else {
 					ungetc(symbol,sourceFile);
-					return actToken;					
+					return actToken;
 				}
 			}
 			case (SOS_greater): {
@@ -285,7 +285,7 @@ Token *GetToken (Token *actToken)
 					//actToken->state = SOS_identifier;
 					FillString(actToken->str,symbol);
 					break;
-				}		
+				}
 				else {
 					ungetc(symbol,sourceFile);
 					return actToken;
@@ -384,7 +384,7 @@ Token *GetToken (Token *actToken)
 				}
 				else {
 					ungetc(symbol,sourceFile);
-					return actToken;					
+					return actToken;
 				}
 			}
 			default:
@@ -423,10 +423,10 @@ void IsKeyword(Token *token)
 			if (strcmp(token->str,"else") == 0) {
 				token->state = SOS_keyword;
 				break;
-			}			
+			}
 			if (strcmp(token->str,"end") == 0) {
-				token->state = SOS_keyword;	
-				break;		
+				token->state = SOS_keyword;
+				break;
 			}
 		}
 		case 'f': {
@@ -476,7 +476,7 @@ void IsKeyword(Token *token)
 				token->state = SOS_keyword;
 				break;
 			}
-		}	
+		}
 		case 't': {
 			if (strcmp(token->str,"then") == 0) {
 				token->state = SOS_keyword;
@@ -497,14 +497,14 @@ void IsKeyword(Token *token)
 			if (strcmp(token->str,"while") == 0) {
 				token->state = SOS_keyword;
 				break;
-			}	
+			}
 			if (strcmp(token->str,"write") == 0) {
 				token->state = SOS_keyword;
 				break;
-			}					
+			}
 		}
 	}
-	return;	
+	return;
 }
 
 void EmptyToken(Token *actToken) //Empty used token for next usage

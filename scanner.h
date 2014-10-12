@@ -1,8 +1,8 @@
 /* Implementation of scanner
- * 
+ *
  *
  *  Created on: 28.9.2014
- *      Author: 
+ *      Author:
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,7 +49,7 @@ typedef enum
 	SOS_realDot,
 	SOS_realE,
 	SOS_realESign,
-	SOS_realEValue,	
+	SOS_realEValue,
 	SOS_rightBrace,
 	SOS_rightCurlyBrace,
 	SOS_rightSquareBrace,
@@ -70,26 +70,26 @@ typedef struct token Token;
 /*
  * Function reads symbols from source and returns
  * one token consisting of these symbols.
- * 
+ *
  */
 Token *GetToken (Token *actToken);
 
 /*
- * Prepares token structure for next token, 
+ * Prepares token structure for next token,
  * delete string and set the state of scanner to START.
- * 
+ *
  */
 void EmptyToken(Token *actToken);
 
 /*
- * Adds read symbol at the end of array, except numbers 
+ * Adds read symbol at the end of array, except numbers
  * having '0' at the beggining - then replace this symbol
  * with new one.
  */
 char *FillString(char *array, char addedSymbol);
 
 /*
- * Function checks if there are some nulls in the beggining of the number 
+ * Function checks if there are some nulls in the beggining of the number
  * and deletes them.
  */
 void CheckNulls(char *stringOfNumbers);
@@ -107,7 +107,7 @@ int OpenFile(const char* file);
 int CloseFile(FILE *filename);
 
 /*
- * Calls function GetTokens until the EOF is detected and calls function 
+ * Calls function GetTokens until the EOF is detected and calls function
  * which check if the token is a keyword.
  */
 int ParseToTokens(Token *token);
