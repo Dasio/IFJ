@@ -5,9 +5,10 @@ String initEmptyString()
 	String str = {
 		.length  = 0,
 		.allocated_size = STRING_INIT_ALLOC_SIZE,
-		.data    = calloc(STRING_INIT_ALLOC_SIZE, sizeof(char))
+		.data    = malloc(STRING_INIT_ALLOC_SIZE * sizeof(char))
 	};
 	MALLOC_TEST(str.data);
+
 
 	return str;
 }
