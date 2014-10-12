@@ -193,7 +193,7 @@ Token *GetToken (Token *actToken)
 					return actToken;
 				}
 			}
-			case (SOS_double): {
+			case (SOS_real): {
 				if (symbol >= '0' && symbol <= '9') {
 					FillString(actToken->str,symbol);
 					break;
@@ -202,7 +202,7 @@ Token *GetToken (Token *actToken)
 					switch (symbol) {
 						case 'e':
 						case 'E': {
-							actToken->state = SOS_doubleE;
+							actToken->state = SOS_realE;
 							FillString(actToken->str,symbol);
 							break;
 						}
@@ -214,9 +214,9 @@ Token *GetToken (Token *actToken)
 					break;
 				}
 			}
-			case (SOS_doubleDot): {
+			case (SOS_realDot): {
 				if (symbol >= '0' && symbol <= '9') {
-					actToken->state = SOS_double;
+					actToken->state = SOS_real;
 					FillString(actToken->str,symbol);
 					break;
 				}
@@ -227,38 +227,38 @@ Token *GetToken (Token *actToken)
 					return actToken;
 				}
 			}
-			case (SOS_doubleE): {
+			case (SOS_realE): {
 				if (symbol >= '0' && symbol <= '9') {
-					actToken->state = SOS_doubleEValue;
+					actToken->state = SOS_realEValue;
 					FillString(actToken->str,symbol);
 					break;
 				}
 				else if (symbol == '+' || symbol == '-') {
-					actToken->state = SOS_doubleESign;
+					actToken->state = SOS_realESign;
 					FillString(actToken->str,symbol);
 					break;
 				}
 				else {
 					actToken->state = SOS_error;
-					printf("\nWrong E exponent value with double\n");
+					printf("\nWrong E exponent value with real\n");
 					ungetc(symbol,sourceFile);
 					return actToken;
 				}
 			}
-			case (SOS_doubleESign): {
+			case (SOS_realESign): {
 				if (symbol >= '0' && symbol <= '9') {
-					actToken->state = SOS_doubleEValue;
+					actToken->state = SOS_realEValue;
 					FillString(actToken->str,symbol);
 					break;
 				}
 				else {
 					actToken->state = SOS_error;
-					printf("\nWrong exponent value with double\n");
+					printf("\nWrong exponent value with real\n");
 					ungetc(symbol,sourceFile);
 					return actToken;
 				}
 			}
-			case (SOS_doubleEValue): {
+			case (SOS_realEValue): {
 				if (symbol >='0' && symbol <= '9') { //what about nulls in 20.2E+005
 					FillString(actToken->str,symbol);
 					break;
@@ -332,7 +332,7 @@ Token *GetToken (Token *actToken)
 							break;
 						}
 						case '.': {
-							actToken->state = SOS_doubleDot;
+							actToken->state = SOS_realDot;
 							FillString(actToken->str,symbol);
 							break;
 						}
