@@ -35,6 +35,19 @@ void aboutString(String *dst) {
 	printf("STR: allocated %u ,length %u\n", dst->allocated_size, dst->length);
 }
 
+String initString(char *src)
+{
+	assert(src);
+	uint32_t size = strlen(src);
+	String string = {
+		.length  = size,
+		.allocated_size = size,
+		.data    = malloc(size * sizeof(char))
+	};
+	memcpy(string.data,src,size);
+	return string;
+}
+
 void appendCharToString(String *dst, char c)
 {
 	assert(dst);
