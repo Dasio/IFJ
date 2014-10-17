@@ -1,7 +1,7 @@
 ifneq ($(wildcard /usr/local/bin/gcc-4.9),)
 	CC=gcc-4.9
 else
-	CC=gcc
+	CC=clang
 endif
 
 RM=rm -f

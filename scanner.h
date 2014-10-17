@@ -9,9 +9,11 @@
 #include <string.h>
 #include <ctype.h>
 
-#ifndef ARR_SIZE
-#define ARR_SIZE	 50
-#endif
+#include "system.h"
+#include "string.h"
+
+#include "token.h"
+#include "istream.h"
 
 #ifndef SCANNER_H_
 #define SCANNER_H_
@@ -21,13 +23,20 @@
  */
 typedef enum
 {
-	SOS_assigment,
+	// Special states
+	SOS_start = 0,
+	SOS_error = 1,
+	SOS_EOF = 2,
+
+	// Splitting state, not used, only for comparing
+	SOS_statesplitter,
+
+	// Terminal states
+	SOS_assignment = 8,
 	SOS_colon,
 	SOS_comma,
-	SOS_devide,
+	SOS_divide,
 	SOS_equality,
-	SOS_EOF,
-	SOS_error,
 	SOS_greater,
 	SOS_greaterOrEqual,
 	SOS_identifier,
@@ -53,70 +62,63 @@ typedef enum
 	SOS_rightBrace,
 	SOS_rightCurlyBrace,
 	SOS_rightSquareBrace,
-	SOS_start,
-	SOS_semicolon
-}StateOfScanner;
+	SOS_semicolon,
+	SOS_whitespace
+} stateOfScanner;
 
-/*
- * Structure which represents one token parsed from the program.
+extern const char *STATECODES[];
+
+#define scanner_has_token(scanner) \
+			(scanner->state > SOS_statesplitter)
+
+typedef struct
+{
+	/** Immediate state of scanner */
+	stateOfScanner state;
+	/** Source code source */
+	IStream input;
+} Scanner;
+
+/**
+ * Returns copy of type Scanner, initializes IStream inside
+ * @return Initialized Scanner
  */
-struct token {
-	StateOfScanner state;
-	char str[ARR_SIZE];
-};
+Scanner initScanner();
 
-typedef struct token Token;
+/**
+ * Destroy's IStream and nullifies Scanner
+ * @param Pointer to scanner
+ */
+void destroyScanner(Scanner *scanner);
 
 /*
  * Function reads symbols from source and returns
  * one token consisting of these symbols.
  *
  */
-Token *GetToken (Token *actToken);
+Token getToken(Scanner *scanner);
 
-/*
- * Prepares token structure for next token,
- * delete string and set the state of scanner to START.
- *
+/**
+ * Processes one input symbol, one step of FSM
+ * @param  token Pointer to token
+ * @param  c     Symbol from input
+ * @return       [description]
  */
-void EmptyToken(Token *actToken);
+bool processNextSymbol(Scanner *scanner, Token *token, char symbol);
 
-/*
- * Adds read symbol at the end of array, except numbers
- * having '0' at the beggining - then replace this symbol
- * with new one.
+/**
+ * Prints basic info about scanner, newline at end
+ * @param scanner Pointer to scanner
  */
-char *FillString(char *array, char addedSymbol);
+void scannerInfo(Scanner *scanner);
 
-/*
- * Function checks if there are some nulls in the beggining of the number
- * and deletes them.
- */
-void CheckNulls(char *stringOfNumbers);
 
-/*
- * Opens source file, passed to the function as argument, for processing.
- *
+/**
+ * Returns whether string from input is keyword.
+ * @param  str Pointer to String
+ * @return     True if string is keyword, else false
  */
-int OpenFile(const char* file);
-
-/*
- * Close source file, passed to the function as argument, for processing.
- *
- */
-int CloseFile(FILE *filename);
-
-/*
- * Calls function GetTokens until the EOF is detected and calls function
- * which check if the token is a keyword.
- */
-int ParseToTokens(Token *token);
-
-/*
- * Compares token attribute(string) if it is a keyword.
- * If it is, sets the state of token to SOS_keyword.
- */
-void IsKeyword(Token *token);
+bool IsKeyword(String *str);
 
 
 #endif /* SCANNER_H_ */

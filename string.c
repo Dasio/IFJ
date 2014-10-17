@@ -9,7 +9,6 @@ String initEmptyString()
 	};
 	MALLOC_TEST(str.data);
 
-
 	return str;
 }
 
@@ -18,6 +17,13 @@ void destroyString(String *dst) {
 		free(dst->data);
 	dst->allocated_size = 0;
 	dst->length = 0;
+}
+
+char atString(String *dst, uint32_t pos) {
+	assert(dst);
+	assert(pos <= dst->length);
+
+	return dst->data[pos];
 }
 
 void printString(String *dst)

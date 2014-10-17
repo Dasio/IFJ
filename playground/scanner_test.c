@@ -2,24 +2,16 @@
 
 extern FILE *sourceFile;
 
-int main(int argc, char **argv)
+int main()
 {
-	// const char *filename = argv[1];
-	// if (!OpenFile(filename))
-	// 	return 1; //Cannot open sourceFile
+	Scanner scanner = initScanner();
 
-	// Token newToken;
-	// EmptyToken(&newToken);
+	assignString(&scanner.input, "ahoj_svet := ako sa mas");
 
-	// if (ParseToTokens(&newToken))
-	// 	printf("\nComleted\n");
+	Token t = getToken(&scanner);
 
-	// if (!CloseFile(sourceFile))
-	// 	return 1;
-	//
-
-
-
+	destroyToken(&t);
+	destroyScanner(&scanner);
 	//printf("File closed\n");
 	return 0;
 }
