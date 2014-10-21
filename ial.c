@@ -21,12 +21,18 @@ int FindString(String *input, String *find)
     while(inInd<=input->length && fiInd<=find->length)
     {
         if(input->data[inInd-1] == find->data[fiInd-1])
-            {inInd++;fiInd++;}
+        {
+            inInd++;
+            fiInd++;
+        }
         else
         {
             fiInd = Mask[fiInd-1];
             if(fiInd==0)
-                {inInd++;fiInd++;}
+            {
+                inInd++;
+                fiInd++;
+            }
         }
     }
     if(fiInd>find->length)

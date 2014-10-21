@@ -39,13 +39,14 @@ String initString(char *src)
 {
 	assert(src);
 	uint32_t size = strlen(src);
-	String string = {
+	String str = {
 		.length  = size,
 		.allocated_size = size,
 		.data    = malloc(size * sizeof(char))
 	};
-	memcpy(string.data,src,size);
-	return string;
+	MALLOC_TEST(str.data);
+	memcpy(str.data,src,size);
+	return str;
 }
 
 void appendCharToString(String *dst, char c)
