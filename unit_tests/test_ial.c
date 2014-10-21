@@ -9,6 +9,10 @@ START_TEST_SUITE(IALTest)
 	appendCharToString(&text, 'c');
 	appendCharToString(&text, 's');
 	TEST_EXPR("FindString: \"abc\" IS in \"abababcs\" at index 4",(FindString(&text, &find) == 4));
+
+	char test[18] = "bshoensajfnjvzklz";
+	QuickSort(test);
+	TEST_EXPR("QuickSort: order - OK", strcmp(test, "abefhjjklnnossvzz") == 0);
 END_TEST_SUITE
 
 
