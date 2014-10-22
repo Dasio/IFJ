@@ -67,13 +67,15 @@ int *GetFormula(String *find)
 /*
 	Imput is unordered array of char ended with character == 0
 	sort that array based on ASCII number.
+	
+	used nonrecursive Quick Sort
  */
 void QuickSort(char arr[])
 {
     Vector *vec = initintVector(8);
     int r,l,i,j;
     intVectorAppend(vec, 0); //left border of sorting
-    intVectorAppend(vec, len(arr)-1); //rights border of sorting
+    intVectorAppend(vec, strlen(arr)-1); //rights border of sorting
 
     while (vec->used != 0)
     {
@@ -102,12 +104,4 @@ void QuickSort(char arr[])
         }
     }
     intVectorFree(vec);
-}
-
-//return lengthe of array of chars (last character == 0)
-uint16_t len(char *arr)
-{
-    uint16_t i=0;
-    while(arr[i] != 0) i++;
-    return i;
 }
