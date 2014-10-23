@@ -10,9 +10,14 @@ START_TEST_SUITE(IALTest)
 	appendCharToString(&text, 's');
 	TEST_EXPR("FindString: \"abc\" IS in \"abababcs\" at index 4",(FindString(&text, &find) == 4));
 
-	char test[18] = "bshoensajfnjvzklz";
+	char test[56] = "bshoensajgfryfgvjyutkopoiuqwerzxcvmnbvasdfglkjhfnjvzklz";
 	QuickSort(test);
-	TEST_EXPR("QuickSort: order - OK", strcmp(test, "abefhjjklnnossvzz") == 0);
+	TEST_EXPR("QuickSort (Recursive): true order", strcmp(test, "aabbcdeeffffggghhijjjjkkkllmnnnooopqrrssstuuvvvvwxyyzzz") == 0);
+
+
+	strcpy(test, "bshoensajgfryfgvjyutkopoiuqwerzxcvmnbvasdfglkjhfnjvzklz");
+	QuickSortNonRecursive(test);
+	TEST_EXPR("QuickSortNonRecursive: true order", strcmp(test, "aabbcdeeffffggghhijjjjkkkllmnnnooopqrrssstuuvvvvwxyyzzz") == 0);
 END_TEST_SUITE
 
 

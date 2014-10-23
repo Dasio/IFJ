@@ -62,6 +62,46 @@ int *GetFormula(String *find)
 	return Mask;
 }
 
+/*
+	Imput is unordered array of char ended with character == 0
+	sort that array based on ASCII number.
+	
+	used Recursive Quick Sort
+ */
+
+// get length of string and call QuickSortRecursive function
+void QuickSort(char arr[])
+{
+	QuickSortRecursive(arr, strlen(arr)-1);
+}
+
+//QuickSort which use recursive function
+void QuickSortRecursive(char *arr, int n)
+{
+	if(n<=1)
+		return;// if arr include only one number
+
+	char *l=arr, *r=arr+n-1; //prepare index on border of group 
+    char p = arr[n/2]; //set pivot (center value)
+
+    while (l <= r) { // while left and right border finished
+        if (*l < p) l++; //skip left number if is smaller 
+        else if (*r > p) r--; //skip right number if is smaller
+        else {
+        	if (l!=r) //if the numbers are different change their value
+            {
+            	*l += *r;
+                *r = *l - *r;
+                *l -= *r;
+            }
+            l++; r--; //goto next numbers
+        }
+    }
+
+    //recursive call for array on left and right side from the pivot
+	QuickSortRecursive(arr, r-arr+1);
+	QuickSortRecursive(l, arr+n-l);
+}
 
 
 /*
@@ -70,7 +110,7 @@ int *GetFormula(String *find)
 	
 	used nonrecursive Quick Sort
  */
-void QuickSort(char arr[])
+void QuickSortNonRecursive(char arr[])
 {
     Vector *vec = initintVector(8);
     int r,l,i,j;

@@ -14,7 +14,8 @@
 int FindString(String *in, String *substring);
 int *GetFormula(String*);
 
-void QuickSort(char*);
-uint16_t len(char *);
+void QuickSortNonRecursive(char []);
+void QuickSort(char []);
+void QuickSortRecursive(char *, int);
 
 #endif
