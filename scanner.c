@@ -27,6 +27,10 @@ typedef enum
 }Keyword;
 
 /*
+ * Variable to store ASCII values per characters
+ */
+static int value;
+/*
  * Pointer to file which is processed.
  */
 FILE *sourceFile = NULL;
@@ -55,6 +59,9 @@ int ParseToTokens(Token *token)
 		GetToken(token);
 		if (token->state == SOS_identifier) {
 			IsKeyword(token);
+		}
+		if (token->state == SOS_error) {
+			printf("error in %s\n", token->str);
 		}
 		printf("Token->state: %d and token attribute %s\n",token->state,token->str);
 	} while (token->state != SOS_EOF);
@@ -107,6 +114,10 @@ Token *GetToken (Token *actToken)
 							actToken->str[0] = symbol;
 							return actToken;
 						}
+						case '.': {
+							actToken->state = SOS_dot;
+							actToken->str[0] = symbol;
+						}
 						case '=': {
 							actToken->state = SOS_equality;
 							actToken->str[0] = symbol;
@@ -137,11 +148,11 @@ Token *GetToken (Token *actToken)
 							actToken->str[0] = symbol;
 							return actToken;
 						}
-						/*case '-': {
+						case '-': {
 							actToken->state = SOS_minus;
 							actToken->str[0] = symbol;
-							break;
-						}*/
+							return actToken;
+						}
 						case '*': {
 							actToken->state = SOS_multiply;
 							actToken->str[0] = symbol;
@@ -171,6 +182,10 @@ Token *GetToken (Token *actToken)
 							actToken->state = SOS_semicolon;
 							actToken->str[0] = symbol;
 							return actToken;
+						}
+						case '\'': {
+							actToken->state = SOS_string;
+							break;
 						}
 						default:
 							actToken->state = SOS_error;
@@ -386,6 +401,69 @@ Token *GetToken (Token *actToken)
 					ungetc(symbol,sourceFile);
 					return actToken;
 				}
+			}
+			case (SOS_string): {
+				if (symbol == '\'') {
+					actToken->state = SOS_stringApostrophe;
+					break;
+				}
+				else if (symbol > 31 && symbol <= 255) {
+					FillString(actToken->str,symbol);
+					break;
+				}
+				else {
+					actToken->state = SOS_error;
+					return actToken;
+				}
+			}
+			case (SOS_stringApostrophe): {
+				if (symbol == '#') {
+					actToken->state = SOS_stringHashtag;
+					break;
+				}
+				// zapise apostrof
+				else if (symbol == '\'') {
+					actToken->state = SOS_string;
+					FillString(actToken->str,symbol);
+					break;
+				}
+				else {
+					actToken->state = SOS_string;
+					ungetc(symbol,sourceFile);
+					return actToken;
+				}
+			}
+			case (SOS_stringHashtag): {
+				if (symbol == '0')
+					break;
+				else if (symbol >= '1' && symbol <= '9') {
+					actToken->state = SOS_stringASCII;
+					value = (value*10) + (symbol - '0');
+					break;
+				}
+				else {
+					actToken->state = SOS_error;
+					return actToken;
+				}
+			}
+			case (SOS_stringASCII): {
+				if (symbol >= '0' && symbol <= '9') {
+					value = (value*10) + (symbol - '0');
+					if (value > 255) {
+						actToken->state = SOS_error;
+						return actToken;
+					}
+					break;
+				}
+				else if (symbol == '\'') {
+					actToken->state = SOS_string;
+					FillString(actToken->str,(char)value);
+					value = 0;
+					break;
+				}
+				else
+					actToken->state = SOS_error;
+					return actToken;
 			}
 			default:
 				;

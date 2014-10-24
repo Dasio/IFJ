@@ -20,11 +20,12 @@
  * Enumeration of possible states of scanner.
  */
 typedef enum
-{
+{	
 	SOS_assigment,
 	SOS_colon,
 	SOS_comma,
 	SOS_devide,
+	SOS_dot,
 	SOS_equality,
 	SOS_EOF,
 	SOS_error,
@@ -54,7 +55,11 @@ typedef enum
 	SOS_rightCurlyBrace,
 	SOS_rightSquareBrace,
 	SOS_start,
-	SOS_semicolon
+	SOS_semicolon,
+	SOS_string,
+	SOS_stringHashtag,
+	SOS_stringASCII,
+	SOS_stringApostrophe
 }StateOfScanner;
 
 /*
