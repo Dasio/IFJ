@@ -26,6 +26,13 @@ char atString(String *dst, uint32_t pos) {
 	return dst->data[pos];
 }
 
+char setAtString(String *dst, uint32_t pos, char c) {
+	assert(dst);
+	assert(pos <= dst->length);
+
+	return dst->data[pos] = c;
+}
+
 void printString(String *dst)
 {
 	assert(dst);

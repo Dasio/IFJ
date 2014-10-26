@@ -16,6 +16,7 @@
 	String initString(char *src);
 
 	char atString(String *dst, uint32_t pos);
+	char setAtString(String *dst, uint32_t pos, char c);
 
 	void printString(String *dst);
 	void aboutString(String *dst);
