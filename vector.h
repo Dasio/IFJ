@@ -7,6 +7,7 @@
 
 #include "system.h"
 #include "error.h"
+#include "token.h"
 
 #ifndef VECTOR_H
 #define VECTOR_H
@@ -40,6 +41,7 @@
 ///////////////////////////////////
 
 GenVectorPrototypes(int)
+GenVectorPrototypes(Token)
 
 // TODO
 // ##type##VectorAt(uint32_t, ##type##Vector *);

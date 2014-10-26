@@ -12,11 +12,10 @@
 #include "system.h"
 #include "string.h"
 
-#include "token.h"
-#include "istream.h"
-
 #ifndef SCANNER_H_
 #define SCANNER_H_
+
+#include "istream.h"
 
 /*
  * Enumeration of possible states of scanner.
@@ -66,15 +65,22 @@ typedef enum
 	SOS_whitespace
 } stateOfScanner;
 
-extern const char *STATECODES[];
-
-#define scanner_has_token(scanner) \
-			(scanner->state > SOS_statesplitter)
+// Token header requires scanner states to be defined
+#include "token.h"
 
 typedef struct
 {
 	/** Immediate state of scanner */
 	stateOfScanner state;
+
+	/** Flag if token has been found */
+	bool foundToken;
+
+	/** Type representing final type of token
+	  * (conversion after getting token)
+	  */
+	TokenType convertTo;
+
 	/** Source code source */
 	IStream input;
 } Scanner;
@@ -90,6 +96,15 @@ Scanner initScanner();
  * @param Pointer to scanner
  */
 void destroyScanner(Scanner *scanner);
+
+/**
+ * Tests scanner's state for EOF
+ * @param  scanner Pointer to scanner
+ * @return         Whether scanner reached end of input
+ */
+inline bool scannerFinished(Scanner *scanner) {
+	return scanner->state == SOS_EOF || scanner->state == SOS_error;
+}
 
 /*
  * Function reads symbols from source and returns

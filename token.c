@@ -22,5 +22,5 @@ void tokenInfo(Token *token) {
 	//printf("Token with str : %s\n", t);
 	printf("Token str : ");
 	printString(&token->str);
-	printf("\n");
+	printf(" , type : %d\n", token->type);
 }

@@ -1,134 +1,78 @@
 
 #include "scanner.h"
 
-typedef enum
+void scannerInfo(Scanner *scanner)
 {
-	Key_begin,
-	Key_boolean,
-	Key_div,
-	Key_do,
-	Key_else,
-	Key_end,
-	Key_false,
-	Key_find,
-	Key_forward,
-	Key_function,
-	Key_if,
-	Key_integer,
-	Key_readln,
-	Key_real,
-	Key_sort,
-	Key_string,
-	Key_then,
-	Key_true,
-	Key_var,
-	Key_while,
-	Key_write
-}Keyword;
-
-// https://gcc.gnu.org/onlinedocs/cpp/Stringification.html
-// Hack for generating states as strings
-#define xstr(s) str(s)
-#define str(s) #s
-
-#define state_translation_gen(name) [SOS_##name] = str(name)
-
-/**
- * Array of translations from int stateOfScanner
- * to human reader string with name of state itself
- */
-const char *STATECODES[] =
-{
-
-	state_translation_gen(start),
-	state_translation_gen(error),
-	state_translation_gen(EOF),
-
-	state_translation_gen(statesplitter),
-
-	state_translation_gen(assignment),
-	state_translation_gen(colon),
-	state_translation_gen(comma),
-	state_translation_gen(divide),
-	state_translation_gen(equality),
-	state_translation_gen(greater),
-	state_translation_gen(greaterOrEqual),
-	state_translation_gen(identifier),
-	state_translation_gen(inequality),
-	state_translation_gen(keyword),
-	state_translation_gen(less),
-	state_translation_gen(lessOrEqual),
-	state_translation_gen(leftBrace),
-	state_translation_gen(leftCurlyBrace),
-	state_translation_gen(leftSquareBrace),
-	state_translation_gen(minus),
-	state_translation_gen(multiply),
-	state_translation_gen(integer),
-	state_translation_gen(integerE),
-	state_translation_gen(integerESign),
-	state_translation_gen(integerEValue),
-	state_translation_gen(plus),
-	state_translation_gen(real),
-	state_translation_gen(realDot),
-	state_translation_gen(realE),
-	state_translation_gen(realESign),
-	state_translation_gen(realEValue),
-	state_translation_gen(rightBrace),
-	state_translation_gen(rightCurlyBrace),
-	state_translation_gen(rightSquareBrace),
-	state_translation_gen(semicolon),
-	state_translation_gen(whitespace)
-};
-
-void scannerInfo(Scanner *scanner) {
 	assert(scanner);
-	printf("Scanner in state %s\n", STATECODES[scanner->state]);
+	//printf("Scanner in state %s\n", STATECODES[scanner->state]);
+	printf("Scanner in state %d\n", scanner->state);
 }
 
 Scanner initScanner()
 {
 	Scanner s = {
 		.state = SOS_start,
+		.foundToken = false,
 		.input = initIStream()
 	};
 
 	return s;
 }
 
-void destroyScanner(Scanner *scanner) {
+void destroyScanner(Scanner *scanner)
+{
 	assert(scanner);
 
 	scanner->state = SOS_EOF;
 	destroyIStream(&scanner->input);
 }
 
+/**
+ * Resets scanner's attributes, ready for next symbols
+ * @param scanner Pointer to scanner
+ */
+static inline void resetScanner(Scanner *scanner)
+{
+	scanner->foundToken = false;
+	scanner->state = SOS_start;
+	scanner->convertTo = TT_empty;
+}
+
+extern inline bool scannerFinished(Scanner *scanner);
+
 Token getToken(Scanner *scanner)
 {
 	assert(scanner);
+	assert(scanner->state != SOS_error);
 
 	int symbol;
 	bool char_accepted;
 
 	Token token = initToken();
 
-	// Through every
+	// Passing char-by-char through FSM
 	while( (symbol = nextChar(&scanner->input)) != EOF) {
+		// Pass character
 		char_accepted = processNextSymbol(scanner, &token, symbol);
 
 		assert(scanner->state != SOS_error);
 
-		// FIXME: Need condition to detect when token is filled
-
+		// Returning symbol if not accepted
 		if(!char_accepted) {
 			returnChar(&scanner->input, symbol);
 
-			printf("Returning char ASCII %i\n", (int) symbol);
-			tokenInfo(&token);
-			scannerInfo(scanner);
-
 			scanner->state = SOS_start;
 		}
+
+		// Returning token if FSM decided so
+		if(scanner->foundToken) {
+			// Cleanup
+			resetScanner(scanner);
+			break;
+		}
 	}
+
+	// TODO: Conversion
 
 	return token;
 }
@@ -169,11 +113,9 @@ static inline stateOfScanner symbolToState(char symbol)
 		case '[': {
 			return SOS_leftSquareBrace;
 		}
-		/*case '-': {
-			scanner->state = SOS_minus;
-			//actToken->str[0] = symbol;
-			break;
-		}*/
+		case '-': {
+			return SOS_minus;
+		}
 		case '*': {
 			return SOS_multiply;
 		}
@@ -197,40 +139,68 @@ static inline stateOfScanner symbolToState(char symbol)
 	}
 }
 
-#define append_symbol() appendCharToString(&token->str, symbol)
+#define append_symbol() appendCharToToken(token, symbol)
 #define setState(new_state) scanner->state = new_state
+#define terminalState() scanner->foundToken = true
+#define convertTokenTo(t) scanner->convertTo = t
+
+extern inline void appendCharToToken(Token *token, char c);
 
 bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 {
+	assert(scanner->state != SOS_error);
+
 	switch(scanner->state) {
 		case SOS_start: {
 			// TODO : Refactor with pre-filled array of stateOfScanner
-			if (isblank(symbol)) {
+			if (isspace(symbol)) {
+				// Whitespace
 				return true;
 			}
 			else if(isalpha(symbol) || symbol == '_') {
-				scanner->state = SOS_identifier;
+				setState(SOS_identifier);
+
 				append_symbol();
 			}
 			else if(isdigit(symbol)) {
-				scanner->state = SOS_integer;
+				setState(SOS_integer);
+
+				convertTokenTo(TT_integer);
+				append_symbol();
 			}
 			else {
-				scanner->state = symbolToState(symbol);
+				// Single symbol token (+ - * / = etc.)
+				setState(symbolToState(symbol));
+
+				// Either one state is returned or SOS_error,
+				// error state is managed one level up
+				if(scanner->state != SOS_error) {
+					assert(token->type == TT_empty);
+
+					token->type = (TokenType) scanner->state;
+					// Terminal state is assigned in default at the end
+				}
 			}
 			return true;
 		}
 		case SOS_colon: {
 			if (symbol == '=') {
-				setState(SOS_assignment);
+				//setState(SOS_assignment); // not neccesary
+				token->type = (TokenType) SOS_assignment;
+
+				terminalState();
 				return true;
 			}
 			else {
+				token->type = (TokenType) SOS_colon;
+
+				terminalState();
 				return false;
 			}
 		}
 		case SOS_real: {
 			if (isdigit(symbol)) {
+				// Token already type'd as real
 				append_symbol();
 				return true;
 			}
@@ -251,6 +221,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 		case SOS_realDot: {
 			if (isdigit(symbol)) {
 				setState(SOS_real);
+				token->type = (TokenType) SOS_real;
 				append_symbol();
 				return true;
 			}
@@ -308,9 +279,11 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 		case SOS_greater: {
 			if (symbol == '=') {
 				setState(SOS_greaterOrEqual);
+				terminalState();
 				return true;
 			}
 			else {
+				terminalState();
 				return false;
 			}
 		}
@@ -321,6 +294,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				return true;
 			}
 			else {
+				terminalState();
 				return false;
 			}
 		}
@@ -336,25 +310,31 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 		case SOS_less: {
 			if (symbol == '=') {
 				setState(SOS_lessOrEqual);
-				// TODO : Set token as terminal
+				terminalState();
+
 				return true;
 			}
 			else if (symbol == '>') {
 				setState(SOS_inequality);
-				// TODO : Set token as terminal
+				terminalState();
+
 				return true;
 			}
 			else {
-				// TODO : Set token as terminal
+				terminalState();
 				return false;
 			}
 		}
 
 		case SOS_integer: {
 			if (isdigit(symbol)) {
-				// TODO : Why ?
-				//if(atString(&token->str, 0) == '0')
-				append_symbol();
+				// Prefix zeroes skipping
+				if(atString(&token->str, 0) == '0') {
+					setAtString(&token->str, 0, symbol);
+				}
+				else {
+					append_symbol();
+				}
 				return true;
 			}
 			else {
@@ -362,15 +342,20 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 					case 'e':
 					case 'E': {
 						setState(SOS_integerE);
+						scanner->convertTo = TT_real;
+
 						append_symbol();
 						return true;
 					}
 					case '.': {
 						setState(SOS_realDot);
+						scanner->convertTo = TT_real;
+
 						append_symbol();
 						return true;
 					}
 					default: {
+						terminalState();
 						return false;
 					}
 				}
@@ -388,7 +373,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			else if (symbol == '+' || symbol == '-') {
 				setState(SOS_integerESign);
 				append_symbol();
-				return false;
+				return true;
 			}
 			else {
 				setState(SOS_error);
@@ -400,7 +385,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 		//expects value of exponent, otherwise, an error occurs
 		case SOS_integerESign: {
-			if (symbol >= '0' && symbol <= '9') {
+			if (isdigit(symbol)) {
 				setState(SOS_integerEValue);
 				append_symbol();
 				return true;
@@ -413,7 +398,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			}
 		}
 
-		case (SOS_integerEValue): {
+		case SOS_integerEValue: {
 			// TODO : Cover zeros in 20E+005
 			if (isdigit(symbol)) {
 				append_symbol();
@@ -424,8 +409,10 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			}
 		}
 
+		// In case of state with one character long tokens
 		default: {
-			return true;
+			terminalState();
+			return false;
 		}
 	}
 	return true;
@@ -440,43 +427,53 @@ bool IsKeyword(String *str)
 		case 'b': {
 			if(keyword_cmp("begin") || keyword_cmp("boolean"))
 				return true;
+			break;
 		}
 		case 'd': {
 			if(keyword_cmp("div") || keyword_cmp("do"))
 				return true;
+			break;
 		}
 		case 'e': {
 			if(keyword_cmp("else") || keyword_cmp("end"))
 				return true;
+			break;
 		}
 		case 'f': {
 			if(	keyword_cmp("false")	 || keyword_cmp("find") ||
 				keyword_cmp("forward") || keyword_cmp("function"))
 				return true;
+			break;
 		}
 		case 'i': {
 			if(keyword_cmp("if") || keyword_cmp("integer"))
 				return true;
+			break;
 		}
 		case 'r': {
 			if(keyword_cmp("readln") || keyword_cmp("real"))
 				return true;
+			break;
 		}
 		case 's': {
 			if(keyword_cmp("sort") || keyword_cmp("string"))
 				return true;
+			break;
 		}
 		case 't': {
 			if(keyword_cmp("then") || keyword_cmp("true"))
 				return true;
+			break;
 		}
 		case 'v': {
 			if(keyword_cmp("var"))
 				return true;
+			break;
 		}
 		case 'w': {
 			if(keyword_cmp("while") || keyword_cmp("write"))
 				return true;
+			break;
 		}
 	}
 	return false;

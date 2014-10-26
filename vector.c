@@ -61,3 +61,4 @@
 
 //NewVectorType(int)
 GenVectorFunctions(int)
+GenVectorFunctions(Token)
