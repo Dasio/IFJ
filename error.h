@@ -10,6 +10,7 @@ typedef enum
 {
     ERR_None, /**< ERR_None */
     ERR_Allocation, /**<ERR_Allocation */
+    ERR_Lexical, /**< ERR_Lexical */
     ERR_Unknown, /**< ERR_Unknown */
 } EErrorStates;
 
@@ -27,7 +28,7 @@ typedef struct
 void printError();
 
 /**
- * Prints in which file and line was error 
+ * Prints in which file and line was error
  * @param description Description of error
  */
 void printErrorDetails(const char *description);
