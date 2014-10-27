@@ -55,13 +55,8 @@ Token getToken(Scanner *scanner)
 		// Pass character
 		char_accepted = processNextSymbol(scanner, &token, symbol);
 
-		assert(scanner->state != SOS_error);
-
-		// Returning symbol if not accepted
-		if(!char_accepted) {
-			returnChar(&scanner->input, symbol);
-
-			scanner->state = SOS_start;
+		if(scanner->state == SOS_error) {
+			break;
 		}
 
 		// Returning token if FSM decided so
@@ -70,6 +65,15 @@ Token getToken(Scanner *scanner)
 			resetScanner(scanner);
 			break;
 		}
+
+		// Returning symbol if not accepted
+		if(!char_accepted) {
+			returnChar(&scanner->input, symbol);
+
+			scanner->state = SOS_start;
+		}
+
+
 	}
 
 	// TODO: Conversion
@@ -142,7 +146,7 @@ static inline stateOfScanner symbolToState(char symbol)
 #define append_symbol() appendCharToToken(token, symbol)
 #define setState(new_state) scanner->state = new_state
 #define terminalState() scanner->foundToken = true
-#define convertTokenTo(t) scanner->convertTo = t
+#define convertTokenTo(t) scanner->convertTo = t; token->type = (TokenType) t
 
 extern inline void appendCharToToken(Token *token, char c);
 
@@ -159,6 +163,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			}
 			else if(isalpha(symbol) || symbol == '_') {
 				setState(SOS_identifier);
+				token->type = (TokenType) TT_identifier;
 
 				append_symbol();
 			}
@@ -187,14 +192,14 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			if (symbol == '=') {
 				//setState(SOS_assignment); // not neccesary
 				token->type = (TokenType) SOS_assignment;
-
 				terminalState();
+
 				return true;
 			}
 			else {
 				token->type = (TokenType) SOS_colon;
-
 				terminalState();
+
 				return false;
 			}
 		}
@@ -202,6 +207,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			if (isdigit(symbol)) {
 				// Token already type'd as real
 				append_symbol();
+
 				return true;
 			}
 			else {
@@ -210,6 +216,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 					case 'E': {
 						setState(SOS_realE);
 						append_symbol();
+
 						return true;
 					}
 					default: {
@@ -221,14 +228,17 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 		case SOS_realDot: {
 			if (isdigit(symbol)) {
 				setState(SOS_real);
-				token->type = (TokenType) SOS_real;
 				append_symbol();
+
 				return true;
 			}
 			else {
 				setState(SOS_error);
-				// TODO: Error propagation
+				terminalState();
+
+				setError(ERR_Lexical);
 				fprintf(stderr, "Wrong decimal part of number\n");
+
 				return false;
 			}
 		}
@@ -236,17 +246,23 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			if (isdigit(symbol)) {
 				setState(SOS_realEValue);
 				append_symbol();
-				return false;
+
+				return true;
 			}
 			else if (symbol == '+' || symbol == '-') {
 				setState(SOS_realESign);
 				append_symbol();
+
 				return true;
 			}
 			else {
 				setState(SOS_error);
-				// TODO: Error propagation
+				terminalState();
+
+				setError(ERR_Lexical);
 				fprintf(stderr, "Wrong E exponent value with real\n");
+
+				terminalState();
 				return false;
 			}
 		}
@@ -255,12 +271,16 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			if (isdigit(symbol)) {
 				setState(SOS_realEValue);
 				append_symbol();
+
 				return true;
 			}
 			else {
 				setState(SOS_error);
-				// TODO: Error propagation
+				terminalState();
+
+				setError(ERR_Lexical);
 				fprintf(stderr, "Wrong exponent value with real\n");
+
 				return false;
 			}
 		}
@@ -269,21 +289,26 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			// TODO: cover zeroes in 20.2E+005
 			if (isdigit(symbol)) {
 				append_symbol();
+
 				return true;
 			}
 			else {
+				terminalState();
+
 				return false;
 			}
 		}
 
 		case SOS_greater: {
 			if (symbol == '=') {
-				setState(SOS_greaterOrEqual);
+				token->type = (TokenType) SOS_greaterOrEqual;
 				terminalState();
+
 				return true;
 			}
 			else {
 				terminalState();
+
 				return false;
 			}
 		}
@@ -291,10 +316,12 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 		case SOS_identifier: {
 			if (isalnum(symbol) || (symbol == '_')) {
 				append_symbol();
+
 				return true;
 			}
 			else {
 				terminalState();
+
 				return false;
 			}
 		}
@@ -304,24 +331,28 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				// Escaping out of comment
 				setState(SOS_start);
 			}
+			token->type = TT_empty;
 			return true;
 		}
 
 		case SOS_less: {
 			if (symbol == '=') {
 				setState(SOS_lessOrEqual);
+				token->type = (TokenType) SOS_lessOrEqual;
 				terminalState();
 
 				return true;
 			}
 			else if (symbol == '>') {
 				setState(SOS_inequality);
+				token->type = (TokenType) SOS_inequality;
 				terminalState();
 
 				return true;
 			}
 			else {
 				terminalState();
+
 				return false;
 			}
 		}
@@ -342,20 +373,27 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 					case 'e':
 					case 'E': {
 						setState(SOS_integerE);
+
+						token->type = (TokenType) TT_real;
 						scanner->convertTo = TT_real;
 
 						append_symbol();
+
 						return true;
 					}
 					case '.': {
 						setState(SOS_realDot);
+
+						token->type = (TokenType) TT_real;
 						scanner->convertTo = TT_real;
 
 						append_symbol();
+
 						return true;
 					}
 					default: {
 						terminalState();
+
 						return false;
 					}
 				}
@@ -368,17 +406,23 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			if (isdigit(symbol)) {
 				setState(SOS_integerEValue);
 				append_symbol();
+
 				return true;
 			}
 			else if (symbol == '+' || symbol == '-') {
 				setState(SOS_integerESign);
 				append_symbol();
+
 				return true;
 			}
 			else {
 				setState(SOS_error);
-				// TODO: Error propagation
+
+				terminalState();
+
+				setError(ERR_Lexical);
 				fprintf(stderr, "Wrong E exponent value\n");
+
 				return false;
 			}
 		}
@@ -388,12 +432,17 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			if (isdigit(symbol)) {
 				setState(SOS_integerEValue);
 				append_symbol();
+
 				return true;
 			}
 			else {
 				setState(SOS_error);
-				// TODO: Error propagation
+
+				terminalState();
+
+				setError(ERR_Lexical);
 				fprintf(stderr, "Wrong exponent value with integer\n");
+
 				return false;
 			}
 		}
@@ -402,9 +451,12 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			// TODO : Cover zeros in 20E+005
 			if (isdigit(symbol)) {
 				append_symbol();
+
 				return true;
 			}
 			else {
+				terminalState();
+
 				return false;
 			}
 		}
@@ -412,6 +464,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 		// In case of state with one character long tokens
 		default: {
 			terminalState();
+
 			return false;
 		}
 	}
