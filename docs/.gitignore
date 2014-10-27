@@ -1,0 +1,7 @@
+doc.pdf
+*.dvi
+*.aux
+*.toc
+*.log
+*.out
+*eps-converted-to*
