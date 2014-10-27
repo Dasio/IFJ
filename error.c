@@ -8,8 +8,12 @@ void printError()
     switch(error.state) {
         case ERR_None:
             return;
+        case ERR_Lexical:
+            printErrorDetails("Invalid input file, "
+                              "lexical analysis cannot proceed");
+            break;
         case ERR_Unknown:
-            printErrorDetails("Unknown erorr");
+            printErrorDetails("Unknown error");
             break;
         default:
             printErrorDetails("Unrecognized error");

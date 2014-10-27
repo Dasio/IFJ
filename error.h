@@ -8,7 +8,7 @@
 /** Enumeration for errors that could occur */
 typedef enum
 {
-    ERR_None, /**< ERR_None */
+    ERR_None = 0, /**< ERR_None */
     ERR_Allocation, /**<ERR_Allocation */
     ERR_Lexical, /**< ERR_Lexical */
     ERR_Unknown, /**< ERR_Unknown */
