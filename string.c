@@ -36,8 +36,6 @@ char setAtString(String *dst, uint32_t pos, char c) {
 void printString(String *dst)
 {
 	assert(dst);
-	assert(dst->allocated_size > 0 &&
-								"Performed operation on uninitialized String");
 
 	if(dst->length > 0) {
 		printf("%s", dst->data);
