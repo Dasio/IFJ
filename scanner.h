@@ -32,37 +32,37 @@ typedef enum
 
 	// Terminal states
 	SOS_assignment = 8,
-	SOS_colon,
-	SOS_comma,
-	SOS_divide,
-	SOS_equality,
-	SOS_greater,
-	SOS_greaterOrEqual,
-	SOS_identifier,
-	SOS_inequality,
-	SOS_keyword,
-	SOS_less,
-	SOS_lessOrEqual,
-	SOS_leftBrace,
-	SOS_leftCurlyBrace,
-	SOS_leftSquareBrace,
-	SOS_minus,
-	SOS_multiply,
-	SOS_integer,
-	SOS_integerE,
-	SOS_integerESign,
-	SOS_integerEValue,
-	SOS_plus,
-	SOS_real,
-	SOS_realDot,
-	SOS_realE,
-	SOS_realESign,
-	SOS_realEValue,
-	SOS_rightBrace,
-	SOS_rightCurlyBrace,
-	SOS_rightSquareBrace,
-	SOS_semicolon,
-	SOS_whitespace
+	SOS_colon,			// 9
+	SOS_comma,			// 10
+	SOS_divide,			// 11
+	SOS_equality,		// 12
+	SOS_greater,		// 13
+	SOS_greaterOrEqual,	// 14
+	SOS_identifier,		// 15
+	SOS_inequality,		// 16
+	SOS_keyword,		// 17
+	SOS_less,			// 18
+	SOS_lessOrEqual,	// 19
+	SOS_leftBrace,		// 20
+	SOS_leftCurlyBrace,	// 21
+	SOS_leftSquareBrace,// 22
+	SOS_minus,			// 23
+	SOS_multiply,		// 24
+	SOS_integer,		// 25
+	SOS_integerE,		// 26
+	SOS_integerESign,	// 27
+	SOS_integerEValue,	// 28
+	SOS_plus,			// 29
+	SOS_real,			// 30
+	SOS_realDot,		// 31
+	SOS_realE,			// 32
+	SOS_realESign,		// 33
+	SOS_realEValue,		// 34
+	SOS_rightBrace,		// 35
+	SOS_rightCurlyBrace,// 36
+	SOS_rightSquareBrace,	// 37
+	SOS_semicolon,		// 38
+	SOS_whitespace		// 39
 } stateOfScanner;
 
 // Token header requires scanner states to be defined
@@ -127,13 +127,13 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol);
  */
 void scannerInfo(Scanner *scanner);
 
-
 /**
- * Returns whether string from input is keyword.
+ * Returns keyword type, which is decided from String, Key_none is
+ * special case in which String is not keyword.
  * @param  str Pointer to String
- * @return     True if string is keyword, else false
+ * @return     Keyword type, Key_none if no keyword found
  */
-bool IsKeyword(String *str);
+KeywordTokenType identifierToKeyword(String *str);
 
 
 #endif /* SCANNER_H_ */

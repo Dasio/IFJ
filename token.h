@@ -67,7 +67,9 @@
 		Key_true,
 		Key_var,
 		Key_while,
-		Key_write
+		Key_write,
+
+		Key_none // Special keyword, used in identifierToToken(String)
 	} KeywordTokenType;
 
 	/**

@@ -73,7 +73,21 @@ Token getToken(Scanner *scanner)
 			scanner->state = SOS_start;
 		}
 
+	}
 
+	/**
+	 * Identifier -> Keyword conversion,
+	 * identifierToKeyword(String) returns TT_identifier if not keyword
+	 */
+	if(token.type == TT_identifier) {
+		KeywordTokenType kword = identifierToKeyword(&token.str);
+
+		if(kword != Key_none) {
+			destroyString(&token.str);
+
+			token.type = TT_keyword;
+			token.keywordToken = kword;
+		}
 	}
 
 	// TODO: Conversion
@@ -474,61 +488,104 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 // Macro for shorter statements
 #define keyword_cmp(src) streq(str->data, src)
 
-bool IsKeyword(String *str)
+KeywordTokenType identifierToKeyword(String *str)
 {
+	// TODO: Use String macro to get letter
 	switch (str->data[0]) {
 		case 'b': {
-			if(keyword_cmp("begin") || keyword_cmp("boolean"))
-				return true;
-			break;
+			if(keyword_cmp("begin")) {
+				return Key_begin;
+			}
+			if(keyword_cmp("boolean")) {
+				return Key_boolean;
+			}
+			return Key_none;
 		}
 		case 'd': {
-			if(keyword_cmp("div") || keyword_cmp("do"))
-				return true;
-			break;
+			if(keyword_cmp("div")) {
+				return Key_div;
+			}
+			if(keyword_cmp("do")) {
+				return Key_do;
+			}
+			return Key_none;
 		}
 		case 'e': {
-			if(keyword_cmp("else") || keyword_cmp("end"))
-				return true;
-			break;
+			if(keyword_cmp("else")) {
+				return Key_else;
+			}
+			if(keyword_cmp("end")) {
+				return Key_end;
+			}
+			return Key_none;
 		}
 		case 'f': {
-			if(	keyword_cmp("false")	 || keyword_cmp("find") ||
-				keyword_cmp("forward") || keyword_cmp("function"))
-				return true;
-			break;
+			if(keyword_cmp("false")) {
+				return Key_false;
+			}
+			if(keyword_cmp("find")) {
+				return Key_find;
+			}
+			if(keyword_cmp("forward")) {
+				return Key_forward;
+			}
+			if(keyword_cmp("function")) {
+				return Key_function;
+			}
+			return Key_none;
 		}
 		case 'i': {
-			if(keyword_cmp("if") || keyword_cmp("integer"))
-				return true;
-			break;
+			if(keyword_cmp("if")) {
+				return Key_if;
+			}
+			if(keyword_cmp("integer")) {
+				return Key_integer;
+			}
+			return Key_none;
 		}
 		case 'r': {
-			if(keyword_cmp("readln") || keyword_cmp("real"))
-				return true;
-			break;
+			if(keyword_cmp("readln")) {
+				return Key_readln;
+			}
+			if(keyword_cmp("real")) {
+				return Key_real;
+			}
+			return Key_none;
 		}
 		case 's': {
-			if(keyword_cmp("sort") || keyword_cmp("string"))
-				return true;
-			break;
+			if(keyword_cmp("sort")) {
+				return Key_sort;
+			}
+			if(keyword_cmp("string")) {
+				return Key_string;
+			}
+			return Key_none;
 		}
 		case 't': {
-			if(keyword_cmp("then") || keyword_cmp("true"))
-				return true;
-			break;
+			if(keyword_cmp("then")) {
+				return Key_then;
+			}
+			if(keyword_cmp("true")) {
+				return Key_true;
+			}
+			return Key_none;
 		}
 		case 'v': {
-			if(keyword_cmp("var"))
-				return true;
-			break;
+			if(keyword_cmp("var")) {
+				return Key_var;
+			}
+			return Key_none;
 		}
 		case 'w': {
-			if(keyword_cmp("while") || keyword_cmp("write"))
-				return true;
-			break;
+			if(keyword_cmp("while")) {
+				return Key_while;
+			}
+			if(keyword_cmp("write")) {
+				return Key_write;
+			}
+			return Key_none;
 		}
 	}
-	return false;
+	return Key_none;
 }
 
