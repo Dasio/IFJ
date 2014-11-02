@@ -16,14 +16,14 @@ int main() {
 
 	printString(&str1);  printf("\n");
 	printString(&str2);  printf("\n");
-	assert(streq(&str1, &str2) == true);
+	assert(StringEquals(&str1, &str2) == true);
 
 	truncateString(&str1);
 	truncateString(&str2);
-	assert(streq(&str1, &str2) == true);
+	assert(StringEquals(&str1, &str2) == true);
 
 	appendCharToString(&str1, 'x');
-	assert(streq(&str1, &str2) == false);
+	assert(StringEquals(&str1, &str2) == false);
 
 	destroyString(&str1);
 	destroyString(&str2);

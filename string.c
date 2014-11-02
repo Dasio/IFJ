@@ -9,7 +9,6 @@ String initEmptyString()
 	};
 	MALLOC_TEST(str.data);
 
-
 	return str;
 }
 
@@ -23,11 +22,23 @@ void destroyString(String *dst) {
 	dst->length = 0;
 }
 
+char atString(String *dst, uint32_t pos) {
+	assert(dst);
+	assert(pos <= dst->length);
+
+	return dst->data[pos];
+}
+
+char setAtString(String *dst, uint32_t pos, char c) {
+	assert(dst);
+	assert(pos <= dst->length);
+
+	return dst->data[pos] = c;
+}
+
 void printString(String *dst)
 {
 	assert(dst);
-	assert(dst->allocated_size > 0 &&
-								"Performed operation on uninitialized String");
 
 	if(dst->length > 0) {
 		printf("%s", dst->data);

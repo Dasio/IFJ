@@ -19,4 +19,6 @@
 		typeof (b) _b = (b); \
 			_a > _b ? _a : _b; })
 
+#define streq(a, b) (strcmp((a), (b)) == 0)
+
 #endif

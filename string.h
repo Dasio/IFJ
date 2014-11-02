@@ -15,6 +15,9 @@
 	String initEmptyString();
 	String initString(char *src);
 
+	char atString(String *dst, uint32_t pos);
+	char setAtString(String *dst, uint32_t pos, char c);
+
 	void printString(String *dst);
 	void aboutString(String *dst);
 	void appendCharToString(String *dst, char c);
@@ -23,11 +26,11 @@
 									String *: appendStringToString, \
 									default:  appendCharsToString)(dst, src)
 */
-#define streq(dst, src) _Generic((src),                \
+#define StringEquals(dst, src) _Generic((src),                \
 						String *: equalsStringString,  \
 						default:  equalsStringChars)(dst, src)
 
-	// Do not use! Use streq()
+	// Do not use! Use StringEquals()
 	bool equalsStringChars(String *str1, char *str2);
 	bool equalsStringString(String *str1, String *str2);
 

@@ -1,21 +1,35 @@
 #include "../scanner.h"
+#include "../vector.h"
 
-extern FILE *sourceFile;
-
-int main(int argc, char **argv)
+int main()
 {
-	const char *filename = argv[1];
-	if (!OpenFile(filename))
-		return 1; //Cannot open sourceFile
+	Scanner scanner = initScanner();
 
-	Token newToken;
-	EmptyToken(&newToken);
+	//assignString(&scanner.input, "ahoj_svet : := 00000123\n");
+	assignFile(&scanner.input, "testFile.txt");
 
-	if (ParseToTokens(&newToken))
-		printf("\nComleted\n");
+	Token t;
+	TokenVector *tokvect = initTokenVector(0);
+	while(true) {
+		t = getToken(&scanner);
 
-	if (!CloseFile(sourceFile))
-		return 1;
-	//printf("File closed\n");
+		if(getError()) {
+			printError();
+			// In case of incomplete token; must be also free'd
+			TokenVectorAppend(tokvect, t);
+			break;
+		}
+
+		tokenInfo(&t);
+		if(t.type == TT_empty || scannerFinished(&scanner))
+			break;
+
+		TokenVectorAppend(tokvect, t);
+	};
+
+	destroyScanner(&scanner);
+
+	// TODO: Destroy TokenVector
+
 	return 0;
 }

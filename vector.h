@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include "token.h"
 
 /*
 ____ == type of vector
@@ -97,5 +98,7 @@ struct Vector{
 
 GenVectorPrototypes(int)
 GenVectorPrototypes(double)
+GenVectorPrototypes(Token)
+
 //GenVectorPrototypes(DATA)
 #endif // VECTOR_H

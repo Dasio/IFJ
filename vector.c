@@ -76,7 +76,7 @@
 		if(Vect->used < 1)													\
 		{																	\
 			setError(ERR_Unknown);											\
-			return (type)0;												    \
+			/*return (type)0;*/												    \
 		}																	\
 		Vect->used--; /* Mark last value as invalid and return its address*/\
         type *r = (type*)Vect->array + Vect->used;				\
@@ -96,7 +96,7 @@
 		return Vect->array;												    \
 	}                           											\
 	type type##VectorFirstValue(type##Vector *Vect){						\
-        if(Vect->used == 0) return (type)0;                               \
+        /* if(Vect->used == 0) return (type)0; */                           \
         type *r = Vect->array;												\
 		return *r;												            \
 	}                           											\
@@ -105,7 +105,7 @@
 		return (type*)Vect->array+ (Vect->used-1);                          \
 	}																		\
 	type type##VectorLastValue(type##Vector *Vect) {					    \
-        if(Vect->used == 0) return (type)0;                                 \
+        /* if(Vect->used == 0) return (type *)0; */                         \
         type *r = (type*)Vect->array+ (Vect->used-1);                       \
 		return *r; 									                    	\
 	}																		\
@@ -119,4 +119,4 @@
 // generation functions for vector
 GenVectorFunctions(int)
 GenVectorFunctions(double)
-//GenVectorFunctions(DATA)
+GenVectorFunctions(Token)

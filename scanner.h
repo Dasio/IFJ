@@ -9,119 +9,136 @@
 #include <string.h>
 #include <ctype.h>
 
-#ifndef ARR_SIZE
-#define ARR_SIZE	 50
-#endif
+#include "system.h"
+#include "string.h"
 
 #ifndef SCANNER_H_
 #define SCANNER_H_
+
+#include "istream.h"
 
 /*
  * Enumeration of possible states of scanner.
  */
 typedef enum
-{	
-	SOS_assigment,
-	SOS_colon,
-	SOS_comma,
-	SOS_devide,
-	SOS_dot,
-	SOS_equality,
-	SOS_EOF,
-	SOS_error,
-	SOS_greater,
-	SOS_greaterOrEqual,
-	SOS_identifier,
-	SOS_inequality,
-	SOS_keyword,
-	SOS_less,
-	SOS_lessOrEqual,
-	SOS_leftBrace,
-	SOS_leftCurlyBrace,
-	SOS_leftSquareBrace,
-	SOS_minus,
-	SOS_multiply,
-	SOS_integer,
-	SOS_integerE,
-	SOS_integerESign,
-	SOS_integerEValue,
-	SOS_plus,
-	SOS_real,
-	SOS_realDot,
-	SOS_realE,
-	SOS_realESign,
-	SOS_realEValue,
-	SOS_rightBrace,
-	SOS_rightCurlyBrace,
-	SOS_rightSquareBrace,
-	SOS_start,
-	SOS_semicolon,
-	SOS_string,
-	SOS_stringHashtag,
-	SOS_stringASCII,
-	SOS_stringApostrophe
-}StateOfScanner;
+{
+	// Special states
+	SOS_start = 0,
+	SOS_error = 1,
+	SOS_EOF = 2,
 
-/*
- * Structure which represents one token parsed from the program.
+	// Splitting state, not used, only for comparing
+	SOS_statesplitter,
+
+	// Terminal states
+	SOS_assignment = 8,
+	SOS_colon,			// 9
+	SOS_comma,			// 10
+	SOS_divide,			// 11
+	SOS_dot,			// 12 ADD
+	SOS_equality,		// 13
+	SOS_greater,		// 14
+	SOS_greaterOrEqual,	// 15
+	SOS_identifier,		// 16
+	SOS_inequality,		// 17
+	SOS_keyword,		// 18
+	SOS_less,			// 19
+	SOS_lessOrEqual,	// 20
+	SOS_leftBrace,		// 21
+	SOS_leftCurlyBrace,	// 22
+	SOS_leftSquareBrace,// 23
+	SOS_minus,			// 24
+	SOS_multiply,		// 25
+	SOS_integer,		// 26
+	SOS_integerE,		// 27
+	SOS_integerESign,	// 28
+	SOS_integerEValue,	// 29
+	SOS_plus,			// 30
+	SOS_real,			// 31
+	SOS_realDot,		// 32
+	SOS_realE,			// 33
+	SOS_realESign,		// 34
+	SOS_realEValue,		// 35
+	SOS_rightBrace,		// 36
+	SOS_rightCurlyBrace,// 37
+	SOS_rightSquareBrace,	// 38
+	SOS_semicolon,		// 39
+	SOS_string,			// 40 ADD
+	SOS_stringHashtag,	// 41 ADD
+	SOS_stringASCII,	// 42 ADD
+	SOS_stringApostrophe,// 43 ADD
+	SOS_whitespace		// 44
+} stateOfScanner;
+
+// Token header requires scanner states to be defined
+#include "token.h"
+
+typedef struct
+{
+	/** Immediate state of scanner */
+	stateOfScanner state;
+
+	/** Flag if token has been found */
+	bool foundToken;
+
+	/** Type representing final type of token
+	  * (conversion after getting token)
+	  */
+	TokenType convertTo;
+
+	/** Source code source */
+	IStream input;
+} Scanner;
+
+/**
+ * Returns copy of type Scanner, initializes IStream inside
+ * @return Initialized Scanner
  */
-struct token {
-	StateOfScanner state;
-	char str[ARR_SIZE];
-};
+Scanner initScanner();
 
-typedef struct token Token;
-
-/*
- * Function reads symbols from source and returns
- * one token consisting of these symbols.
- *
+/**
+ * Returns one token parsed from scanner.
+ * @param  scanner Pointer to initialized scanner
+ * @return         Token type filled with neccessary data
  */
-Token *GetToken (Token *actToken);
+Token getToken(Scanner *scanner);
 
-/*
- * Prepares token structure for next token,
- * delete string and set the state of scanner to START.
- *
+/**
+ * Destroy's IStream and nullifies Scanner
+ * @param Pointer to scanner
  */
-void EmptyToken(Token *actToken);
+void destroyScanner(Scanner *scanner);
 
-/*
- * Adds read symbol at the end of array, except numbers
- * having '0' at the beggining - then replace this symbol
- * with new one.
+/**
+ * Tests scanner's state for EOF
+ * @param  scanner Pointer to scanner
+ * @return         Whether scanner reached end of input
  */
-char *FillString(char *array, char addedSymbol);
+inline bool scannerFinished(Scanner *scanner) {
+	return scanner->state == SOS_EOF || scanner->state == SOS_error;
+}
 
-/*
- * Function checks if there are some nulls in the beggining of the number
- * and deletes them.
+/**
+ * Processes one input symbol, one step of FSM
+ * @param  token Pointer to token
+ * @param  c     Symbol from input
+ * @return       [description]
  */
-void CheckNulls(char *stringOfNumbers);
+bool processNextSymbol(Scanner *scanner, Token *token, char symbol);
 
-/*
- * Opens source file, passed to the function as argument, for processing.
- *
+/**
+ * Prints basic info about scanner, newline at end
+ * @param scanner Pointer to scanner
  */
-int OpenFile(const char* file);
+void scannerInfo(Scanner *scanner);
 
-/*
- * Close source file, passed to the function as argument, for processing.
- *
+/**
+ * Returns keyword type, which is decided from String, Key_none is
+ * special case in which String is not keyword.
+ * @param  str Pointer to String
+ * @return     Keyword type, Key_none if no keyword found
  */
-int CloseFile(FILE *filename);
-
-/*
- * Calls function GetTokens until the EOF is detected and calls function
- * which check if the token is a keyword.
- */
-int ParseToTokens(Token *token);
-
-/*
- * Compares token attribute(string) if it is a keyword.
- * If it is, sets the state of token to SOS_keyword.
- */
-void IsKeyword(Token *token);
+KeywordTokenType identifierToKeyword(String *str);
 
 
 #endif /* SCANNER_H_ */

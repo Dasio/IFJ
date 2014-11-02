@@ -1,605 +1,656 @@
 
 #include "scanner.h"
 
-typedef enum
+void scannerInfo(Scanner *scanner)
 {
-	Key_begin,
-	Key_boolean,
-	Key_div,
-	Key_do,
-	Key_else,
-	Key_end,
-	Key_false,
-	Key_find,
-	Key_forward,
-	Key_function,
-	Key_if,
-	Key_integer,
-	Key_readln,
-	Key_real,
-	Key_sort,
-	Key_string,
-	Key_then,
-	Key_true,
-	Key_var,
-	Key_while,
-	Key_write
-}Keyword;
+	assert(scanner);
+	//printf("Scanner in state %s\n", STATECODES[scanner->state]);
+	printf("Scanner in state %d\n", scanner->state);
+}
 
-/*
- * Variable to store ASCII values per characters
+Scanner initScanner()
+{
+	Scanner s = {
+		.state = SOS_start,
+		.foundToken = false,
+		.input = initIStream()
+	};
+
+	return s;
+}
+
+void destroyScanner(Scanner *scanner)
+{
+	assert(scanner);
+
+	scanner->state = SOS_EOF;
+	destroyIStream(&scanner->input);
+}
+
+/**
+ * Resets scanner's attributes, ready for next symbols
+ * @param scanner Pointer to scanner
  */
-static int value;
-/*
- * Pointer to file which is processed.
+static inline void resetScanner(Scanner *scanner)
+{
+	scanner->foundToken = false;
+	scanner->state = SOS_start;
+	scanner->convertTo = TT_empty;
+}
+
+extern inline bool scannerFinished(Scanner *scanner);
+
+Token getToken(Scanner *scanner)
+{
+	assert(scanner);
+	assert(scanner->state != SOS_error);
+
+	int symbol;
+	bool char_accepted;
+
+	Token token = initToken();
+
+	// Passing char-by-char through FSM
+	while( (symbol = nextChar(&scanner->input)) != EOF) {
+		// Pass character
+		char_accepted = processNextSymbol(scanner, &token, symbol);
+
+		if(scanner->state == SOS_error) {
+			break;
+		}
+
+		// Returning token if FSM decided so
+		if(scanner->foundToken) {
+			// Cleanup
+			resetScanner(scanner);
+			break;
+		}
+
+		// Returning symbol if not accepted
+		if(!char_accepted) {
+			returnChar(&scanner->input, symbol);
+
+			scanner->state = SOS_start;
+		}
+
+	}
+
+	/**
+	 * Identifier -> Keyword conversion,
+	 * identifierToKeyword(String) returns TT_identifier if not keyword
+	 */
+	if(token.type == TT_identifier) {
+		KeywordTokenType kword = identifierToKeyword(&token.str);
+
+		if(kword != Key_none) {
+			destroyString(&token.str);
+
+			token.type = TT_keyword;
+			token.keywordToken = kword;
+		}
+	}
+
+	// TODO: Conversion
+
+	return token;
+}
+
+/**
+ * "Conversion table" for char to state.
+ * TODO: Refactor with array
+ * @param	symbol
+ * @return				stateOfScanner
  */
-FILE *sourceFile = NULL;
-
-int OpenFile(const char* file)
+static inline stateOfScanner symbolToState(char symbol)
 {
-	if((sourceFile = fopen(file,"r")) == NULL) {
-		fprintf(stderr, "\nChyba soubor nelze otevrit\n");
-		return 0;
-	}
-	return 1;
-}
-int CloseFile(FILE *filename)
-{
-	if(fclose(filename) == EOF) {
-		fprintf(stderr, "Cannot close the file.\n");
-		return 0;
-	}
-	return 1;
-}
-
-int ParseToTokens(Token *token)
-{
-	do {
-		EmptyToken(token);
-		GetToken(token);
-		if (token->state == SOS_identifier) {
-			IsKeyword(token);
+	switch (symbol) {
+		case ':': {
+			return SOS_colon;
 		}
-		if (token->state == SOS_error) {
-			printf("error in %s\n", token->str);
+		case ',': {
+			return SOS_comma;
 		}
-		printf("Token->state: %d and token attribute %s\n",token->state,token->str);
-	} while (token->state != SOS_EOF);
-
-	return 1;
-}
-
-Token *GetToken (Token *actToken)
-{
-	int symbol = fgetc(sourceFile);
-
-	//Read next symbol and check the EOF
-	while (symbol != EOF) {
-		// automat of states
-		switch (actToken->state) {
-			case (SOS_start): {
-				//printf("SOS_start\n");
-				//ignores whitespaces
-				if (isspace(symbol)) {
-					break;
-				}
-				else if ((symbol >= 'a' && symbol <= 'z') || (symbol >= 'A' && symbol <= 'Z') || (symbol == '_')) {
-					actToken->state = SOS_identifier;
-					//printf("assigned id\n");
-					actToken->str[0] = symbol;
-					break;
-				}
-				else if (symbol >= '0' && symbol <= '9') {
-					actToken->state = SOS_integer;
-					actToken->str[0] = symbol;
-					//printf("number\n");
-					break;
-				}
-				else {
-					switch (symbol) {
-						case ':': {
-							actToken->state = SOS_colon;
-							//printf("dvojtecka\n");
-							actToken->str[0] = symbol;
-							break;
-						}
-						case ',': {
-							actToken->state = SOS_comma;
-							actToken->str[0] = symbol;
-							//printf("comma\n");
-							return actToken;
-						}
-						case '/': {
-							actToken->state = SOS_devide;
-							actToken->str[0] = symbol;
-							return actToken;
-						}
-						case '.': {
-							actToken->state = SOS_dot;
-							actToken->str[0] = symbol;
-						}
-						case '=': {
-							actToken->state = SOS_equality;
-							actToken->str[0] = symbol;
-							return actToken;
-						}
-						case '>': {
-							actToken->state = SOS_greater;
-							actToken->str[0] = symbol;
-							break;
-						}
-						case '<': {
-							actToken->state = SOS_less;
-							actToken->str[0] = symbol;
-							break;
-						}
-						case '(': {
-							actToken->state = SOS_leftBrace;
-							actToken->str[0] = symbol;
-							return actToken;
-						}
-						case '{': {
-							actToken->state = SOS_leftCurlyBrace;
-							//actToken->str[0] = symbol;
-							break;
-						}
-						case '[': {
-							actToken->state = SOS_leftSquareBrace;
-							actToken->str[0] = symbol;
-							return actToken;
-						}
-						case '-': {
-							actToken->state = SOS_minus;
-							actToken->str[0] = symbol;
-							return actToken;
-						}
-						case '*': {
-							actToken->state = SOS_multiply;
-							actToken->str[0] = symbol;
-							return actToken;
-						}
-						case '+': {
-							actToken->state = SOS_plus;
-							actToken->str[0] = symbol;
-							return actToken;
-						}
-						case ')': {
-							actToken->state = SOS_rightBrace;
-							actToken->str[0] = symbol;
-							return actToken;
-						}
-						case '}': {
-							actToken->state = SOS_rightCurlyBrace;
-							//actToken->str[0] = symbol;
-							break;
-						}
-						case ']': {
-							actToken->state = SOS_rightSquareBrace;
-							actToken->str[0] = symbol;
-							return actToken;
-						}
-						case ';': {
-							actToken->state = SOS_semicolon;
-							actToken->str[0] = symbol;
-							return actToken;
-						}
-						case '\'': {
-							actToken->state = SOS_string;
-							break;
-						}
-						default:
-							actToken->state = SOS_error;
-							printf("\nWrong start symbol\n");
-							return actToken;
-					}
-					break;
-				}
-				break;
-			}
-			case (SOS_colon): {
-				if (symbol == '=') {
-					actToken->state = SOS_assigment;
-					//printf("assignment\n");
-					FillString(actToken->str,symbol);
-					return actToken;
-				}
-				else {
-					ungetc(symbol,sourceFile);
-					return actToken;
-				}
-			}
-			case (SOS_real): {
-				if (symbol >= '0' && symbol <= '9') {
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else {
-					switch (symbol) {
-						case 'e':
-						case 'E': {
-							actToken->state = SOS_realE;
-							FillString(actToken->str,symbol);
-							break;
-						}
-						default: {
-							ungetc(symbol,sourceFile);
-							return actToken;
-						}
-					}
-					break;
-				}
-			}
-			case (SOS_realDot): {
-				if (symbol >= '0' && symbol <= '9') {
-					actToken->state = SOS_real;
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else {
-					actToken->state = SOS_error;
-					printf("Wrong decimal part of number\n");
-					ungetc(symbol,sourceFile);
-					return actToken;
-				}
-			}
-			case (SOS_realE): {
-				if (symbol >= '0' && symbol <= '9') {
-					actToken->state = SOS_realEValue;
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else if (symbol == '+' || symbol == '-') {
-					actToken->state = SOS_realESign;
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else {
-					actToken->state = SOS_error;
-					printf("\nWrong E exponent value with real\n");
-					ungetc(symbol,sourceFile);
-					return actToken;
-				}
-			}
-			case (SOS_realESign): {
-				if (symbol >= '0' && symbol <= '9') {
-					actToken->state = SOS_realEValue;
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else {
-					actToken->state = SOS_error;
-					printf("\nWrong exponent value with real\n");
-					ungetc(symbol,sourceFile);
-					return actToken;
-				}
-			}
-			case (SOS_realEValue): {
-				if (symbol >='0' && symbol <= '9') { //what about nulls in 20.2E+005
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else {
-					ungetc(symbol,sourceFile);
-					return actToken;
-				}
-			}
-			case (SOS_greater): {
-				if (symbol == '=') {
-					actToken->state = SOS_greaterOrEqual;
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else {
-					ungetc(symbol,sourceFile);
-					return actToken;
-				}
-			}
-			case (SOS_identifier): {
-				//printf(" SOS_identifier\n");
-				if ((symbol >= 'a' && symbol <= 'z') || (symbol >= 'A' && symbol <= 'Z') || (symbol >= '0' && symbol <= '9') || (symbol == '_')) {
-					//actToken->state = SOS_identifier;
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else {
-					ungetc(symbol,sourceFile);
-					return actToken;
-				}
-			}
-			/*Ignoring comments until right curly brace is read*/
-			case (SOS_leftCurlyBrace): {
-				if (symbol == '}') {
-					actToken->state = SOS_start;
-					break;
-				}
-				else {
-					break;
-				}
-			}
-			case (SOS_less): {
-				if (symbol == '=') {
-					actToken->state = SOS_lessOrEqual;
-					FillString(actToken->str,symbol);
-					return actToken;
-				}
-				else if (symbol == '>') {
-					actToken->state = SOS_inequality;
-					FillString(actToken->str,symbol);
-					return actToken;
-				}
-				else {
-					ungetc(symbol,sourceFile);
-					return actToken;
-				}
-			}
-			case (SOS_integer): {
-				if (symbol >= '0' && symbol <= '9') {
-					if (actToken->str[0] != '0')
-						FillString(actToken->str,symbol);
-					break;
-				}
-				else {
-					switch (symbol) {
-						case 'e':
-						case 'E': {
-							actToken->state = SOS_integerE;
-							FillString(actToken->str,symbol);
-							break;
-						}
-						case '.': {
-							actToken->state = SOS_realDot;
-							FillString(actToken->str,symbol);
-							break;
-						}
-						default: {
-							ungetc(symbol,sourceFile);
-							return actToken;
-						}
-					}
-					break;
-				}
-			}
-			//expects value of exponent, otherwise, an error occurs
-			case (SOS_integerE): {
-				if (symbol >= '0' && symbol <= '9') {
-					actToken->state = SOS_integerEValue;
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else if (symbol == '+' || symbol == '-') {
-					actToken->state = SOS_integerESign;
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else {
-					actToken->state = SOS_error;
-					printf("\nWrong E exponent value\n");
-					ungetc(symbol,sourceFile);
-					return actToken;
-				}
-			}
-			//expects value of exponent, otherwise, an error occurs
-			case (SOS_integerESign): {
-				if (symbol >= '0' && symbol <= '9') {
-					actToken->state = SOS_integerEValue;
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else {
-					actToken->state = SOS_error;
-					printf("\nWrong exponent value with integer\n");
-					ungetc(symbol,sourceFile);
-					return actToken;
-				}
-			}
-			case (SOS_integerEValue): {
-				if (symbol >='0' && symbol <= '9') { //what about nulls in 20E+005
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else {
-					ungetc(symbol,sourceFile);
-					return actToken;
-				}
-			}
-			case (SOS_string): {
-				if (symbol == '\'') {
-					actToken->state = SOS_stringApostrophe;
-					break;
-				}
-				else if (symbol > 31 && symbol <= 255) {
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else {
-					actToken->state = SOS_error;
-					return actToken;
-				}
-			}
-			case (SOS_stringApostrophe): {
-				if (symbol == '#') {
-					actToken->state = SOS_stringHashtag;
-					break;
-				}
-				// zapise apostrof
-				else if (symbol == '\'') {
-					actToken->state = SOS_string;
-					FillString(actToken->str,symbol);
-					break;
-				}
-				else {
-					actToken->state = SOS_string;
-					ungetc(symbol,sourceFile);
-					return actToken;
-				}
-			}
-			case (SOS_stringHashtag): {
-				if (symbol == '0')
-					break;
-				else if (symbol >= '1' && symbol <= '9') {
-					actToken->state = SOS_stringASCII;
-					value = (value*10) + (symbol - '0');
-					break;
-				}
-				else {
-					actToken->state = SOS_error;
-					return actToken;
-				}
-			}
-			case (SOS_stringASCII): {
-				if (symbol >= '0' && symbol <= '9') {
-					value = (value*10) + (symbol - '0');
-					if (value > 255) {
-						actToken->state = SOS_error;
-						return actToken;
-					}
-					break;
-				}
-				else if (symbol == '\'') {
-					actToken->state = SOS_string;
-					FillString(actToken->str,(char)value);
-					value = 0;
-					break;
-				}
-				else
-					actToken->state = SOS_error;
-					return actToken;
-			}
-			default:
-				;
+		case '/': {
+			return SOS_divide;
 		}
-		symbol = fgetc(sourceFile);
+		case '=': {
+			return SOS_equality;
+		}
+		case '>': {
+			return SOS_greater;
+		}
+		case '<': {
+			return SOS_less;
+		}
+		case '(': {
+			return SOS_leftBrace;
+		}
+		case '{': {
+			return SOS_leftCurlyBrace;
+		}
+		case '[': {
+			return SOS_leftSquareBrace;
+		}
+		case '-': {
+			return SOS_minus;
+		}
+		case '*': {
+			return SOS_multiply;
+		}
+		case '+': {
+			return SOS_plus;
+		}
+		case ')': {
+			return SOS_rightBrace;
+		}
+		case '}': {
+			return SOS_rightCurlyBrace;
+		}
+		case ']': {
+			return SOS_rightSquareBrace;
+		}
+		case ';': {
+			return SOS_semicolon;
+		}
+		default:
+			return SOS_error;
 	}
-	actToken->state = SOS_EOF;
-	return actToken;
 }
 
-void IsKeyword(Token *token)
+#define append_symbol() appendCharToToken(token, symbol)
+#define setState(new_state) scanner->state = new_state
+#define terminalState() scanner->foundToken = true
+#define convertTokenTo(t) scanner->convertTo = t; token->type = (TokenType) t
+
+extern inline void appendCharToToken(Token *token, char c);
+
+bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 {
-	switch (token->str[0]) {
+	assert(scanner->state != SOS_error);
+
+	switch(scanner->state) {
+		case SOS_start: {
+			// TODO : Refactor with pre-filled array of stateOfScanner
+			if (isspace(symbol)) {
+				// Whitespace
+				return true;
+			}
+			else if(isalpha(symbol) || symbol == '_') {
+				setState(SOS_identifier);
+				token->type = (TokenType) TT_identifier;
+
+				append_symbol();
+			}
+			else if(isdigit(symbol)) {
+				setState(SOS_integer);
+
+				convertTokenTo(TT_integer);
+				append_symbol();
+			}
+			else {
+				// Single symbol token (+ - * / = etc.)
+				setState(symbolToState(symbol));
+
+				// Either one state is returned or SOS_error,
+				// error state is managed one level up
+				if(scanner->state != SOS_error) {
+					assert(token->type == TT_empty);
+
+					token->type = (TokenType) scanner->state;
+					// Terminal state is assigned in default at the end
+				}
+			}
+			return true;
+		}
+		case SOS_colon: {
+			if (symbol == '=') {
+				//setState(SOS_assignment); // not neccesary
+				token->type = (TokenType) SOS_assignment;
+				terminalState();
+
+				return true;
+			}
+			else {
+				token->type = (TokenType) SOS_colon;
+				terminalState();
+
+				return false;
+			}
+		}
+		case SOS_real: {
+			if (isdigit(symbol)) {
+				// Token already type'd as real
+				append_symbol();
+
+				return true;
+			}
+			else {
+				switch(symbol) {
+					case 'e':
+					case 'E': {
+						setState(SOS_realE);
+						append_symbol();
+
+						return true;
+					}
+					default: {
+						return false;
+					}
+				}
+			}
+		}
+		case SOS_realDot: {
+			if (isdigit(symbol)) {
+				setState(SOS_real);
+				append_symbol();
+
+				return true;
+			}
+			else {
+				setState(SOS_error);
+				terminalState();
+
+				setError(ERR_Lexical);
+				fprintf(stderr, "Wrong decimal part of number\n");
+
+				return false;
+			}
+		}
+		case SOS_realE: {
+			if (isdigit(symbol)) {
+				setState(SOS_realEValue);
+				append_symbol();
+
+				return true;
+			}
+			else if (symbol == '+' || symbol == '-') {
+				setState(SOS_realESign);
+				append_symbol();
+
+				return true;
+			}
+			else {
+				setState(SOS_error);
+				terminalState();
+
+				setError(ERR_Lexical);
+				fprintf(stderr, "Wrong E exponent value with real\n");
+
+				terminalState();
+				return false;
+			}
+		}
+
+		case SOS_realESign: {
+			if (isdigit(symbol)) {
+				setState(SOS_realEValue);
+				append_symbol();
+
+				return true;
+			}
+			else {
+				setState(SOS_error);
+				terminalState();
+
+				setError(ERR_Lexical);
+				fprintf(stderr, "Wrong exponent value with real\n");
+
+				return false;
+			}
+		}
+
+		case SOS_realEValue: {
+			// TODO: cover zeroes in 20.2E+005
+			if (isdigit(symbol)) {
+				append_symbol();
+
+				return true;
+			}
+			else {
+				terminalState();
+
+				return false;
+			}
+		}
+
+		case SOS_greater: {
+			if (symbol == '=') {
+				token->type = (TokenType) SOS_greaterOrEqual;
+				terminalState();
+
+				return true;
+			}
+			else {
+				terminalState();
+
+				return false;
+			}
+		}
+
+		case SOS_identifier: {
+			if (isalnum(symbol) || (symbol == '_')) {
+				append_symbol();
+
+				return true;
+			}
+			else {
+				terminalState();
+
+				return false;
+			}
+		}
+
+		case SOS_leftCurlyBrace: {
+			if (symbol == '}') {
+				// Escaping out of comment
+				setState(SOS_start);
+			}
+			token->type = TT_empty;
+			return true;
+		}
+
+		case SOS_less: {
+			if (symbol == '=') {
+				setState(SOS_lessOrEqual);
+				token->type = (TokenType) SOS_lessOrEqual;
+				terminalState();
+
+				return true;
+			}
+			else if (symbol == '>') {
+				setState(SOS_inequality);
+				token->type = (TokenType) SOS_inequality;
+				terminalState();
+
+				return true;
+			}
+			else {
+				terminalState();
+
+				return false;
+			}
+		}
+
+		case SOS_integer: {
+			if (isdigit(symbol)) {
+				// Prefix zeroes skipping
+				if(atString(&token->str, 0) == '0') {
+					setAtString(&token->str, 0, symbol);
+				}
+				else {
+					append_symbol();
+				}
+				return true;
+			}
+			else {
+				switch (symbol) {
+					case 'e':
+					case 'E': {
+						setState(SOS_integerE);
+
+						token->type = (TokenType) TT_real;
+						scanner->convertTo = TT_real;
+
+						append_symbol();
+
+						return true;
+					}
+					case '.': {
+						setState(SOS_realDot);
+
+						token->type = (TokenType) TT_real;
+						scanner->convertTo = TT_real;
+
+						append_symbol();
+
+						return true;
+					}
+					default: {
+						terminalState();
+
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+
+		//expects value of exponent, otherwise, an error occurs
+		case SOS_integerE: {
+			if (isdigit(symbol)) {
+				setState(SOS_integerEValue);
+				append_symbol();
+
+				return true;
+			}
+			else if (symbol == '+' || symbol == '-') {
+				setState(SOS_integerESign);
+				append_symbol();
+
+				return true;
+			}
+			else {
+				setState(SOS_error);
+
+				terminalState();
+
+				setError(ERR_Lexical);
+				fprintf(stderr, "Wrong E exponent value\n");
+
+				return false;
+			}
+		}
+
+		//expects value of exponent, otherwise, an error occurs
+		case SOS_integerESign: {
+			if (isdigit(symbol)) {
+				setState(SOS_integerEValue);
+				append_symbol();
+
+				return true;
+			}
+			else {
+				setState(SOS_error);
+
+				terminalState();
+
+				setError(ERR_Lexical);
+				fprintf(stderr, "Wrong exponent value with integer\n");
+
+				return false;
+			}
+		}
+
+		case SOS_integerEValue: {
+			// TODO : Cover zeros in 20E+005
+			if (isdigit(symbol)) {
+				append_symbol();
+
+				return true;
+			}
+			else {
+				terminalState();
+
+				return false;
+			}
+		}
+
+		// TODO: Fix strings !!
+			// case (SOS_string): {
+			// 	if (symbol == '\'') {
+			// 		actToken->state = SOS_stringApostrophe;
+			// 		break;
+			// 	}
+			// 	else if (symbol > 31 && symbol <= 255) {
+			// 		FillString(actToken->str,symbol);
+			// 		break;
+			// 	}
+			// 	else {
+			// 		actToken->state = SOS_error;
+			// 		return actToken;
+			// 	}
+			// }
+			// case (SOS_stringApostrophe): {
+			// 	if (symbol == '#') {
+			// 		actToken->state = SOS_stringHashtag;
+			// 		break;
+			// 	}
+			// 	// zapise apostrof
+			// 	else if (symbol == '\'') {
+			// 		actToken->state = SOS_string;
+			// 		FillString(actToken->str,symbol);
+			// 		break;
+			// 	}
+			// 	else {
+			// 		actToken->state = SOS_string;
+			// 		ungetc(symbol,sourceFile);
+			// 		return actToken;
+			// 	}
+			// }
+			// case (SOS_stringHashtag): {
+			// 	if (symbol == '0')
+			// 		break;
+			// 	else if (symbol >= '1' && symbol <= '9') {
+			// 		actToken->state = SOS_stringASCII;
+			// 		value = (value*10) + (symbol - '0');
+			// 		break;
+			// 	}
+			// 	else {
+			// 		actToken->state = SOS_error;
+			// 		return actToken;
+			// 	}
+			// }
+			// case (SOS_stringASCII): {
+			// 	if (symbol >= '0' && symbol <= '9') {
+			// 		value = (value*10) + (symbol - '0');
+			// 		if (value > 255) {
+			// 			actToken->state = SOS_error;
+			// 			return actToken;
+			// 		}
+			// 		break;
+			// 	}
+			// 	else if (symbol == '\'') {
+			// 		actToken->state = SOS_string;
+			// 		FillString(actToken->str,(char)value);
+			// 		value = 0;
+			// 		break;
+			// 	}
+			// 	else
+			// 		actToken->state = SOS_error;
+			// 		return actToken;
+			// }
+
+		// In case of state with one character long tokens
+		default: {
+			terminalState();
+
+			return false;
+		}
+	}
+	return true;
+}
+
+// Macro for shorter statements
+#define keyword_cmp(src) streq(str->data, src)
+
+KeywordTokenType identifierToKeyword(String *str)
+{
+	// TODO: Use String macro to get letter
+	switch (str->data[0]) {
 		case 'b': {
-			if (strcmp(token->str,"begin") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("begin")) {
+				return Key_begin;
 			}
-			if (strcmp(token->str,"boolean") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("boolean")) {
+				return Key_boolean;
 			}
+			return Key_none;
 		}
 		case 'd': {
-			if (strcmp(token->str,"div") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("div")) {
+				return Key_div;
 			}
-			if (strcmp(token->str,"do") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("do")) {
+				return Key_do;
 			}
+			return Key_none;
 		}
 		case 'e': {
-			if (strcmp(token->str,"else") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("else")) {
+				return Key_else;
 			}
-			if (strcmp(token->str,"end") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("end")) {
+				return Key_end;
 			}
+			return Key_none;
 		}
 		case 'f': {
-			if (strcmp(token->str,"false") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("false")) {
+				return Key_false;
 			}
-			if (strcmp(token->str,"find") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("find")) {
+				return Key_find;
 			}
-			if (strcmp(token->str,"forward") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("forward")) {
+				return Key_forward;
 			}
-			if (strcmp(token->str,"function") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("function")) {
+				return Key_function;
 			}
+			return Key_none;
 		}
 		case 'i': {
-			if (strcmp(token->str,"if") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("if")) {
+				return Key_if;
 			}
-			if (strcmp(token->str,"integer") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("integer")) {
+				return Key_integer;
 			}
+			return Key_none;
 		}
 		case 'r': {
-			if (strcmp(token->str,"readln") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("readln")) {
+				return Key_readln;
 			}
-			if (strcmp(token->str,"real") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("real")) {
+				return Key_real;
 			}
+			return Key_none;
 		}
 		case 's': {
-			if (strcmp(token->str,"sort") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("sort")) {
+				return Key_sort;
 			}
-			if (strcmp(token->str,"string") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("string")) {
+				return Key_string;
 			}
+			return Key_none;
 		}
 		case 't': {
-			if (strcmp(token->str,"then") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("then")) {
+				return Key_then;
 			}
-			if (strcmp(token->str,"true") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("true")) {
+				return Key_true;
 			}
+			return Key_none;
 		}
 		case 'v': {
-			if (strcmp(token->str,"var") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("var")) {
+				return Key_var;
 			}
+			return Key_none;
 		}
 		case 'w': {
-			if (strcmp(token->str,"while") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("while")) {
+				return Key_while;
 			}
-			if (strcmp(token->str,"write") == 0) {
-				token->state = SOS_keyword;
-				break;
+			if(keyword_cmp("write")) {
+				return Key_write;
 			}
+			return Key_none;
 		}
 	}
-	return;
+	return Key_none;
 }
 
-void EmptyToken(Token *actToken) //Empty used token for next usage
-{
-	actToken->state = SOS_start;
-
-	for (int i = 0; i < ARR_SIZE; i++)
-		actToken->str[i] = '\0';
-	return;
-}
-
-char *FillString(char *array, char addedSymbol) //Add readed symbol at the end of array
-{
-	int i = 0;
-	while (array[i] != '\0') {
-		i++;
-	}
-	array[i] = addedSymbol;
-	return array;
-}
