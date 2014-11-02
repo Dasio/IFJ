@@ -44,8 +44,8 @@ String initString(char *src)
 	uint32_t size = strlen(src);
 	String str = {
 		.length  = size,
-		.allocated_size = size,
-		.data    = malloc(size * sizeof(char)+1) // +1 for last character '\0'
+		.allocated_size = size + 1,
+		.data    = malloc((size + 1) * sizeof(char)) // +1 for last character '\0'
 	};
 	MALLOC_TEST(str.data);
 	memcpy(str.data,src,size);
