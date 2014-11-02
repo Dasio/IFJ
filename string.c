@@ -15,7 +15,10 @@ String initEmptyString()
 
 void destroyString(String *dst) {
 	if(dst->allocated_size > 0)
+	{
 		free(dst->data);
+		dst->data = NULL;
+	}
 	dst->allocated_size = 0;
 	dst->length = 0;
 }
