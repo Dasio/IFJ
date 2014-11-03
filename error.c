@@ -14,6 +14,7 @@ void printError()
             break;
         case ERR_Syntax:
             printErrorDetails("Syntax error");
+            break;
         case ERR_Unknown:
             printErrorDetails("Unknown error");
             break;
