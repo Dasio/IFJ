@@ -111,4 +111,11 @@
 	 */
 	void tokenInfo(Token *token);
 
+	/**
+	 * Converts token's enum type to literals for printing (live debugging).
+	 * @param  token Pointer to token
+	 * @return       Literal describing token (TT_less -> "<")
+	 */
+	char *stringifyToken(Token *token);
+
 #endif
