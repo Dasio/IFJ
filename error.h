@@ -12,6 +12,7 @@ typedef enum
     ERR_Allocation, /**<ERR_Allocation */
     ERR_Lexical, /**< ERR_Lexical */
     ERR_Syntax,
+    ERR_OutOfRange,
     ERR_Unknown, /**< ERR_Unknown */
 } EErrorStates;
 
