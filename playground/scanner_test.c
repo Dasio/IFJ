@@ -9,7 +9,7 @@ int main()
 	assignFile(&scanner.input, "testFile.txt");
 
 	Token t;
-	TokenVector *tokvect = initTokenVector(0);
+	TokenVector *tokvect = TokenInitVector(0);
 	while(true) {
 		t = getToken(&scanner);
 
