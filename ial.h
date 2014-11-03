@@ -7,10 +7,11 @@
 #include "system.h"
 #include "string.h"
 #include "vector.h"
-#include "symbol.h"
 
 #ifndef ial_H
 #define ial_H
+
+#include "symbol.h"
 
 //struct SymbolTableStruct;
 //typedef struct SymbolTableStruct SymbolTable;

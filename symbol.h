@@ -4,12 +4,10 @@
  */
 
 #include "error.h"
-#include "string.h" 
+#include "string.h"
 
 #ifndef SYMBOL_H
 #define SYMBOL_H
-
-
 
 #define DEFAULT_HASH_SIZE 16
 
@@ -57,6 +55,8 @@ struct SymbolTableStruct
 // global symbols in hash structure
 // htab_t *GlobalSymbols[];......................................................................
 // hash structures
+
+#include "ial.h"
 
 //symbol.h
 Context *InitContext(uint32_t);

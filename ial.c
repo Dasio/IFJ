@@ -4,7 +4,7 @@
     Find substring in string
     original input->data
     looking for find->data
-    
+
     REQUIRED
         both input structure have to contain LENGTH of data
     Return
@@ -65,7 +65,7 @@ int *GetFormula(String *find)
 /*
     Imput is unordered array of char ended with character == 0
     sort that array based on ASCII number.
-    
+
     used Recursive Quick Sort
  */
 
@@ -81,11 +81,11 @@ void QuickSortRecursive(char *arr, int n)
     if(n<=1)
         return;// if arr include only one number
 
-    char *l=arr, *r=arr+n-1; //prepare index on border of group 
+    char *l=arr, *r=arr+n-1; //prepare index on border of group
     char p = arr[n/2]; //set pivot (center value)
 
     while (l <= r) { // while left and right border finished
-        if (*l < p) l++; //skip left number if is smaller 
+        if (*l < p) l++; //skip left number if is smaller
         else if (*r > p) r--; //skip right number if is smaller
         else {
             if (l!=r) //if the numbers are different change their value
@@ -107,7 +107,7 @@ void QuickSortRecursive(char *arr, int n)
 /*
     Imput is unordered array of char ended with character == 0
     sort that array based on ASCII number.
-    
+
     used nonrecursive Quick Sort
  */
 void QuickSortNonRecursive(char arr[])
@@ -123,7 +123,7 @@ void QuickSortNonRecursive(char arr[])
         l = *intVectorPop(vec); //get left border
         while(l<r) //while left gruping did not finished
         {
-            i=l; j=r; //prepare index on border of group 
+            i=l; j=r; //prepare index on border of group
             int p = (i+j)/2; //set pivot (center value)
             do
             {
