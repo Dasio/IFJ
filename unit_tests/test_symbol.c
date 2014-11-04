@@ -13,5 +13,4 @@ START_TEST_SUITE(SYMBOLtest)
 
 	FreeContext(Cont1);
 
-	
 END_TEST_SUITE
