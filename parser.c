@@ -1,13 +1,20 @@
 #include "parser.h"
 
-static Token token;
+Token token;
 static Scanner scanner;
-extern int tindex;
-void program()
+
+void parse()
 {
 	scanner = initScanner();
 	assignFile(&scanner.input, "testFile2.txt");
 
+	program();
+	if(getError()) return;
+
+	destroyScanner(&scanner);
+}
+void program()
+{
 	token = getToken(&scanner);
 
 	var_declr();
@@ -20,8 +27,14 @@ void program()
 	if(getError()) return;
 
 	// @TODO, dot have to be at end
+	// Check if every token was parsed
+	token = getToken(&scanner);
+	if(token.type != TT_empty)
+	{
+		setError(ERR_Syntax);
+		return;
+	}
 
-	destroyScanner(&scanner);
 }
 void var_declr()
 {
@@ -237,15 +250,10 @@ void compound_stmt(uint8_t semicolon)
 {
 	if(token.type != TT_keyword || token.keywordToken != Key_begin)
 	{
-		printf("%d\n",tindex);
-			tokenInfo(&token);
 		setError(ERR_Syntax);
 		return;
 	}
-	stmt();
-	if(getError()) return;
-
-	stmt_list();
+	stmt_empty();
 	if(getError()) return;
 
 	// token loaded from stmt()
@@ -258,16 +266,9 @@ void compound_stmt(uint8_t semicolon)
 
 	if(semicolon)
 	{
-		token = getToken(&scanner);
-		// @TODO: Cleanup DIRTY HACKFIX
-		// it works but i have no idea how, its too late
-		if(token.type == TT_keyword && token.keywordToken == Key_end)
-			token = getToken(&scanner);
-		
+		token = getToken(&scanner);		
 		if(token.type != TT_semicolon)
 		{
-			printf("%d\n",tindex);
-			tokenInfo(&token);
 			setError(ERR_Syntax);
 			return;
 		}
@@ -280,96 +281,117 @@ void stmt_list()
 	// epsilon rule
 	if(token.type != TT_semicolon)
 		return;
-	//if(token.type == TT_keyword && token.keywordToken == Key_end)
-	//	return;
 
-	stmt();
+	stmt(0);
 	if(getError()) return;
 
 	stmt_list();
 	if(getError()) return;
 }
-void stmt()
+void stmt_empty()
 {
 	token = getToken(&scanner);
+	// Check epsilon rule
+	uint8_t epsilon = stmt(1);
+	if(getError()) return;
+	// Epsilon rule was used
+	if(epsilon) return;
+
+	stmt_list();
+	if(getError()) return;
+
+}
+uint8_t stmt(uint8_t empty)
+{
+	uint8_t epsilon = 0;
+	// IF wasnt called from stmt_empty(), need to load next token
+	if(!empty) token = getToken(&scanner);
 	switch(token.type)
 	{
-		// 1. rule = assignment
+		// 1. rule = Assignemnt
 		case TT_identifier:
 			token = getToken(&scanner);
 			if(token.type != TT_assignment)
 			{
 				setError(ERR_Syntax);
-				return;
+				return 0;
 			}
 			expr();
-			if(getError()) return;
+			if(getError()) return 0;
 			break;
 		case TT_keyword:
 			switch(token.keywordToken)
 			{
-				// 2. rule = IF_Statement
+				// 2. rule = IF Statement
 				case Key_if:
 					expr();
-					if(getError()) return;
+					if(getError()) return 0;
 
 					token = getToken(&scanner);
 					if(token.type != TT_keyword || token.keywordToken != Key_then)
 					{
 						setError(ERR_Syntax);
-						return;
+						return 0;
 					}
 					// compound_stmt expect already loaded token
 					token = getToken(&scanner);
 					compound_stmt(0);
-					if(getError()) return;
-					if_n();
+					if(getError()) return 0;
 
+					epsilon = if_n();
+					if(getError()) return 0;
 					break;
-				// 3. rule = WHILE cycle
+				// 3. rule = While cycle
 				case Key_while:
 					expr();
-					if(getError()) return;
+					if(getError()) return 0;
 
 					token = getToken(&scanner);
 					if(token.type != TT_keyword || token.keywordToken != Key_do)
 					{
 						setError(ERR_Syntax);
-						return;
+						return 0;
 					}
-
 					// compound_stmt expect already loaded token
 					token = getToken(&scanner);
 					compound_stmt(0);
-					if(getError()) return;
+					if(getError()) return 0;
 					break;
 				default:
-					return;
+					if(empty) return 1;
+					else
+					{
+						setError(ERR_Syntax);
+						break;
+					}
 			}
+			break;
 		default:
-			return;
+			// Epsilon rule used
+			if(empty) return 1;
+			else
+			{
+				setError(ERR_Syntax);
+				break;
+			}
 	}
-	token = getToken(&scanner);
+	// Need to load next token for stmt_list() if wasnt loaded before by epsilon rule
+	if(!epsilon) token = getToken(&scanner); 
+	return 0;
 }
-void if_n()
+uint8_t if_n()
 {
 	token = getToken(&scanner);
 	// Epsilon rule
 	if(token.type != TT_keyword || token.keywordToken != Key_else)
-		return;
-	switch(token.keywordToken)
-	{
-		case Key_else:
-			token = getToken(&scanner);
-			// Compound_stmt expect loaded next token
-			compound_stmt(0);
-			if(getError()) return;
-			break;
-		//@TODO elseif, if we want implement it
-		default:
-			setError(ERR_Syntax);
-			return;
-	}
+		return 1;
+	// keyword 'else' loaded
+	token = getToken(&scanner);
+	// Compound_stmt expect loaded next token
+	compound_stmt(0);
+
+	if(getError()) return 0;
+	return 0;
 }
 void expr()
 {

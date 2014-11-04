@@ -1,0 +1,28 @@
+var a : integer ;
+	b : real ;
+function f1 ( ) : integer ; forward ;
+function f2 ( a : integer ; b : real ) : real ;
+var c : integer ;
+begin
+	a := 20
+end ;
+begin
+while 1 do begin end ;
+if 10 then
+	begin
+		a := 20 ;
+		while 1 do
+		begin
+			if 1 then
+				begin
+					a := 1
+				end
+				else
+				begin
+					if 1 then begin end ;
+					while 1 do begin end
+				end
+		end
+	end
+end
+
