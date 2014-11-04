@@ -1,3 +1,4 @@
+
 #include "ial.h"
 
 /*
@@ -163,7 +164,7 @@ SymbolTable *SymbolFind(Context *FunCont, char *name)
     if (FunCont==NULL || name==NULL) return NULL;
     /* Vypocitanie indexu kde je kluc ulozeny a ulozenie prveho listu*/
     SymbolTable *item;
-    item = FunCont->LocTable[GetHash(name,FunCont->LocCount)];
+    item = FunCont->LocTable[GetHash(name,FunCont->LocSize)];
     for(; item != NULL; item=item->next)
         if(strcmp(item->data.name.data, name) == 0)
             break;
@@ -191,11 +192,12 @@ SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, int index, char *name,
     newItem->data.FunCont = SymbolContext;
 
     // reuse index variable
-    index = GetHash(name, FunCont->LocCount);
+    index = GetHash(name, FunCont->LocSize);
 
     // save newItem to first position of hashTable[index]
     newItem->next = FunCont->LocTable[index];
     FunCont->LocTable[index] = newItem;
+    FunCont->LocCount++;
     return newItem;
 }
 
@@ -206,7 +208,7 @@ void ContextLocTableFree(Context *t)
     if (t->LocTable == NULL) return;
     SymbolTable *item = NULL;
     SymbolTable *temp = NULL;
-    for (unsigned long i = 0; i < t->LocCount; i++)
+    for (unsigned long i = 0; i < t->LocSize; i++)
     {
         if (t->LocTable[i]==NULL)
             continue;

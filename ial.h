@@ -6,12 +6,12 @@
 
 #include "system.h"
 #include "string.h"
-#include "vector.h"
 
 #ifndef ial_H
 #define ial_H
 
 #include "symbol.h"
+#include "stack.h"
 
 //struct SymbolTableStruct;
 //typedef struct SymbolTableStruct SymbolTable;
