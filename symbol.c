@@ -35,12 +35,13 @@ Context *InitContext(uint32_t ArgMax)
 
     // set other values of Context
 	FunCont->ArgCount = 0;
+	FunCont->LocCount = 0;
 	FunCont->ArgMax = ArgMax;
-	FunCont->LocCount = DEFAULT_HASH_SIZE;
+	FunCont->LocSize = DEFAULT_HASH_SIZE;
+	FunCont->InstrucIndex = 0;
 	return FunCont;
 }
 
-// DONE
 // to add Symbol without argument call htab_addSymbol in ial.c file
 // SymbolContext is empty if Variable is selected
 void AddArgToContext(Context *FunCont, SymbolType type, int index, char *name, Context *SymbolContext)
@@ -53,9 +54,9 @@ void AddArgToContext(Context *FunCont, SymbolType type, int index, char *name, C
 	// add symbol to hash table + add his pointer to array of arguments
 	FunCont->arg[FunCont->ArgCount] = SymbolAdd(FunCont, type, index, name, SymbolContext);
 	FunCont->ArgCount++;
+	FunCont->LocCount--; //SymbolAdd added LocCount++
 }
 
-// done
 void FreeContext(Context *FunCont)
 {
 	if (FunCont==NULL)

@@ -10,7 +10,6 @@
 #define SYMBOL_H
 
 #define DEFAULT_HASH_SIZE 16
-
 // all about local variables
 typedef enum {
     T_Undefined = 0,
@@ -31,7 +30,9 @@ typedef struct
 	uint32_t ArgMax;
 
 	SymbolTable **LocTable;
+	uint32_t LocSize; // size of HashTable
 	uint32_t LocCount;
+	uint32_t InstrucIndex;
 }Context;
 
 typedef struct
@@ -51,12 +52,12 @@ struct SymbolTableStruct
 
 // end local variables
 
-
 // global symbols in hash structure
 // htab_t *GlobalSymbols[];......................................................................
 // hash structures
 
 #include "ial.h"
+#include "stack.h"
 
 //symbol.h
 Context *InitContext(uint32_t);
