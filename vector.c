@@ -2,21 +2,23 @@
  * Recreated 2.10.2014
  * vector.c IFJ
  */
+
 #include "vector.h"
+#include "symbol.h"
 
 /**
  * Generates functions for appropriate type.
  * Moved to vector.c, used only for generating
  * within same module.
  * @param  type Type for generalization
- * 
+ *
  * GenVectorFunctions(int)
  * for vector of structure and pointers
  * returns ONLY pointers
- * 
+ *
  * GenVectorFunctionsValues(int)
  * added functions which return directly values
- * 
+ *
  */
 #define GenVectorFunctions(type) 											\
 	type##Vector * type##InitVector(uint32_t initial_size) {				\
@@ -68,14 +70,23 @@
 		return (type*)Vect->array + Vect->used;								\
 	}																		\
 	type *type##VectorPopMore(type##Vector *Vect, uint32_t number) {		\
-		if(Vect->used < number) return NULL;											\
+		if(Vect->used < number) { setError(ERR_OutOfRange) return NULL; }				\
 		Vect->used -= number; /* Mark last X value as invalid and return last address*/ \
 		return (type*)Vect->array + Vect->used;											\
+	}																		\
+	void type##VectorAtSet(type##Vector *Vect, uint32_t ind, type value) {	\
+		type *tmp;															\
+		tmp = (type*)Vect->array + ind;										\
+		*tmp = value;														\
+	}																		\
+	type *type##VectorAt(type##Vector *Vect, uint32_t index) {				\
+		if(index >= Vect->used) return NULL;								\
+		return (type*)Vect->array+ index;									\
 	}																		\
 	type *type##VectorFirst(type##Vector *Vect){							\
 		if(Vect->used == 0) return NULL;									\
 		return Vect->array;													\
-	}						   												\
+	}																		\
 	type *type##VectorLast(type##Vector *Vect) {							\
 		if(Vect->used == 0) return NULL;									\
 		return (type*)Vect->array+ (Vect->used-1);							\
@@ -99,17 +110,30 @@
 		type *r = (type*)Vect->array + Vect->used;							\
 		return *r;															\
 	}																		\
+	type type##VectorAtValue(type##Vector *Vect, uint32_t index) {			\
+		if(index >= Vect->used)												\
+		{																	\
+			setError(ERR_OutOfRange);										\
+			return (type)0;													\
+		}																	\
+		type *r = (type*)Vect->array + index;								\
+		return *r;															\
+	}																		\
 	type type##VectorFirstValue(type##Vector *Vect){						\
-		 if(Vect->used == 0) 												\
-		 {																	\
-		 	setError(ERR_OutOfRange);										\
-		 	return (type)0;													\
-		 }																	\
+		if(Vect->used == 0) 												\
+		{																	\
+			setError(ERR_OutOfRange);										\
+			return (type)0;													\
+		}																	\
 		type *r = Vect->array;												\
 		return *r;															\
 	}																		\
 	type type##VectorLastValue(type##Vector *Vect) {						\
-		/* if(Vect->used == 0) return (type)0; */							\
+		if(Vect->used == 0)													\
+		{																	\
+			setError(ERR_OutOfRange);										\
+			return (type)0;													\
+		}																	\
 		type *r = (type*)Vect->array+ (Vect->used-1);						\
 		return *r;															\
 	}
@@ -121,4 +145,5 @@ GenVectorFunctionsValues(int)
 GenVectorFunctions(double)
 GenVectorFunctionsValues(double)
 GenVectorFunctions(Token)
-//GenVectorFunctions(StackData)
+GenVectorFunctions(StackData)
+GenVectorFunctions(Context)

@@ -4,6 +4,7 @@
  *  Created on: 28.9.2014
  *  TODO: Authors
  */
+#include "stack.h"
 #ifndef VECTOR_H
 #define VECTOR_H
 
@@ -17,29 +18,32 @@
 /*
 ____ == type of vector
 --------------------------------------
-* GenVectorPrototypes(type)	
+* GenVectorPrototypes(type)
 * return pointer for work with structures or values
-* 
+*
 * ____InitVector(initial_size);
-* 
+*
 * ____VectorAppend(*Vect, Value);
 * ____VectorPushMore(*Vect, Number);
 * ____VectorPop(*Vect);
 * ____VectorPopMore(*Vect, Number);
-* 
+*
+* ____VectorAtSet(*Vect, Index)
+* ____VectorAt(*Vect, Index);
+*
 * ____VectorFirst(*Vect);
 * ____VectorLast(*Vect);
-* 
+*
 * ____VectorFree(*Vect);
-* 
+*
 *
 * GenVectorPrototypesValues(type)
 * return ONLY values if structure is int, double, float...
-* 
+*
 * ____VectorPopValue(*Vect);
 * ____VectorFirstValue(*Vect);
 * ____VectorLastValue(*Vect);
-* 
+*
 */
 #define VECTOR_DEFAULT_SIZE 8
 
@@ -77,8 +81,16 @@ struct Vector{
 	type *type##VectorPop(type##Vector *Vect);					\
 	\
 	/** delete more items */									\
-	/** error if not enought values: return NULL */				\
+	/** error if not enought values: return NULL & set error */	\
 	type *type##VectorPopMore(type##Vector *Vect, uint32_t);	\
+	\
+	/** delete more items */									\
+	/** error if not enought values: return NULL */				\
+	void type##VectorAtSet(type##Vector *Vect, uint32_t, type);	\
+	\
+	/** delete more items */									\
+	/** error if not enought values: return NULL */				\
+	type *type##VectorAt(type##Vector *Vect, uint32_t);			\
 	\
 	/** Return pointer to first Value */						\
 	/** error if empty: return NULL */							\
@@ -94,6 +106,10 @@ struct Vector{
 
 /** Important to chack ERRORs if value is valid */
 #define GenVectorPrototypesValues(type)							\
+	\
+	/** Return index Value */									\
+	/** error if empty: return 0 + setError */					\
+	type type##VectorAtValue(type##Vector *Vect, uint32_t);		\
 	\
 	/** Return last Value */									\
 	/** error if empty: return 0 + setError */					\
@@ -118,6 +134,7 @@ GenVectorPrototypesValues(int)
 GenVectorPrototypes(double)
 GenVectorPrototypesValues(double)
 GenVectorPrototypes(Token)
-//GenVectorPrototypes(StackData)
+GenVectorPrototypes(StackData)
+GenVectorPrototypes(Context)
 
 #endif // VECTOR_H
