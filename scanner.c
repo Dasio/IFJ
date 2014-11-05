@@ -59,18 +59,18 @@ Token getToken(Scanner *scanner)
 			break;
 		}
 
-		// Returning token if FSM decided so
-		if(scanner->foundToken) {
-			// Cleanup
-			resetScanner(scanner);
-			break;
-		}
-
 		// Returning symbol if not accepted
 		if(!char_accepted) {
 			returnChar(&scanner->input, symbol);
 
 			scanner->state = SOS_start;
+		}
+
+		// Returning token if FSM decided so
+		if(scanner->foundToken) {
+			// Cleanup
+			resetScanner(scanner);
+			break;
 		}
 
 	}
