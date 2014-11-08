@@ -98,62 +98,97 @@ Token getToken(Scanner *scanner)
 /**
  * "Conversion table" for char to state.
  * TODO: Refactor with array
- * @param	symbol
- * @return				stateOfScanner
+ * @param	Pointer to scanner
+ * @param   Pointer to token
+ * @param   Current symbol
  */
-static inline stateOfScanner symbolToState(char symbol)
+static inline void processSingleCharToken(Scanner *scanner, Token *token, char symbol)
 {
 	switch (symbol) {
 		case ':': {
-			return SOS_colon;
+			scanner->state = SOS_colon;
+			token->type = TT_colon;
+			return;
 		}
 		case ',': {
-			return SOS_comma;
+			scanner->state =  SOS_comma;
+			token->type = TT_comma;
+			return;
 		}
 		case '/': {
-			return SOS_divide;
+			scanner->state =  SOS_divide;
+			token->type = TT_division;
+			return;
 		}
 		case '=': {
-			return SOS_equality;
+			scanner->state =  SOS_equality;
+			token->type = TT_equality;
+			return;
 		}
 		case '>': {
-			return SOS_greater;
+			scanner->state =  SOS_greater;
+			token->type = TT_greater;
+			return;
 		}
 		case '<': {
-			return SOS_less;
+			scanner->state =  SOS_less;
+			token->type = TT_less;
+			return;
 		}
 		case '(': {
-			return SOS_leftBrace;
+			scanner->state =  SOS_leftBrace;
+			token->type = TT_leftBrace;
+			return;
 		}
 		case '{': {
-			return SOS_leftCurlyBrace;
+			scanner->state =  SOS_leftCurlyBrace;
+			token->type = TT_leftCurlyBrace;
+			return;
 		}
 		case '[': {
-			return SOS_leftSquareBrace;
+			scanner->state =  SOS_leftSquareBrace;
+			token->type = TT_leftSquareBrace;
+			return;
 		}
 		case '-': {
-			return SOS_minus;
+			scanner->state =  SOS_minus;
+			token->type = TT_minus;
+			return;
 		}
 		case '*': {
-			return SOS_multiply;
+			scanner->state =  SOS_multiply;
+			token->type = TT_multiply;
+			return;
 		}
 		case '+': {
-			return SOS_plus;
+			scanner->state =  SOS_plus;
+			token->type = TT_plus;
+			return;
 		}
 		case ')': {
-			return SOS_rightBrace;
+			scanner->state =  SOS_rightBrace;
+			token->type = TT_rightBrace;
+			return;
 		}
 		case '}': {
-			return SOS_rightCurlyBrace;
+			scanner->state =  SOS_rightCurlyBrace;
+			token->type = TT_rightCurlyBrace;
+			return;
 		}
 		case ']': {
-			return SOS_rightSquareBrace;
+			scanner->state =  SOS_rightSquareBrace;
+			token->type = TT_rightSquareBrace;
+			return;
 		}
 		case ';': {
-			return SOS_semicolon;
+			scanner->state =  SOS_semicolon;
+			token->type = TT_semicolon;
+			return;
 		}
-		default:
-			return SOS_error;
+		default: {
+			scanner->state =  SOS_error;
+		}
+		return;
 	}
 }
 
@@ -189,16 +224,18 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			}
 			else {
 				// Single symbol token (+ - * / = etc.)
-				setState(symbolToState(symbol));
+				// setState(symbolToState(symbol));
+
+				processSingleCharToken(scanner, token, symbol);
 
 				// Either one state is returned or SOS_error,
 				// error state is managed one level up
-				if(scanner->state != SOS_error) {
-					assert(token->type == TT_empty);
+				// if(scanner->state != SOS_error) {
+				// 	assert(token->type == TT_empty);
 
-					token->type = (TokenType) scanner->state;
+					// token->type = (TokenType) scanner->state;
 					// Terminal state is assigned in default at the end
-				}
+				// }
 			}
 			return true;
 		}

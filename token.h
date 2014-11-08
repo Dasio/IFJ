@@ -2,6 +2,9 @@
  * Module for manipulating with tokens
  */
 
+#include "system.h"
+#include "string.h"
+
 #ifndef _TOKEN_H
 #define _TOKEN_H
 
@@ -20,6 +23,7 @@
 		TT_identifier,
 		TT_inequality,
 		TT_less,
+		TT_lessOrEqual,
 		TT_leftBrace,
 		TT_leftCurlyBrace,
 		TT_leftSquareBrace,
