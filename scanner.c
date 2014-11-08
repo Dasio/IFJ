@@ -177,7 +177,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			}
 			else if(isalpha(symbol) || symbol == '_') {
 				setState(SOS_identifier);
-				token->type = (TokenType) TT_identifier;
+				token->type = TT_identifier;
 
 				append_symbol();
 			}
@@ -205,13 +205,13 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 		case SOS_colon: {
 			if (symbol == '=') {
 				//setState(SOS_assignment); // not neccesary
-				token->type = (TokenType) SOS_assignment;
+				token->type = TT_assignment;
 				terminalState();
 
 				return true;
 			}
 			else {
-				token->type = (TokenType) SOS_colon;
+				token->type = TT_colon;
 				terminalState();
 
 				return false;
@@ -315,7 +315,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 		case SOS_greater: {
 			if (symbol == '=') {
-				token->type = (TokenType) SOS_greaterOrEqual;
+				token->type = TT_greaterOrEqual;
 				terminalState();
 
 				return true;
@@ -352,14 +352,14 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 		case SOS_less: {
 			if (symbol == '=') {
 				setState(SOS_lessOrEqual);
-				token->type = (TokenType) SOS_lessOrEqual;
+				token->type = TT_lessOrEqual;
 				terminalState();
 
 				return true;
 			}
 			else if (symbol == '>') {
 				setState(SOS_inequality);
-				token->type = (TokenType) SOS_inequality;
+				token->type = TT_inequality;
 				terminalState();
 
 				return true;
@@ -388,7 +388,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 					case 'E': {
 						setState(SOS_integerE);
 
-						token->type = (TokenType) TT_real;
+						token->type = TT_real;
 						scanner->convertTo = TT_real;
 
 						append_symbol();
@@ -398,7 +398,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 					case '.': {
 						setState(SOS_realDot);
 
-						token->type = (TokenType) TT_real;
+						token->type = TT_real;
 						scanner->convertTo = TT_real;
 
 						append_symbol();

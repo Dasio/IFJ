@@ -2,8 +2,6 @@
  * Module for manipulating with tokens
  */
 
-#include "scanner.h"
-
 #ifndef _TOKEN_H
 #define _TOKEN_H
 
@@ -12,26 +10,26 @@
 	 */
 	typedef enum {
 		/** Regular tokens, castable from scanner state */
-		TT_assignment       = SOS_assignment,
-		TT_colon            = SOS_colon,
-		TT_comma            = SOS_comma,
-		TT_division         = SOS_divide,
-		TT_equality         = SOS_equality,
-		TT_greater          = SOS_greater,
-		TT_greaterOrEqual   = SOS_greaterOrEqual,
-		TT_identifier       = SOS_identifier,
-		TT_inequality       = SOS_inequality,
-		TT_less             = SOS_less,
-		TT_leftBrace        = SOS_leftBrace,
-		TT_leftCurlyBrace   = SOS_leftCurlyBrace,
-		TT_leftSquareBrace  = SOS_leftSquareBrace,
-		TT_minus            = SOS_minus,
-		TT_multiply         = SOS_multiply,
-		TT_plus             = SOS_plus,
-		TT_rightBrace       = SOS_rightBrace,
-		TT_rightCurlyBrace  = SOS_rightCurlyBrace,
-		TT_rightSquareBrace = SOS_rightSquareBrace,
-		TT_semicolon        = SOS_semicolon,
+		TT_assignment,
+		TT_colon,
+		TT_comma,
+		TT_division,
+		TT_equality,
+		TT_greater,
+		TT_greaterOrEqual,
+		TT_identifier,
+		TT_inequality,
+		TT_less,
+		TT_leftBrace,
+		TT_leftCurlyBrace,
+		TT_leftSquareBrace,
+		TT_minus,
+		TT_multiply,
+		TT_plus,
+		TT_rightBrace,
+		TT_rightCurlyBrace,
+		TT_rightSquareBrace,
+		TT_semicolon,
 
 		/** Special tokens, corresponding element from union */
 		TT_keyword = 64,
