@@ -17,6 +17,7 @@
 
 #include "istream.h"
 #include "token.h"
+#include "vector.h"
 
 /*
  * Enumeration of possible states of scanner.
@@ -71,9 +72,6 @@ typedef enum
 	SOS_whitespace		// 44
 } stateOfScanner;
 
-// Token header requires scanner states to be defined
-#include "token.h"
-
 typedef struct
 {
 	/** Immediate state of scanner */
@@ -103,6 +101,8 @@ Scanner initScanner();
  * @return         Token type filled with neccessary data
  */
 Token getToken(Scanner *scanner);
+
+TokenVector *getTokenVector(Scanner *scanner);
 
 /**
  * Destroy's IStream and nullifies Scanner

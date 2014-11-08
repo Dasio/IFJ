@@ -94,6 +94,26 @@ Token getToken(Scanner *scanner)
 
 	return token;
 }
+TokenVector* getTokenVector(Scanner *scanner)
+{
+	Token t;
+	TokenVector *tokVect = TokenInitVector(128);
+	while(true) {
+		t = getToken(scanner);
+
+		if(getError()) {
+			printError();
+			// In case of incomplete token; must be also free'd
+			TokenVectorAppend(tokVect, t);
+			break;
+		}
+		if(t.type == TT_empty || scannerFinished(scanner))
+			break;
+
+		TokenVectorAppend(tokVect, t);
+	};
+	return tokVect;
+}
 
 /**
  * "Conversion table" for char to state.
