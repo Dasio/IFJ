@@ -21,4 +21,12 @@
 
 #define streq(a, b) (strcmp((a), (b)) == 0)
 
+/**
+ * Calculates random value from withing range <low, high>
+ * @param  low  Lower bound
+ * @param  high Higher bound
+ * @return      Random integer within range <low, high> including both sides
+ */
+int RandInt(int low, int high);
+
 #endif

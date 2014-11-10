@@ -59,18 +59,18 @@ Token getToken(Scanner *scanner)
 			break;
 		}
 
-		// Returning token if FSM decided so
-		if(scanner->foundToken) {
-			// Cleanup
-			resetScanner(scanner);
-			break;
-		}
-
 		// Returning symbol if not accepted
 		if(!char_accepted) {
 			returnChar(&scanner->input, symbol);
 
 			scanner->state = SOS_start;
+		}
+
+		// Returning token if FSM decided so
+		if(scanner->foundToken) {
+			// Cleanup
+			resetScanner(scanner);
+			break;
 		}
 
 	}
@@ -94,66 +94,121 @@ Token getToken(Scanner *scanner)
 
 	return token;
 }
+TokenVector* getTokenVector(Scanner *scanner)
+{
+	Token t;
+	TokenVector *tokVect = TokenInitVector(128);
+	while(true) {
+		t = getToken(scanner);
+
+		if(getError()) {
+			printError();
+			// In case of incomplete token; must be also free'd
+			TokenVectorAppend(tokVect, t);
+			break;
+		}
+		if(t.type == TT_empty || scannerFinished(scanner))
+			break;
+
+		TokenVectorAppend(tokVect, t);
+	};
+	return tokVect;
+}
 
 /**
  * "Conversion table" for char to state.
  * TODO: Refactor with array
- * @param	symbol
- * @return				stateOfScanner
+ * @param	Pointer to scanner
+ * @param   Pointer to token
+ * @param   Current symbol
  */
-static inline stateOfScanner symbolToState(char symbol)
+static inline void processSingleCharToken(Scanner *scanner, Token *token, char symbol)
 {
 	switch (symbol) {
 		case ':': {
-			return SOS_colon;
+			scanner->state = SOS_colon;
+			token->type = TT_colon;
+			return;
 		}
 		case ',': {
-			return SOS_comma;
+			scanner->state =  SOS_comma;
+			token->type = TT_comma;
+			return;
 		}
 		case '/': {
-			return SOS_divide;
+			scanner->state =  SOS_divide;
+			token->type = TT_division;
+			return;
 		}
 		case '=': {
-			return SOS_equality;
+			scanner->state =  SOS_equality;
+			token->type = TT_equality;
+			return;
 		}
 		case '>': {
-			return SOS_greater;
+			scanner->state =  SOS_greater;
+			token->type = TT_greater;
+			return;
 		}
 		case '<': {
-			return SOS_less;
+			scanner->state =  SOS_less;
+			token->type = TT_less;
+			return;
 		}
 		case '(': {
-			return SOS_leftBrace;
+			scanner->state =  SOS_leftBrace;
+			token->type = TT_leftBrace;
+			return;
 		}
 		case '{': {
-			return SOS_leftCurlyBrace;
+			scanner->state =  SOS_leftCurlyBrace;
+			token->type = TT_leftCurlyBrace;
+			return;
 		}
 		case '[': {
-			return SOS_leftSquareBrace;
+			scanner->state =  SOS_leftSquareBrace;
+			token->type = TT_leftSquareBrace;
+			return;
 		}
 		case '-': {
-			return SOS_minus;
+			scanner->state =  SOS_minus;
+			token->type = TT_minus;
+			return;
 		}
 		case '*': {
-			return SOS_multiply;
+			scanner->state =  SOS_multiply;
+			token->type = TT_multiply;
+			return;
 		}
 		case '+': {
-			return SOS_plus;
+			scanner->state =  SOS_plus;
+			token->type = TT_plus;
+			return;
 		}
 		case ')': {
-			return SOS_rightBrace;
+			scanner->state =  SOS_rightBrace;
+			token->type = TT_rightBrace;
+			return;
 		}
 		case '}': {
-			return SOS_rightCurlyBrace;
+			scanner->state =  SOS_rightCurlyBrace;
+			token->type = TT_rightCurlyBrace;
+			return;
 		}
 		case ']': {
-			return SOS_rightSquareBrace;
+			scanner->state =  SOS_rightSquareBrace;
+			token->type = TT_rightSquareBrace;
+			return;
 		}
 		case ';': {
-			return SOS_semicolon;
+			scanner->state =  SOS_semicolon;
+			token->type = TT_semicolon;
+			return;
 		}
-		default:
-			return SOS_error;
+		default: {
+			scanner->state =  SOS_error;
+		}
+		return;
 	}
 }
 
@@ -177,7 +232,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			}
 			else if(isalpha(symbol) || symbol == '_') {
 				setState(SOS_identifier);
-				token->type = (TokenType) TT_identifier;
+				token->type = TT_identifier;
 
 				append_symbol();
 			}
@@ -189,29 +244,31 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			}
 			else {
 				// Single symbol token (+ - * / = etc.)
-				setState(symbolToState(symbol));
+				// setState(symbolToState(symbol));
+
+				processSingleCharToken(scanner, token, symbol);
 
 				// Either one state is returned or SOS_error,
 				// error state is managed one level up
-				if(scanner->state != SOS_error) {
-					assert(token->type == TT_empty);
+				// if(scanner->state != SOS_error) {
+				// 	assert(token->type == TT_empty);
 
-					token->type = (TokenType) scanner->state;
+					// token->type = (TokenType) scanner->state;
 					// Terminal state is assigned in default at the end
-				}
+				// }
 			}
 			return true;
 		}
 		case SOS_colon: {
 			if (symbol == '=') {
 				//setState(SOS_assignment); // not neccesary
-				token->type = (TokenType) SOS_assignment;
+				token->type = TT_assignment;
 				terminalState();
 
 				return true;
 			}
 			else {
-				token->type = (TokenType) SOS_colon;
+				token->type = TT_colon;
 				terminalState();
 
 				return false;
@@ -315,7 +372,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 		case SOS_greater: {
 			if (symbol == '=') {
-				token->type = (TokenType) SOS_greaterOrEqual;
+				token->type = TT_greaterOrEqual;
 				terminalState();
 
 				return true;
@@ -352,14 +409,14 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 		case SOS_less: {
 			if (symbol == '=') {
 				setState(SOS_lessOrEqual);
-				token->type = (TokenType) SOS_lessOrEqual;
+				token->type = TT_lessOrEqual;
 				terminalState();
 
 				return true;
 			}
 			else if (symbol == '>') {
 				setState(SOS_inequality);
-				token->type = (TokenType) SOS_inequality;
+				token->type = TT_inequality;
 				terminalState();
 
 				return true;
@@ -388,7 +445,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 					case 'E': {
 						setState(SOS_integerE);
 
-						token->type = (TokenType) TT_real;
+						token->type = TT_real;
 						scanner->convertTo = TT_real;
 
 						append_symbol();
@@ -398,7 +455,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 					case '.': {
 						setState(SOS_realDot);
 
-						token->type = (TokenType) TT_real;
+						token->type = TT_real;
 						scanner->convertTo = TT_real;
 
 						append_symbol();
