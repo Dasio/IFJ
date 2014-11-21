@@ -10,7 +10,8 @@ void parse()
 	TokenVector *tokenVector = getTokenVector(&scanner);
 	token = TokenVectorFirst(tokenVector);
 	program();
-
+	if(getError())
+		printError();
 	// Cleanup
 	destroyTokenVector(tokenVector);
 	destroyScanner(&scanner);
@@ -109,7 +110,7 @@ void func()
 		return;
 	}
 
-	param_list();
+	param_def_list();
 	if(getError()) return;
 
 	token++;
@@ -177,7 +178,7 @@ void forward()
 	// Need load next token
 	token++;
 }
-void param_list()
+void param_def_list()
 {
 	token++;
 	if(token->type != TT_leftBrace)
@@ -186,7 +187,7 @@ void param_list()
 		return;
 	}
 
-	params(0);
+	params_def(0);
 	if(getError()) return;
 
 	// Token loaded from params
@@ -196,7 +197,7 @@ void param_list()
 		return;
 	}
 }
-void params(uint8_t next)
+void params_def(uint8_t next)
 {
 	token++;
 	// Epsilon rule
@@ -204,7 +205,7 @@ void params(uint8_t next)
 		return;
 	if(next && token->type != TT_semicolon)
 		return;
-	// Get from PARAMS_N to PARAMS to simplify code
+	// Get from PARAMS_DEF_N to PARAMS_DEF to simplify code
 	// semicolon loaded, now we need load identifier
 	if(next)
 	{
@@ -242,7 +243,7 @@ void params(uint8_t next)
 			return;
 	}
 
-	params(1);
+	params_def(1);
 	if(getError()) return;
 
 }
@@ -356,6 +357,17 @@ uint8_t stmt(uint8_t empty)
 					token++;
 					compound_stmt(0);
 					if(getError()) return 0;
+					break;
+				case Key_begin:
+					compound_stmt(0);
+					if (getError()) return 0;
+					break;
+				case Key_find:
+				case Key_readln:
+				case Key_sort:
+				case Key_write:
+					//param_list();
+					if(getError) return 0;
 					break;
 				default:
 					if(empty) return 1;

@@ -11,8 +11,8 @@ void func();
 void compound_stmt(uint8_t semicolon);
 void var_def(uint8_t next);
 void forward();
-void param_list();
-void params(uint8_t next);
+void param_def_list();
+void params_def(uint8_t next);
 
 /**
  * @param1: 1 if stmt() was called from stmt_empty()

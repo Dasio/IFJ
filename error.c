@@ -3,7 +3,7 @@
 
 /* Global variable in which is stored last error */
 SError error;
-//extern Token *tokenIt;
+extern Token *token;
 
 void printError()
 {
@@ -30,7 +30,7 @@ void printErrorDetails(const char *description)
     fprintf(stderr,"%s in file \"%s\" at line: %u\n",description,error.file,error.line);
     if(error.state == ERR_Syntax)
     {
-       // fprintf(stderr,"Current token: %s\n",stringifyToken(tokenIt));
+     fprintf(stderr,"Current token: %s\n",stringifyToken(token));
     }
 }
 
