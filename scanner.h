@@ -105,6 +105,12 @@ Token getToken(Scanner *scanner);
 TokenVector *getTokenVector(Scanner *scanner);
 
 /**
+ * Destroy every token in vector and also vector itself
+ * @param tokVect Pointer to vector
+ */
+void destroyTokenVector(TokenVector *tokVect);
+
+/**
  * Destroy's IStream and nullifies Scanner
  * @param Pointer to scanner
  */
