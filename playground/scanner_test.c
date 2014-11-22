@@ -10,7 +10,7 @@ static Token randomToken() {
 	if(t.type == TT_special_separator + 0) {
 		t.type = TT_keyword;
 		KeywordTokenType ktt = RandInt(Key_begin+1, Key_none-1);
-		t.keywordToken = ktt;
+		t.keyword_token = ktt;
 	}
 
 	if(t.type == TT_special_separator + 1) {

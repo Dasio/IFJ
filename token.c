@@ -27,7 +27,7 @@ void tokenInfo(Token *token) {
 			break;
 		}
 		case TT_keyword: {
-			printf("Keyword %d", token->keywordToken);
+			printf("Keyword %d", token->keyword_token);
 			break;
 		}
 		default: break;
@@ -88,7 +88,7 @@ char *stringifyToken(Token *token) {
 			// FIXME: Uses bug
 			return token->str.data;
 		case TT_keyword:
-			switch (token->keywordToken)
+			switch (token->keyword_token)
 			{
 				case Key_begin:
 					return("begin");
@@ -133,7 +133,7 @@ char *stringifyToken(Token *token) {
 				case Key_write:
 					return("write");
 				default: {
-					fprintf(stderr, "Kw type : %d\n", token->keywordToken);
+					fprintf(stderr, "Kw type : %d\n", token->keyword_token);
 					assert(false && "Unknown keyword");
 					return("Unknown keyword");
 				}

@@ -87,7 +87,7 @@
 			String str;  // string
 			double r;  // real
 			int32_t n; // integer
-			KeywordTokenType keywordToken;
+			KeywordTokenType keyword_token;
 		};
 	} Token;
 

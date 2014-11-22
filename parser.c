@@ -55,7 +55,7 @@ void var_declr()
 {
 
 	// Epsilon rule
-	if(token->type != TT_keyword || token->keywordToken != Key_var)
+	if(token->type != TT_keyword || token->keyword_token != Key_var)
 		return;
 	// literal 'var' loaded
 	var_def(0);
@@ -89,13 +89,13 @@ void var_def(uint8_t next)
 		setError(ERR_Syntax);
 		return;
 	}
-	switch(token->keywordToken)
+	switch(token->keyword_token)
 	{
 		case Key_boolean:
 		case Key_integer:
 		case Key_real:
 		case Key_string:
-			symbolType = keywordToSymbol(token->keywordToken);
+			symbolType = keywordToSymbol(token->keyword_token);
 			break;
 		default:
 			setError(ERR_Syntax);
@@ -121,7 +121,7 @@ void var_def(uint8_t next)
 void func()
 {
 	// Epsilon rule, just return, no error
-	if(token->type != TT_keyword || token->keywordToken != Key_function)
+	if(token->type != TT_keyword || token->keyword_token != Key_function)
 		return;
 	// keyword 'function' loaded
 	char *name;
@@ -154,7 +154,7 @@ void func()
 		setError(ERR_Syntax);
 		return;
 	}
-	switch(token->keywordToken)
+	switch(token->keyword_token)
 	{
 		case Key_boolean:
 		case Key_integer:
@@ -189,7 +189,7 @@ void forward()
 {
 	token++;
 	// 1. rule = Function Forward Declaration
-	if(token->type == TT_keyword && token->keywordToken == Key_forward)
+	if(token->type == TT_keyword && token->keyword_token == Key_forward)
 	{
 		token++;
 		if(token->type != TT_semicolon)
@@ -269,13 +269,13 @@ void params_def(uint8_t next)
 		setError(ERR_Syntax);
 		return;
 	}
-	switch(token->keywordToken)
+	switch(token->keyword_token)
 	{
 		case Key_boolean:
 		case Key_integer:
 		case Key_real:
 		case Key_string:
-			symbolType = keywordToSymbol(token->keywordToken);
+			symbolType = keywordToSymbol(token->keyword_token);
 			break;
 		default:
 			setError(ERR_Syntax);
@@ -292,7 +292,7 @@ void params_def(uint8_t next)
 }
 void compound_stmt(uint8_t semicolon)
 {
-	if(token->type != TT_keyword || token->keywordToken != Key_begin)
+	if(token->type != TT_keyword || token->keyword_token != Key_begin)
 	{
 		setError(ERR_Syntax);
 		return;
@@ -302,7 +302,7 @@ void compound_stmt(uint8_t semicolon)
 
 	// token loaded from stmt()
 
-	if(token->type != TT_keyword || token->keywordToken != Key_end)
+	if(token->type != TT_keyword || token->keyword_token != Key_end)
 	{
 		setError(ERR_Syntax);
 		return;
@@ -364,7 +364,7 @@ uint8_t stmt(uint8_t empty)
 			if(getError()) return 0;
 			break;
 		case TT_keyword:
-			switch(token->keywordToken)
+			switch(token->keyword_token)
 			{
 				// 2. rule = IF Statement
 				case Key_if:
@@ -372,7 +372,7 @@ uint8_t stmt(uint8_t empty)
 					if(getError()) return 0;
 
 					token++;
-					if(token->type != TT_keyword || token->keywordToken != Key_then)
+					if(token->type != TT_keyword || token->keyword_token != Key_then)
 					{
 						setError(ERR_Syntax);
 						return 0;
@@ -391,7 +391,7 @@ uint8_t stmt(uint8_t empty)
 					if(getError()) return 0;
 
 					token++;
-					if(token->type != TT_keyword || token->keywordToken != Key_do)
+					if(token->type != TT_keyword || token->keyword_token != Key_do)
 					{
 						setError(ERR_Syntax);
 						return 0;
@@ -438,7 +438,7 @@ uint8_t if_n()
 {
 	token++;
 	// Epsilon rule
-	if(token->type != TT_keyword || token->keywordToken != Key_else)
+	if(token->type != TT_keyword || token->keyword_token != Key_else)
 		return 1;
 	// keyword 'else' loaded
 	token++;

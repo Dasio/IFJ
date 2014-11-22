@@ -87,7 +87,7 @@ Token getToken(Scanner *scanner)
 			destroyString(&token.str);
 
 			token.type = TT_keyword;
-			token.keywordToken = kword;
+			token.keyword_token = kword;
 		}
 	}
 
