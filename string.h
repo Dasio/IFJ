@@ -21,6 +21,7 @@
 	void printString(String *dst);
 	void aboutString(String *dst);
 	void appendCharToString(String *dst, char c);
+	void appendCharsToString(String *dst, char *c);
 
 /* #define appendToString(dst, src) _Generic((src),					\
 									String *: appendStringToString, \

@@ -86,6 +86,13 @@ void appendCharToString(String *dst, char c)
 	// Due to performance, not clearing all remaning bytes
 }
 
+void appendCharsToString(String *dst, char *c) {
+	// TODO: Optimize!
+	while(*c != (char)0) {
+		appendCharToString(dst, *(c++));
+	}
+}
+
 void truncateString(String *dst) {
 	assert(dst);
 	if(dst->allocated_size > 0) {
