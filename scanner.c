@@ -36,6 +36,7 @@ static inline void resetScanner(Scanner *scanner)
 	scanner->foundToken = false;
 	scanner->state = SOS_start;
 	scanner->convertTo = TT_empty;
+	scanner->ascii_to_char_val = 0;
 }
 
 extern inline bool scannerFinished(Scanner *scanner);
@@ -94,6 +95,7 @@ Token getToken(Scanner *scanner)
 
 	return token;
 }
+
 TokenVector* getTokenVector(Scanner *scanner)
 {
 	Token t;
@@ -109,8 +111,8 @@ TokenVector* getTokenVector(Scanner *scanner)
 		}
 		if(t.type == TT_empty || scannerFinished(scanner))
 		{
-			// Append also empty token to vector to determine ending
-			TokenVectorAppend(tokVect, t);
+			if(t.type != TT_empty)
+				TokenVectorAppend(tokVect, t);
 			break;
 		}
 
@@ -145,6 +147,11 @@ static inline void processSingleCharToken(Scanner *scanner, Token *token, char s
 		case ',': {
 			scanner->state =  SOS_comma;
 			token->type = TT_comma;
+			return;
+		}
+		case '.': {
+			scanner->state = SOS_dot;
+			token->type = TT_dot;
 			return;
 		}
 		case '/': {
@@ -217,6 +224,11 @@ static inline void processSingleCharToken(Scanner *scanner, Token *token, char s
 			token->type = TT_semicolon;
 			return;
 		}
+		case '\'': {
+			scanner->state = SOS_string;
+			token->type = TT_string;
+			return;
+		}
 		default: {
 			scanner->state =  SOS_error;
 		}
@@ -227,7 +239,7 @@ static inline void processSingleCharToken(Scanner *scanner, Token *token, char s
 #define append_symbol() appendCharToToken(token, symbol)
 #define setState(new_state) scanner->state = new_state
 #define terminalState() scanner->foundToken = true
-#define convertTokenTo(t) scanner->convertTo = t; token->type = (TokenType) t
+#define convertTokenTo(t) scanner->convertTo = t; token->type = t
 
 extern inline void appendCharToToken(Token *token, char c);
 
@@ -259,7 +271,6 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				// setState(symbolToState(symbol));
 
 				processSingleCharToken(scanner, token, symbol);
-
 				// Either one state is returned or SOS_error,
 				// error state is managed one level up
 				// if(scanner->state != SOS_error) {
@@ -544,70 +555,71 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			}
 		}
 
-		// TODO: Fix strings !!
-			// case (SOS_string): {
-			// 	if (symbol == '\'') {
-			// 		actToken->state = SOS_stringApostrophe;
-			// 		break;
-			// 	}
-			// 	else if (symbol > 31 && symbol <= 255) {
-			// 		FillString(actToken->str,symbol);
-			// 		break;
-			// 	}
-			// 	else {
-			// 		actToken->state = SOS_error;
-			// 		return actToken;
-			// 	}
-			// }
-			// case (SOS_stringApostrophe): {
-			// 	if (symbol == '#') {
-			// 		actToken->state = SOS_stringHashtag;
-			// 		break;
-			// 	}
-			// 	// zapise apostrof
-			// 	else if (symbol == '\'') {
-			// 		actToken->state = SOS_string;
-			// 		FillString(actToken->str,symbol);
-			// 		break;
-			// 	}
-			// 	else {
-			// 		actToken->state = SOS_string;
-			// 		ungetc(symbol,sourceFile);
-			// 		return actToken;
-			// 	}
-			// }
-			// case (SOS_stringHashtag): {
-			// 	if (symbol == '0')
-			// 		break;
-			// 	else if (symbol >= '1' && symbol <= '9') {
-			// 		actToken->state = SOS_stringASCII;
-			// 		value = (value*10) + (symbol - '0');
-			// 		break;
-			// 	}
-			// 	else {
-			// 		actToken->state = SOS_error;
-			// 		return actToken;
-			// 	}
-			// }
-			// case (SOS_stringASCII): {
-			// 	if (symbol >= '0' && symbol <= '9') {
-			// 		value = (value*10) + (symbol - '0');
-			// 		if (value > 255) {
-			// 			actToken->state = SOS_error;
-			// 			return actToken;
-			// 		}
-			// 		break;
-			// 	}
-			// 	else if (symbol == '\'') {
-			// 		actToken->state = SOS_string;
-			// 		FillString(actToken->str,(char)value);
-			// 		value = 0;
-			// 		break;
-			// 	}
-			// 	else
-			// 		actToken->state = SOS_error;
-			// 		return actToken;
-			// }
+		/* Strings begin here */
+		case (SOS_string): {
+			if (symbol == '\'') {
+				setState(SOS_stringApostrophe);
+				return true;
+			}
+			else if (symbol > 31 && symbol <= 255) {
+				append_symbol();
+				return true;
+			}
+			else {
+				setState(SOS_error);
+				return true;
+			}
+		}
+		case (SOS_stringApostrophe): {
+			if (symbol == '#') {
+				setState(SOS_stringHashtag);
+				return true;
+			}
+			// Appends '
+			else if (symbol == '\'') {
+				setState(SOS_string);
+				append_symbol();
+				return true;
+			}
+			else {
+				// String reached right pair of quote
+				terminalState();
+				return true;
+			}
+		}
+		case (SOS_stringHashtag): {
+			if (symbol == '0')
+				return true;
+			else if (symbol >= '1' && symbol <= '9') {
+				setState(SOS_stringASCII);
+				scanner->ascii_to_char_val = (scanner->ascii_to_char_val*10) + (symbol - '0');
+				return true;
+			}
+			else {
+				setState(SOS_error);
+				return true;
+			}
+		}
+		case (SOS_stringASCII): {
+			if (symbol >= '0' && symbol <= '9') {
+				scanner->ascii_to_char_val = (scanner->ascii_to_char_val*10) + (symbol - '0');
+				if (scanner->ascii_to_char_val > 255) {
+					setState(SOS_error);
+					// TODO: Informative errors would be great
+				}
+				return true;
+			}
+			else if (symbol == '\'') {
+				setState(SOS_string);
+				appendCharToToken(token, (char)scanner->ascii_to_char_val);
+				scanner->ascii_to_char_val = 0;
+				return true;
+			}
+			else
+				setState(SOS_error);
+				return true;
+		}
+		/* Strings end here */
 
 		// In case of state with one character long tokens
 		default: {

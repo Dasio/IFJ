@@ -85,6 +85,11 @@ typedef struct
 	  */
 	TokenType convertTo;
 
+	/**
+	 * Temporary value used in ASCII value escaped char in string
+	 */
+	int ascii_to_char_val;
+
 	/** Source code source */
 	IStream input;
 } Scanner;
