@@ -14,13 +14,18 @@ Context *InitContext(uint32_t ArgMax)
 		setError(ERR_Allocation)
 		return NULL;
 	}
-	FunCont->arg = malloc(sizeof(struct SymbolTable*)*ArgMax);
-	if(FunCont->arg == NULL)
+	if(ArgMax>0)
 	{
-		setError(ERR_Allocation);
-		free(FunCont);
-		return NULL;
+		FunCont->arg = malloc(sizeof(struct SymbolTable*)*ArgMax);
+		if(FunCont->arg == NULL)
+		{
+			setError(ERR_Allocation);
+			free(FunCont);
+			return NULL;
+		}
 	}
+	else
+		FunCont->arg = NULL; // If content has no arguments doesn't need to malloc memory
 	FunCont->LocTable = malloc(sizeof(struct SymbolTable*)*DEFAULT_HASH_SIZE);
 	if (FunCont == NULL)
 	{
