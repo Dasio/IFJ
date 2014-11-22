@@ -26,7 +26,7 @@ depend: .depend
 
 .PHONY: test
 
-lib.a: $(filter-out interpret.o, $(wildcard *.o))
+lib.a: $(filter-out interpret.o, $(OBJS))
 	ar -rcs $@ $(filter-out interpret.o, $(OBJS))
 
 playground: all
