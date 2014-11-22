@@ -17,6 +17,7 @@
 		TT_colon,
 		TT_comma,
 		TT_division,
+		TT_dot,
 		TT_equality,
 		TT_greater,
 		TT_greaterOrEqual,
@@ -35,6 +36,7 @@
 		TT_rightSquareBrace,
 		TT_semicolon,
 
+		TT_special_separator,
 		/** Special tokens, corresponding element from union */
 		TT_keyword = 64,
 		TT_real,
@@ -72,6 +74,7 @@
 		Key_write,
 
 		Key_none // Special keyword, used in identifierToToken(String)
+				 // Must be last
 	} KeywordTokenType;
 
 	/**

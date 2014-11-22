@@ -46,6 +46,8 @@ char *stringifyToken(Token *token) {
 			return(",");
 		case TT_division:
 			return("/");
+		case TT_dot:
+			return(".");
 		case TT_equality:
 			return("=");
 		case TT_greater :
@@ -58,6 +60,8 @@ char *stringifyToken(Token *token) {
 			return("<>");
 		case TT_less:
 			return("<");
+		case TT_lessOrEqual:
+			return("<=");
 		case TT_leftBrace:
 			return("(");
 		case TT_leftCurlyBrace:
@@ -78,6 +82,11 @@ char *stringifyToken(Token *token) {
 			return("]");
 		case TT_semicolon:
 			return(";");
+		case TT_string:
+			return token->str.data;
+		case TT_integer:
+			// FIXME: Uses bug
+			return token->str.data;
 		case TT_keyword:
 			switch (token->keywordToken)
 			{
@@ -85,6 +94,8 @@ char *stringifyToken(Token *token) {
 					return("begin");
 				case Key_boolean:
 					return("boolean");
+				case Key_div:
+					return("div");
 				case Key_do:
 					return("do");
 				case Key_else:
@@ -121,9 +132,16 @@ char *stringifyToken(Token *token) {
 					return("while");
 				case Key_write:
 					return("write");
-				default:
+				default: {
+					fprintf(stderr, "Kw type : %d\n", token->keywordToken);
+					assert(false && "Unknown keyword");
 					return("Unknown keyword");
+				}
 			}
-		default: return("N/A");
+		default: {
+			fprintf(stderr, "Token type : %d\n", token->type);
+			assert(false && "Received unknown token!");
+			return("N/A");
+		}
 	}
 }
