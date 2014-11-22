@@ -108,11 +108,23 @@ TokenVector* getTokenVector(Scanner *scanner)
 			break;
 		}
 		if(t.type == TT_empty || scannerFinished(scanner))
+		{
+			// Append also empty token to vector to determine ending
+			TokenVectorAppend(tokVect, t);
 			break;
+		}
 
 		TokenVectorAppend(tokVect, t);
 	};
 	return tokVect;
+}
+
+void destroyTokenVector(TokenVector *tokVect)
+{
+	Token *tokenLast = TokenVectorLast(tokVect)+1;
+	for(Token *tokenIt = TokenVectorFirst(tokVect); tokenIt != tokenLast; tokenIt++)
+		destroyToken(tokenIt);
+	TokenVectorFree(tokVect);
 }
 
 /**
@@ -710,4 +722,3 @@ KeywordTokenType identifierToKeyword(String *str)
 	}
 	return Key_none;
 }
-

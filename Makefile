@@ -5,7 +5,7 @@ else
 endif
 
 RM=rm -f
-CFLAGS=-g -ffast-math -Ofast -std=c11 -pedantic -Wall -Wextra -ftrapv -fstack-protector-all
+CFLAGS=-g -ffast-math -Ofast -std=c11 -pedantic -Wall -Wextra -ftrapv -fstack-protector-all -funsigned-char
 LDFLAGS=
 #LDLIBS=-lpthread
 
@@ -26,7 +26,7 @@ depend: .depend
 
 .PHONY: test
 
-lib.a: $(filter-out interpret.o, $(wildcard *.o))
+lib.a: $(filter-out interpret.o, $(OBJS))
 	ar -rcs $@ $(filter-out interpret.o, $(OBJS))
 
 playground: all
