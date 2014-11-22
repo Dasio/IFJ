@@ -166,7 +166,7 @@ SymbolTable *SymbolFind(Context *FunCont, char *name)
     SymbolTable *item;
     item = FunCont->LocTable[GetHash(name,FunCont->LocSize)];
     for(; item != NULL; item=item->next)
-        if(strcmp(item->data.name.data, name) == 0)
+        if(strcmp(item->data.name, name) == 0)
             break;
     return item;
 }
@@ -176,7 +176,7 @@ SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, int index, char *name,
     if (SymbolFind(FunCont, name) != NULL)
     {
         // Symbol already exist
-        setError(ERR_Unknown);
+        setError(ERR_RedefVar);
         return NULL;
     }
     SymbolTable *newItem = malloc(sizeof(SymbolTable));
@@ -188,7 +188,7 @@ SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, int index, char *name,
     // fill newItem
     newItem->data.type = type;
     newItem->data.index = index;
-    newItem->data.name = initString(name);
+    newItem->data.name = name;
     newItem->data.FunCont = SymbolContext;
 
     // reuse index variable
@@ -226,7 +226,7 @@ void ContextLocTableFree(Context *t)
 void SymbolTableFree(SymbolTable *t)
 {
     if (t==NULL) return;
-    destroyString(&t->data.name);
+    //destroyString(&t->data.name);
     free(t);
     t = NULL;
 }

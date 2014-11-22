@@ -11,8 +11,9 @@ typedef enum
     ERR_None = 0, /**< ERR_None */
     ERR_Allocation, /**<ERR_Allocation */
     ERR_Lexical, /**< ERR_Lexical */
-    ERR_Syntax,
-    ERR_OutOfRange,
+    ERR_Syntax, /**< ERR_Syntax */
+    ERR_OutOfRange, /**< ERR_OutOfRange */
+    ERR_RedefVar, /**< ERR_RedefVar */
     ERR_Unknown, /**< ERR_Unknown */
 } EErrorStates;
 

@@ -20,6 +20,9 @@ void printError()
         case ERR_Unknown:
             printErrorDetails("Unknown error");
             break;
+        case ERR_RedefVar:
+            printErrorDetails("Variable was redefined");
+            break;
         default:
             printErrorDetails("Unrecognized error");
     }

@@ -2,7 +2,9 @@
 #define PARSER_H
 
 #include "scanner.h"
+#include "symbol.h"
 #include "error.h"
+#include "stack.h"
 
 void parse();
 void program();
@@ -27,4 +29,20 @@ void expr();
  */
 uint8_t if_n();
 
+static inline SymbolType keywordToSymbol (KeywordTokenType key)
+{
+    switch(key)
+    {
+        case Key_boolean:
+            return T_bool;
+        case Key_integer:
+            return T_int;
+        case Key_real:
+            return T_double;
+        case Key_string:
+            return T_String;
+        default:
+            return T_Undefined;
+    }
+}
 #endif

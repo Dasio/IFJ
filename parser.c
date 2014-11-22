@@ -2,18 +2,32 @@
 
 static Scanner scanner;
 Token *token;
+Context *mainContext;
+Context *funcContext;
+Context *activeContext;
+uint32_t argsCount = 0;
+int locMIndex = 1;
+int locFIndex = 1;
+int *locIndex = &locMIndex;
+int argIndex = -1;
+static const uint32_t argsMax = 128;
 
 void parse()
 {
 	scanner = initScanner();
 	assignFile(&scanner.input, "testFile2.txt");
 	TokenVector *tokenVector = getTokenVector(&scanner);
+
+	mainContext = InitContext(0);
+	activeContext = mainContext;
 	token = TokenVectorFirst(tokenVector);
+
 	program();
 	if(getError())
 		printError();
 	// Cleanup
 	destroyTokenVector(tokenVector);
+	FreeContext(mainContext);
 	destroyScanner(&scanner);
 }
 void program()
@@ -50,6 +64,8 @@ void var_declr()
 }
 void var_def(uint8_t next)
 {
+	char *name;
+	SymbolType symbolType;
 	token++;
 	if(token->type != TT_identifier)
 	{
@@ -58,6 +74,7 @@ void var_def(uint8_t next)
 			setError(ERR_Syntax);
 		return;
 	}
+	name = token->str.data;
 	token++;
 	if(token->type != TT_colon)
 	{
@@ -78,7 +95,7 @@ void var_def(uint8_t next)
 		case Key_integer:
 		case Key_real:
 		case Key_string:
-			//dosmth
+			symbolType = keywordToSymbol(token->keywordToken);
 			break;
 		default:
 			setError(ERR_Syntax);
@@ -91,7 +108,11 @@ void var_def(uint8_t next)
 		setError(ERR_Syntax);
 		return;
 	}
-
+	// Add variable to symbol table
+	SymbolTable *x = SymbolAdd(activeContext, symbolType, (*locIndex)++, name, NULL);
+	if(getError())
+		return;
+	printf("Symbol added name = %s type = %d, index = %d\n",x->data.name,x->data.type,x->data.index);
 	var_def(1);
 	if(getError())
 		return;
@@ -103,13 +124,19 @@ void func()
 	if(token->type != TT_keyword || token->keywordToken != Key_function)
 		return;
 	// keyword 'function' loaded
+	char *name;
+	// New function => need to reset values
+	argsCount = locFIndex= 0;
+	argIndex=-1;
+
 	token++;
 	if(token->type != TT_identifier)
 	{
 		setError(ERR_Syntax);
 		return;
 	}
-
+	name = token->str.data;
+	funcContext = InitContext(argsMax);
 	param_def_list();
 	if(getError()) return;
 
@@ -146,6 +173,11 @@ void func()
 		setError(ERR_Syntax);
 		return;
 	}
+	// Add function to global symbol table
+	SymbolTable *x = SymbolAdd(mainContext, T_FunPointer, *locIndex++, name, funcContext);
+	if(getError())
+		return;
+	printf("Symbol(Function) added name = %s type = %d, index = %d, argsCount = %d\n",x->data.name,x->data.type,x->data.index,funcContext->ArgCount);
 
 	forward();
 	if(getError()) return;
@@ -169,11 +201,17 @@ void forward()
 	// 2. rule = Function Definition
 	else
 	{
+		// Switch to function context
+		activeContext = funcContext;
+		locIndex = &locFIndex;
 		var_declr();
 		if(getError()) return;
 
 		compound_stmt(1);
 		if(getError()) return;
+		// Switch back to main context
+		activeContext = mainContext;
+		locIndex = &locMIndex;
 	}
 	// Need load next token
 	token++;
@@ -216,7 +254,8 @@ void params_def(uint8_t next)
 			return;
 		}
 	}
-
+	char *name = token->str.data;
+	SymbolType symbolType;
 	token++;
 	if(token->type != TT_colon)
 	{
@@ -236,12 +275,16 @@ void params_def(uint8_t next)
 		case Key_integer:
 		case Key_real:
 		case Key_string:
-			//dosmth
+			symbolType = keywordToSymbol(token->keywordToken);
 			break;
 		default:
 			setError(ERR_Syntax);
 			return;
 	}
+	SymbolTable *x = AddArgToContext(funcContext, symbolType, argIndex--, name, NULL);
+	if(getError())
+		return;
+	printf("Symbol(Variable) added name = %s type = %d, index = %d\n",x->data.name,x->data.type,x->data.index);
 
 	params_def(1);
 	if(getError()) return;

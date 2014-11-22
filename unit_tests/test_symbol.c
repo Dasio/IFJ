@@ -8,7 +8,7 @@ START_TEST_SUITE(SYMBOLtest)
 	AddArgToContext(Cont1, T_int, 8, "variable2", NULL);
 
 	TEST_EXPR("Number of ARGument", Cont1->ArgCount == 2);
-	TEST_EXPR("Name of ARGument", equalsStringChars(&Cont1->arg[1]->data.name, "variable2"));
+	TEST_EXPR("Name of ARGument", !strcmp(Cont1->arg[1]->data.name, "variable2"));
 	TEST_EXPR("Find symbol", SymbolFind(Cont1, "variable"));
 
 	FreeContext(Cont1);

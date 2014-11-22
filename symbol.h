@@ -40,7 +40,7 @@ typedef struct
 	SymbolType type;	// Enum what kind of data are stored
 	int index;			// for variable index in stack
 						// for function index in instruction tape
-	String name;		// Name of variable/function
+	char *name;		// Name of variable/function
 	Context *FunCont;	// Pointer to Context of function
 } Symbol;
 
@@ -61,7 +61,7 @@ struct SymbolTableStruct
 
 //symbol.h
 Context *InitContext(uint32_t);
-void AddArgToContext(Context*, SymbolType, int, char*, Context*);
+SymbolTable *AddArgToContext(Context*, SymbolType, int, char*, Context*);
 void FreeContext(Context*);
 
 //GenVectorPrototypes(SymbolType);
