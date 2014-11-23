@@ -10,7 +10,7 @@
 #define SYMBOL_H
 
 #define DEFAULT_HASH_SIZE 16
-// all about local variables
+// Types of symbols
 typedef enum {
     T_Undefined = 0,
     T_int,
@@ -25,14 +25,14 @@ typedef struct SymbolTableStruct SymbolTable;
 
 typedef struct
 {
-	SymbolTable **arg;
+	SymbolTable **arg; // array of arguments pointer to symbols in Hash
 	uint32_t ArgCount;
 	uint32_t ArgMax;
 
-	SymbolTable **LocTable;
+	SymbolTable **LocTable; // Hash of all symbols in this Context
 	uint32_t LocSize; // size of HashTable
-	uint32_t LocCount;
-	uint32_t InstrucIndex;
+	uint32_t LocCount; // number of symbols
+	uint32_t InstrucIndex; // index of start in Instruction Tape
 }Context;
 
 typedef struct
@@ -44,23 +44,36 @@ typedef struct
 	Context *FunCont;	// Pointer to Context of function
 } Symbol;
 
+// struct in Hash table with data and pointer to next value
 struct SymbolTableStruct
 {
 	SymbolTable *next;
 	Symbol data;
 };
 
-// end local variables
-
-// global symbols in hash structure
-// htab_t *GlobalSymbols[];......................................................................
-// hash structures
+// global symbols in context with zero arguments (InitContext(0))
 
 #include "ial.h"
 #include "stack.h"
 
-//symbol.h
+/**
+ * Init content for funciton
+ * @param  uint32_t number of arguments
+ * @return          pointer to context
+ *
+ */
 Context *InitContext(uint32_t);
+
+/**
+ * Init content for funciton
+ * @param  Context*		pointer to context
+ * @param  SymbolType	type of new symbol
+ * @param  int			index in stack
+ * @param  char*		name of new symbol
+ * @param  Context*		pointer to context if SymbolType == T_FunPointer
+ * @return          	pointer to new symbol
+ *
+ */
 SymbolTable *AddArgToContext(Context*, SymbolType, int, char*, Context*);
 void FreeContext(Context*);
 
