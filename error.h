@@ -49,8 +49,4 @@ void setErrorDetails(EErrorStates state, unsigned line, char *file);
  */
 EErrorStates getError();
 
-/**
- * Print token from parser
- */
-void printToken();
 #endif
