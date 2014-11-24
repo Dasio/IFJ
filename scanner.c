@@ -111,8 +111,7 @@ TokenVector* getTokenVector(Scanner *scanner)
 		}
 		if(t.type == TT_empty || scannerFinished(scanner))
 		{
-			if(t.type != TT_empty)
-				TokenVectorAppend(tokVect, t);
+			TokenVectorAppend(tokVect, t);
 			break;
 		}
 
