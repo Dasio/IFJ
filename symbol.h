@@ -10,6 +10,8 @@
 #define SYMBOL_H
 
 #define DEFAULT_HASH_SIZE 16
+#define DEFAULT_ARG_NUM 4
+
 // Types of symbols
 typedef enum {
     T_Undefined = 0,
@@ -25,7 +27,7 @@ typedef struct SymbolTableStruct SymbolTable;
 
 typedef struct
 {
-	SymbolTable **arg; // array of arguments pointer to symbols in Hash
+	SymbolTable **arg; // array of arguments, points to symbol in Hash
 	uint32_t ArgCount;
 	uint32_t ArgMax;
 
@@ -39,7 +41,7 @@ typedef struct
 {
 	SymbolType type;	// Enum what kind of data are stored
 	int index;			// for variable index in stack
-						// for function index in instruction tape
+						// for function NULL
 	char *name;		// Name of variable/function
 	Context *FunCont;	// Pointer to Context of function
 } Symbol;
@@ -50,8 +52,6 @@ struct SymbolTableStruct
 	SymbolTable *next;
 	Symbol data;
 };
-
-// global symbols in context with zero arguments (InitContext(0))
 
 #include "ial.h"
 #include "stack.h"
@@ -68,14 +68,13 @@ Context *InitContext(uint32_t);
  * Init content for funciton
  * @param  Context*		pointer to context
  * @param  SymbolType	type of new symbol
- * @param  int			index in stack
  * @param  char*		name of new symbol
  * @param  Context*		pointer to context if SymbolType == T_FunPointer
- * @return          	pointer to new symbol
+ * @return SymbolTable*	pointer to new symbol
  *
  */
-SymbolTable *AddArgToContext(Context*, SymbolType, int, char*, Context*);
+SymbolTable *AddArgToContext(Context*, SymbolType, char*, Context*);
+
 void FreeContext(Context*);
 
-//GenVectorPrototypes(SymbolType);
 #endif
