@@ -171,7 +171,7 @@ SymbolTable *SymbolFind(Context *FunCont, char *name)
     return item;
 }
 
-SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, int index, char *name, Context *SymbolContext)
+SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext)
 {
     if (SymbolFind(FunCont, name) != NULL)
     {
@@ -185,23 +185,22 @@ SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, int index, char *name,
         setError(ERR_Allocation);
         return NULL;
     }
+
     // fill newItem
     newItem->data.type = type;
-    newItem->data.index = index;
+    newItem->data.index = FunCont->LocCount++; // unique index in stack
     newItem->data.name = name;
     newItem->data.FunCont = SymbolContext;
 
-    // reuse index variable
-    index = GetHash(name, FunCont->LocSize);
+    uint32_t index = GetHash(name, FunCont->LocSize);
 
     // save newItem to first position of hashTable[index]
     newItem->next = FunCont->LocTable[index];
     FunCont->LocTable[index] = newItem;
-    FunCont->LocCount++;
     return newItem;
 }
 
-//DONE
+
 void ContextLocTableFree(Context *t)
 {
     if (t==NULL) return;
@@ -215,6 +214,8 @@ void ContextLocTableFree(Context *t)
         for(item=t->LocTable[i];item != NULL;item=temp)
         {
             temp=item->next;
+            if(item->data.type == T_FunPointer)
+                FreeContext(item->data.FunCont);
             SymbolTableFree(item);
         }
         t->LocTable[i] = NULL;

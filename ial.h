@@ -13,33 +13,75 @@
 #include "symbol.h"
 #include "stack.h"
 
-//struct SymbolTableStruct;
-//typedef struct SymbolTableStruct SymbolTable;
-
-
+/**
+ * Find substring in string (length of string have to be set in String struct)
+ * @param  in        Original String
+ * @param  substring Substring
+ *
+ * @return           SUCCESSFUL
+ * 	                      index where substring start
+ * 	                 FAILED
+ * 	                      Length of input String
+ */
 int FindString(String *in, String *substring);
-int *GetFormula(String*);
+
+/**
+ * Make formula for KMP algorithm
+ * @param  find String which must include it's length
+ * @return      FORMULA
+ */
+int *GetFormula(String *find);
 
 // Use QuickSortRecursive (faster)
-void QuickSort(char []);
+/**
+ * Get length of arr and call QuickSortRecursive
+ * @param arr array to sort
+ */
+void QuickSort(char arr[]);
 
 void QuickSortNonRecursive(char []);
 void QuickSortRecursive(char *, int);
 
-// Return hash depend on char* and (uint)length
-unsigned int GetHash(const char*, unsigned);
+// Return hash depend on char* in range of (uint)length
+/**
+ * Return hash index in range
+ * @param  name  Name of symbol
+ * @param  range Range of HashTable
+ * @return       index to Hash
+ */
+unsigned int GetHash(const char* name, unsigned range);
 
 // Free LocTable, use SymbolTableFree function
-void ContextLocTableFree(Context*);
+/**
+ * Erase LocTable in Context and recursive all Contents stored in Hash table
+ * @param Cont Pointer to Context
+ */
+void ContextLocTableFree(Context* Cont);
 
-// Free SymbolTable and included String
-void SymbolTableFree(SymbolTable*);
+// Free SymbolTable and included Strin
+/**
+ * Free SymbolTable TODO? String if included?
+ * @param symbol pointer to SymbolTable
+ */
+void SymbolTableFree(SymbolTable* symbol);
 
-// FindSymbol in Context, return his address/NULL if failed
-SymbolTable *SymbolFind(Context *, char *);
+/**
+ * Find Symbol with specific name
+ * @param  Cont Content where to find
+ * @param  name Name which we want
+ * @return      Pointer to SymbolTable, NULL if failed
+ */
+SymbolTable *SymbolFind(Context *Cont, char *name);
 
-// SymbolAdd if error or symbol already exist return NULL and set Err to ERR_Unknown
-SymbolTable *SymbolAdd(Context*, SymbolType, int, char*, Context*);
+/**
+ * Add symbol to Context
+ * @param  FunCont       Context where symbol will be
+ * @param  type          Type of symbol
+ * @param  name          Name of symbol
+ * @param  SymbolContext Pointer to symbol's Context if type is T_FunPointer
+ * @return               Pointer to SymbolTable, NULL if failed
+ */
+SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext);
 
 
 
