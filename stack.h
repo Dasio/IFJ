@@ -1,5 +1,6 @@
 #include "system.h"
 #include "error.h"
+#include "string.h"
 
 #ifndef _STACK_H
 #define _STACK_H
@@ -7,7 +8,6 @@
 #define NUMBER_OF_CONTEXT_INFO 2 // pointer to stact and instruction tape
 #define DEFAULT_STACK_SIZE 64
 #define StackInit(stack)			\
-			STACK stack;			\
 			stack.Position = 0;		\
 			stack.Vec = StackDataInitVector(DEFAULT_STACK_SIZE)
 #define StackFree(stack) StackDataVectorFree(stack.Vec)
@@ -16,16 +16,9 @@
 
 	typedef union
 	{
-		int16_t Sint16;
-		uint32_t Suint16;
-		int32_t Sint32;
-		uint32_t Suint32; //used for return instruction and stack index
-		int64_t Sint64;
-		uint64_t Suint64;
-		long Slong;
+		int Sint;
 		double Sdouble;
-		float Sfloat;
-		char  *Schar;
+		String Sstring;
 	} StackData;
 
 	typedef struct Vector StackDataVector;

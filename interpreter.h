@@ -5,6 +5,7 @@
 #include "system.h"
 #include "instruction.h"
 #include "vector.h"
+#include "stack.h"
 
 #ifndef _INTERPRET_H
 #define _INTERPRET_H
