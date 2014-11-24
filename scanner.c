@@ -647,9 +647,6 @@ KeywordTokenType identifierToKeyword(String *str)
 			return Key_none;
 		}
 		case 'd': {
-			if(keyword_cmp("div")) {
-				return Key_div;
-			}
 			if(keyword_cmp("do")) {
 				return Key_do;
 			}

@@ -53,7 +53,6 @@
 	typedef enum {
 		Key_begin,
 		Key_boolean,
-		Key_div,
 		Key_do,
 		Key_else,
 		Key_end,
