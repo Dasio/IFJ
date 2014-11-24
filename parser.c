@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "expr.h"
 
 static Scanner scanner;
 Token *token;
@@ -34,7 +35,7 @@ void program()
 {
 	var_declr();
 	if(getError()) return;
-	
+
 	func();
 	if(getError()) return;
 
@@ -109,7 +110,7 @@ void var_def(uint8_t next)
 		return;
 	}
 	// Add variable to symbol table
-	SymbolTable *x = SymbolAdd(activeContext, symbolType, (*locIndex)++, name, NULL);
+	SymbolTable *x = SymbolAdd(activeContext, symbolType, name, NULL);
 	if(getError())
 		return;
 	printf("Symbol added name = %s type = %d, index = %d\n",x->data.name,x->data.type,x->data.index);
@@ -174,7 +175,7 @@ void func()
 		return;
 	}
 	// Add function to global symbol table
-	SymbolTable *x = SymbolAdd(mainContext, T_FunPointer, *locIndex++, name, funcContext);
+	SymbolTable *x = SymbolAdd(mainContext, T_FunPointer, name, funcContext);
 	if(getError())
 		return;
 	printf("Symbol(Function) added name = %s type = %d, index = %d, argsCount = %d\n",x->data.name,x->data.type,x->data.index,funcContext->ArgCount);
@@ -281,7 +282,7 @@ void params_def(uint8_t next)
 			setError(ERR_Syntax);
 			return;
 	}
-	SymbolTable *x = AddArgToContext(funcContext, symbolType, argIndex--, name, NULL);
+	SymbolTable *x = AddArgToContext(funcContext, symbolType, name, NULL);
 	if(getError())
 		return;
 	printf("Symbol(Variable) added name = %s type = %d, index = %d\n",x->data.name,x->data.type,x->data.index);
@@ -447,16 +448,4 @@ uint8_t if_n()
 
 	if(getError()) return 0;
 	return 0;
-}
-void expr()
-{
-	// @TODO bottom-up parser
-
-	//just for testing, expect one number
-	token++;
-	if(token->type != TT_integer)
-	{
-		setError(ERR_Syntax);
-		return;
-	}
 }

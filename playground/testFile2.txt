@@ -3,7 +3,7 @@ begin
 a := 20
 end ;
 begin
-a := 20 ;
+a := 20+20 ;
 b := 20
 end
 end
