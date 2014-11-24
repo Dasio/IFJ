@@ -3,9 +3,9 @@
 #include "../ial.h"
 
 START_TEST_SUITE(SYMBOLtest)
-	Context *Cont1 = InitContext(2);
-	AddArgToContext(Cont1, T_int, 2, "variable", NULL);
-	AddArgToContext(Cont1, T_int, 8, "variable2", NULL);
+	Context *Cont1 = InitContext();
+	AddArgToContext(Cont1, T_int, "variable", NULL);
+	AddArgToContext(Cont1, T_int, "variable2", NULL);
 
 	TEST_EXPR("Number of ARGument", Cont1->ArgCount == 2);
 	TEST_EXPR("Name of ARGument", !strcmp(Cont1->arg[1]->data.name, "variable2"));
