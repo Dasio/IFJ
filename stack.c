@@ -1,6 +1,6 @@
 #include "stack.h"
 
-bool LoadFirstFunc(STACK *stack, Context *Fun)
+bool LoadGlobalContext(STACK *stack, Context *Fun)
 {
  	StackDataVectorPushMore(stack->Vec, Fun->ArgCount);
  	// Instruction and Stack return  is set to 0

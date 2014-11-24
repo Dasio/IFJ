@@ -40,20 +40,51 @@
 	} STACK;
 
 
-// Context = main Function
-// Reserve space in STACK but don't fill argument values!!!
-bool LoadFirstFunc(STACK*, Context*);
+/**
+ * prepare it for global symbols
+ * @param  stack stack
+ * @param  Fun   name of Global Context
+ * @return       true if all OK
+ */
+bool LoadGlobalContext(STACK *stack, Context *Fun);
 
-// param: main Stack, number of local arguments, index in inst tape
-bool CallFunction(STACK*, uint32_t var, uint32_t inst);
+/**
+ * Prepare stack for new function
+ * @param  stack pointer to stack
+ * @param  var   number of local arguments
+ * @param  inst  current index in instruction tape
+ * @return       true if all OK
+ */
+bool CallFunction(STACK *stack, uint32_t var, uint32_t inst);
 
 // param: number of argument, local variables,
 // pointer to index in inst tape and return StackData value
-bool ReturnFunction(STACK*, uint32_t arg, uint32_t var, uint32_t* inst, StackData data);
+/**
+ * Return from the function
+ * @param  stack pointer to stack
+ * @param  arg   Number of arguments in function
+ * @param  var   Number of local variables in function
+ * @param  inst  pointer to InstPointer to change it to new value
+ * @param  data  Return data
+ * @return       true if all OK
+ */
+bool ReturnFunction(STACK *stack, uint32_t arg, uint32_t var, uint32_t* inst, StackData data);
 
 // StackData to write, int index - negativ represents argument
-void StackSetValue(STACK*, StackData data, int index);
-// return StackData on specify index
-StackData *StackReadValue(STACK*, int index);
+/**
+ * Set value in stack (doesn't control range)
+ * @param stack pointer to stack
+ * @param data  new data
+ * @param index index where variable is(negativ-arg, positive-locVar)
+ */
+void StackSetValue(STACK *stack, StackData data, int index);
+
+/**
+ * Read value from stack
+ * @param  stack pointer to stack
+ * @param  index index where variable is(negativ-arg, positive-locVar)
+ * @return       value of variable
+ */
+StackData *StackReadValue(STACK *stack, int index);
 
 #endif
