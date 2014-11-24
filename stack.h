@@ -36,10 +36,10 @@
 /**
  * prepare it for global symbols
  * @param  stack stack
- * @param  Fun   name of Global Context
+ * @param  num   number of Global symbols
  * @return       true if all OK
  */
-bool LoadGlobalContext(STACK *stack, Context *Fun);
+bool LoadGlobalSymbol(STACK *stack, int num);
 
 /**
  * Prepare stack for new function

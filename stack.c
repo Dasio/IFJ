@@ -1,8 +1,8 @@
 #include "stack.h"
 
-bool LoadGlobalContext(STACK *stack, Context *Fun)
+bool LoadGlobalSymbol(STACK *stack, int num)
 {
- 	StackDataVectorPushMore(stack->Vec, Fun->LocCount+1);
+ 	StackDataVectorPushMore(stack->Vec, num+1);
  	// push number of GlobalSymbols
  	if(getError()!=0) // if error occured during PushMorefunctions
  		return false;

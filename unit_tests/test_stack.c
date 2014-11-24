@@ -7,21 +7,7 @@ START_TEST_SUITE(STACKtest);
 	StackInit(stack);	// Vector which simulate Stack
 
 
-/* prepre Global contexts, struct Context is tested in test_symbol*/
-	Context *GlobalSymbol = InitContext();
-	SymbolAdd(GlobalSymbol, T_int, "Glob1", NULL);
-	SymbolAdd(GlobalSymbol, T_int, "Glob2", NULL);
-	SymbolAdd(GlobalSymbol, T_int, "Glob3", NULL);
-
-	SymbolAdd(GlobalSymbol, T_int, "Glob2", NULL);
-	setError(0); // two times added Glob2 so erase Error for correct run of program
-
-/* end of Global symbol preparation */
-
-
-
-    TEST_EXPR("Number of Global symbols", GlobalSymbol->LocCount == 3);
-	LoadGlobalContext(&stack, GlobalSymbol);
+	LoadGlobalSymbol(&stack, 3);
 
 	StackSetValue(&stack, (StackData) {.Sint = 1}, 1);
 	StackSetValue(&stack, (StackData) {.Sint = 2}, 2);
@@ -64,7 +50,6 @@ START_TEST_SUITE(STACKtest);
 
 
 	StackFree(stack);
-	FreeContext(GlobalSymbol);
 
 
 END_TEST_SUITE
