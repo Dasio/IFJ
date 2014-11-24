@@ -15,8 +15,8 @@ bool LoadGlobalContext(STACK *stack, Context *Fun)
 
 bool CallFunction(STACK *stack, uint32_t LocCount, uint32_t InstrIndexCurr)
 {
-	StackDataVectorAppend(stack->Vec, (StackData) {.Suint32 = stack->Position});
-	StackDataVectorAppend(stack->Vec, (StackData) {.Suint32 = InstrIndexCurr});
+	StackDataVectorAppend(stack->Vec, (StackData) {.Sint = stack->Position});
+	StackDataVectorAppend(stack->Vec, (StackData) {.Sint = InstrIndexCurr});
 	StackDataVectorPushMore(stack->Vec, LocCount);
  	if(getError()!=0) // if error occured during PushMorefunctions
  		return false;
@@ -29,9 +29,9 @@ bool ReturnFunction(STACK *stack, uint32_t ArgCount, uint32_t LocCount, uint32_t
 {
 	StackDataVectorPopMore(stack->Vec, LocCount);
 	StackData *x = StackDataVectorPop(stack->Vec);
-	*InstrIndexCurr = x->Suint32 +2; // skip call instruction and go to new
+	*InstrIndexCurr = x->Sint +2; // skip call instruction and go to new
 	x = StackDataVectorPop(stack->Vec);
-	stack->Position = x->Suint32;
+	stack->Position = x->Sint;
 	StackDataVectorPopMore(stack->Vec, ArgCount);
 	StackDataVectorAppend(stack->Vec, ReturnData);
  	if(getError()!=0) // if error occured during vector's functions
