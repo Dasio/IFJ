@@ -73,7 +73,7 @@ void FreeContext(Context *FunCont)
 
 	if(FunCont->LocTable != NULL)
 		free(FunCont->LocTable);
-	FunCont->LocTable = NULL
+	FunCont->LocTable = NULL;
 
 	if(FunCont->arg != NULL)
 		free(FunCont->arg);

@@ -2,14 +2,12 @@
 
 bool LoadGlobalContext(STACK *stack, Context *Fun)
 {
- 	StackDataVectorPushMore(stack->Vec, Fun->ArgCount);
- 	// Instruction and Stack return  is set to 0
- 	StackDataVectorPushMore(stack->Vec, NUMBER_OF_CONTEXT_INFO);
- 	StackDataVectorPushMore(stack->Vec, Fun->LocCount);
+ 	StackDataVectorPushMore(stack->Vec, Fun->LocCount+1);
+ 	// push number of GlobalSymbols
  	if(getError()!=0) // if error occured during PushMorefunctions
  		return false;
 
- 	stack->Position = Fun->ArgCount+1;
+ 	stack->Position = 0;
  	return true;
  }
 

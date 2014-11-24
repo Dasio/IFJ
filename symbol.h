@@ -62,7 +62,7 @@ struct SymbolTableStruct
  * @return          pointer to context
  *
  */
-Context *InitContext(uint32_t);
+Context *InitContext();
 
 /**
  * Init content for funciton
