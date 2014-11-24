@@ -9,14 +9,14 @@ CFLAGS=-g -ffast-math -Ofast -std=c11 -pedantic -Wall -Wextra -ftrapv -fstack-pr
 LDFLAGS=
 #LDLIBS=-lpthread
 
-BIN=interpret
+BIN=ifj
 SRCS=$(wildcard *.c)
 OBJS=$(subst .c,.o,$(SRCS))
 
 all: $(BIN)
 
 $(BIN): $(OBJS) lib.a
-	$(CC) $(LDFLAGS) -o $(BIN) interpret.o lib.a $(LDLIBS)
+	$(CC) $(LDFLAGS) -o $(BIN) $(BIN).o lib.a $(LDLIBS)
 
 depend: .depend
 
@@ -26,8 +26,8 @@ depend: .depend
 
 .PHONY: test
 
-lib.a: $(filter-out interpret.o, $(OBJS))
-	ar -rcs $@ $(filter-out interpret.o, $(OBJS))
+lib.a: $(filter-out $(BIN).o, $(OBJS))
+	ar -rcs $@ $(filter-out $(BIN).o, $(OBJS))
 
 playground: all
 	$(MAKE) -C playground
