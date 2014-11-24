@@ -23,7 +23,7 @@ void params_def(uint8_t next);
 uint8_t stmt(uint8_t empty);
 void stmt_empty();
 void stmt_list();
-void expr();
+
 /**
  * @return: 1 if epsilon rule was used, else 0
  */

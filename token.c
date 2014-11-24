@@ -19,7 +19,6 @@ void destroyToken(Token *token) {
 
 void tokenInfo(Token *token) {
 	assert(token);
-	//printf("Token with str : %s\n", t);
 	switch(token->type) {
 		case TT_identifier: {
 			printf("Token str : ");
@@ -27,7 +26,7 @@ void tokenInfo(Token *token) {
 			break;
 		}
 		case TT_keyword: {
-			printf("Keyword %d", token->keyword_token);
+			printf("Keyword %s", stringifyToken(token));
 			break;
 		}
 		default: break;
