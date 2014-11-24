@@ -14,6 +14,7 @@
 #include <string.h>
 #include "token.h"
 #include "symbol.h"
+#include "instruction.h"
 
 /*
 ____ == type of vector
@@ -136,5 +137,6 @@ GenVectorPrototypesValues(double)
 GenVectorPrototypes(Token)
 GenVectorPrototypes(StackData)
 GenVectorPrototypes(Context)
+GenVectorPrototypes(Instruction)
 
 #endif // VECTOR_H
