@@ -45,6 +45,7 @@ Context *InitContext()
 	FunCont->ArgMax = DEFAULT_ARG_NUM;
 	FunCont->LocSize = DEFAULT_HASH_SIZE;
 	FunCont->InstrucIndex = 0;
+	FunCont->ReturnType = T_Undefined;
 	return FunCont;
 }
 

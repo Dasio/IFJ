@@ -35,6 +35,7 @@ typedef struct
 	uint32_t LocSize; // size of HashTable
 	uint32_t LocCount; // number of symbols
 	uint32_t InstrucIndex; // index of start in Instruction Tape
+	SymbolType ReturnType // Type of return value
 }Context;
 
 typedef struct
