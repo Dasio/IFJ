@@ -1,6 +1,7 @@
 #include "system.h"
 #include "error.h"
 #include "string.h"
+#include "vector.h"
 
 #ifndef _STACK_H
 #define _STACK_H
@@ -21,17 +22,16 @@
 		String Sstring;
 	} StackData;
 
-	typedef struct Vector StackDataVector;
-
-#include "symbol.h"
-#include "vector.h"
+	/**
+	 * Vector generation of StackData
+	 */
+	GenVectorPrototypes(StackData)
 
 	typedef struct
 	{
 		uint64_t Position;
 		StackDataVector *Vec;
 	} STACK;
-
 
 /**
  * prepare it for global symbols

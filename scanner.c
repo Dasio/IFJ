@@ -1,4 +1,3 @@
-
 #include "scanner.h"
 
 void scannerInfo(Scanner *scanner)

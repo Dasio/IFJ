@@ -17,7 +17,6 @@
 
 #include "istream.h"
 #include "token.h"
-#include "vector.h"
 
 /*
  * Enumeration of possible states of scanner.

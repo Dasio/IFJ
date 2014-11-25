@@ -4,6 +4,7 @@
 
 #include "system.h"
 #include "string.h"
+#include "vector.h"
 
 #ifndef _TOKEN_H
 #define _TOKEN_H
@@ -120,5 +121,10 @@
 	 * @return       Literal describing token (TT_less -> "<")
 	 */
 	char *stringifyToken(Token *token);
+
+	/**
+	 * Vector generation for type Token
+	 */
+	GenVectorPrototypes(Token)
 
 #endif

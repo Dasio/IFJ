@@ -5,6 +5,7 @@
 #include "symbol.h"
 #include "error.h"
 #include "stack.h"
+#include "expr.h"
 
 void parse();
 void program();

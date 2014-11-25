@@ -1,5 +1,3 @@
-#include "system.h"
-#include "string.h"
 #include "token.h"
 
 Token initToken() {
@@ -144,3 +142,5 @@ char *stringifyToken(Token *token) {
 		}
 	}
 }
+
+GenVectorFunctions(Token)

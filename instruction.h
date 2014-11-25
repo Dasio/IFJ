@@ -2,7 +2,9 @@
  * Definition of instruction
  */
 
+#include "system.h"
 #include "string.h"
+#include "vector.h"
 
 #ifndef _INSTRUCTION_H
 #define _INSTRUCTION_H
@@ -55,5 +57,7 @@
 		Operand src_2;
 		Operand dst;
 	} Instruction;
+
+	GenVectorPrototypes(Instruction)
 
 #endif

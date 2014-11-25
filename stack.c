@@ -56,3 +56,5 @@ StackData *StackReadValue(STACK *stack, int index)
 		index--;
 	return StackDataVectorAt(stack->Vec, stack->Position+index);
 }
+
+GenVectorFunctions(StackData)
