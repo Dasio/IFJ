@@ -29,7 +29,7 @@ GenVectorPrototypes(ExprToken)
 
 // after a call of expr(), value of the expression is stored on the top of stack
 void expr();
-void TokenVectorPrint(ExprTokenVector *tokenVector);
+void ExprTokenVectorPrint(ExprTokenVector *tokenVector);
 
 
 #endif

@@ -53,7 +53,7 @@ void expr()
 	token++;
 	TokenVectorAppend(token_vector, *token);
 
-	TokenVectorPrint(token_vector);
+	ExprTokenVectorPrint(token_vector);
 
 	// if(is_term(token)) // Term ?
 	// {
