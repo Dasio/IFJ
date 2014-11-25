@@ -93,8 +93,6 @@ char *stringifyToken(Token *token) {
 					return("begin");
 				case Key_boolean:
 					return("boolean");
-				case Key_div:
-					return("div");
 				case Key_do:
 					return("do");
 				case Key_else:
