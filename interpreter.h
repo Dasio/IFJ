@@ -14,4 +14,17 @@
 	 */
 	void initInterpret();
 
+	/**
+	 * Appends instruction to end of instruction tape.
+	 * @param op Op code of instruction (see instruction.h)
+	 * @param a  Operand A (Source A)
+	 * @param b  Operand B (Source B)
+	 * @param c  Operand C (Destination C)
+	 */
+	void appendInstruction(InstructionOp op, Operand a, Operand b, Operand c);
+
+	void setStartingPosition(uint32_t position);
+
+	void runInterpretation();
+
 #endif
