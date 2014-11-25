@@ -34,15 +34,23 @@ void parse()
 void program()
 {
 	var_declr();
-	if(getError()) return;
+	if(getError())
+		return;
 
 	func();
-	if(getError()) return;
+	if(getError())
+		return;
 
 	compound_stmt(0);
-	if(getError()) return;
+	if(getError())
+		return;
 
-	// @TODO, dot have to be at end
+	token++;
+	if(token->type != TT_dot)
+	{
+		setError(ERR_Syntax);
+		return;
+	}
 	// Check if every token was parsed
 	token++;
 	if(token->type != TT_empty)
@@ -139,7 +147,8 @@ void func()
 	name = token->str.data;
 	funcContext = InitContext(argsMax);
 	param_def_list();
-	if(getError()) return;
+	if(getError())
+		return;
 
 	token++;
 	if(token->type != TT_colon)
@@ -181,10 +190,12 @@ void func()
 	printf("Symbol(Function) added name = %s type = %d, index = %d, argsCount = %d\n",x->data.name,x->data.type,x->data.index,funcContext->ArgCount);
 
 	forward();
-	if(getError()) return;
+	if(getError())
+		return;
 
 	func();
-	if(getError()) return;
+	if(getError())
+		return;
 }
 void forward()
 {
@@ -206,10 +217,12 @@ void forward()
 		activeContext = funcContext;
 		locIndex = &locFIndex;
 		var_declr();
-		if(getError()) return;
+		if(getError())
+			return;
 
 		compound_stmt(1);
-		if(getError()) return;
+		if(getError())
+			return;
 		// Switch back to main context
 		activeContext = mainContext;
 		locIndex = &locMIndex;
@@ -227,7 +240,8 @@ void param_def_list()
 	}
 
 	params_def(0);
-	if(getError()) return;
+	if(getError())
+		return;
 
 	// Token loaded from params
 	if(token->type != TT_rightBrace)
@@ -288,8 +302,50 @@ void params_def(uint8_t next)
 	printf("Symbol(Variable) added name = %s type = %d, index = %d\n",x->data.name,x->data.type,x->data.index);
 
 	params_def(1);
-	if(getError()) return;
+	if(getError())
+		return;
 
+}
+void term_list()
+{
+	token++;
+	if(token->type != TT_leftBrace)
+	{
+		setError(ERR_Syntax);
+		return;
+	}
+
+	terms(0);
+	if(getError())
+		return;
+
+	// Token loaded from terms
+	if(token->type != TT_rightBrace)
+	{
+		setError(ERR_Syntax);
+		return;
+	}
+}
+void terms(uint8_t next)
+{
+	if(next)
+	{
+		token++;
+		// Epsilon rule
+		if(token->type != TT_comma)
+			return;
+	}
+	token++;
+	// If token is not term(bool,int,double,string)
+	if(token->type < TT_bool || token->type > TT_string)
+	{
+		setError(ERR_Syntax);
+		return;
+	}
+
+	terms(1);
+	if(getError())
+		return;
 }
 void compound_stmt(uint8_t semicolon)
 {
@@ -299,7 +355,8 @@ void compound_stmt(uint8_t semicolon)
 		return;
 	}
 	stmt_empty();
-	if(getError()) return;
+	if(getError())
+		return;
 
 	// token loaded from stmt()
 
@@ -328,22 +385,27 @@ void stmt_list()
 		return;
 
 	stmt(0);
-	if(getError()) return;
+	if(getError())
+		return;
 
 	stmt_list();
-	if(getError()) return;
+	if(getError())
+		return;
 }
 void stmt_empty()
 {
 	token++;
 	// Check epsilon rule
 	uint8_t epsilon = stmt(1);
-	if(getError()) return;
+	if(getError())
+		return;
 	// Epsilon rule was used
-	if(epsilon) return;
+	if(epsilon)
+		return;
 
 	stmt_list();
-	if(getError()) return;
+	if(getError())
+		return;
 
 }
 uint8_t stmt(uint8_t empty)
@@ -362,7 +424,8 @@ uint8_t stmt(uint8_t empty)
 				return 0;
 			}
 			expr();
-			if(getError()) return 0;
+			if(getError())
+				return 0;
 			break;
 		case TT_keyword:
 			switch(token->keyword_token)
@@ -370,7 +433,8 @@ uint8_t stmt(uint8_t empty)
 				// 2. rule = IF Statement
 				case Key_if:
 					expr();
-					if(getError()) return 0;
+					if(getError())
+						return 0;
 
 					token++;
 					if(token->type != TT_keyword || token->keyword_token != Key_then)
@@ -381,15 +445,18 @@ uint8_t stmt(uint8_t empty)
 					// compound_stmt expect already loaded token
 					token++;
 					compound_stmt(0);
-					if(getError()) return 0;
+					if(getError())
+						return 0;
 
 					epsilon = if_n();
-					if(getError()) return 0;
+					if(getError())
+						return 0;
 					break;
 				// 3. rule = While cycle
 				case Key_while:
 					expr();
-					if(getError()) return 0;
+					if(getError())
+						return 0;
 
 					token++;
 					if(token->type != TT_keyword || token->keyword_token != Key_do)
@@ -400,18 +467,23 @@ uint8_t stmt(uint8_t empty)
 					// compound_stmt expect already loaded token
 					token++;
 					compound_stmt(0);
-					if(getError()) return 0;
+					if(getError())
+						return 0;
 					break;
 				case Key_begin:
 					compound_stmt(0);
-					if (getError()) return 0;
+					if (getError())
+						return 0;
 					break;
-				case Key_find:
 				case Key_readln:
-				case Key_sort:
+					readln();
+					if(getError())
+						return 0;
+					break;
 				case Key_write:
-					//param_list();
-					if(getError) return 0;
+					write();
+					if(getError())
+						return 0;
 					break;
 				default:
 					if(empty) return 1;
@@ -446,6 +518,38 @@ uint8_t if_n()
 	// Compound_stmt expect loaded next token
 	compound_stmt(0);
 
-	if(getError()) return 0;
+	if(getError())
+		return 0;
 	return 0;
+}
+
+void readln()
+{
+	// keyword readln already loaded from STMT
+	token++;
+	if(token->type != TT_leftBrace)
+	{
+		setError(ERR_Syntax);
+		return;
+	}
+
+	token++;
+	if(token->type != TT_identifier)
+	{
+		setError(ERR_Syntax);
+		return;
+	}
+
+	token++;
+	if(token->type != TT_rightBrace)
+	{
+		setError(ERR_Syntax);
+		return;
+	}
+}
+
+void write()
+{
+	// keyword write already loaded from STMT
+	term_list();
 }

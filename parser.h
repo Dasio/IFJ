@@ -9,25 +9,30 @@
 void parse();
 void program();
 void var_declr();
-void func();
-void compound_stmt(uint8_t semicolon);
 void var_def(uint8_t next);
+void func();
 void forward();
 void param_def_list();
 void params_def(uint8_t next);
+void compound_stmt(uint8_t semicolon);
+void stmt_list();
+void stmt_empty();
+void term_list();
+void terms(uint8_t next);
 
 /**
  * @param1: 1 if stmt() was called from stmt_empty()
  * @return: 1 if epsilon rule was used, else 0
  */
 uint8_t stmt(uint8_t empty);
-void stmt_empty();
-void stmt_list();
 
 /**
  * @return: 1 if epsilon rule was used, else 0
  */
 uint8_t if_n();
+
+void readln();
+void write();
 
 static inline SymbolType keywordToSymbol (KeywordTokenType key)
 {

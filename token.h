@@ -40,8 +40,9 @@
 		/** Special tokens, corresponding element from union */
 		TT_keyword = 64,
 		TT_identifier = 128, // 8. bit
-		TT_real,
+		TT_bool,
 		TT_integer,
+		TT_real,
 		TT_string,
 
 		/** Special special token, default */
