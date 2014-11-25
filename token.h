@@ -14,7 +14,7 @@
 	 */
 	typedef enum {
 		/** Regular tokens, castable from scanner state */
-		TT_plus,
+		TT_plus,	// must be first
 		TT_minus,
 		TT_multiply,
 		TT_division,

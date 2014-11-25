@@ -5,19 +5,19 @@
 static Token randomToken() {
 	Token t = initToken();
 
-	t.type = RandInt(TT_assignment, TT_special_separator + 1);
+	t.type = RandInt(TT_plus, TT_identifier + 1);
 
-	if(t.type == TT_special_separator + 0) {
+	if(t.type == TT_identifier + 0) {
 		t.type = TT_keyword;
 		KeywordTokenType ktt = RandInt(Key_begin+1, Key_none-1);
 		t.keyword_token = ktt;
 	}
 
-	if(t.type == TT_special_separator + 1) {
+	if(t.type == TT_identifier + 1) {
 		t.type = TT_string;
 	}
 
-	// if(t.type == TT_special_separator + 1) {
+	// if(t.type == TT_identifier + 1) {
 	// 	t.type = TT_string
 	// }
 	// TODO: Cover real, integer, string
