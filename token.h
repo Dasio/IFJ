@@ -21,7 +21,7 @@
 		TT_equality,
 		TT_greater,
 		TT_greaterOrEqual,
-		TT_identifier,
+
 		TT_inequality,
 		TT_less,
 		TT_lessOrEqual,
@@ -39,12 +39,13 @@
 		TT_special_separator,
 		/** Special tokens, corresponding element from union */
 		TT_keyword = 64,
+		TT_identifier = 128, // 8. bit
 		TT_real,
 		TT_integer,
 		TT_string,
 
 		/** Special special token, default */
-		TT_empty = 80
+		TT_empty = 512
 	} TokenType;
 
 	/**

@@ -37,6 +37,8 @@ void tokenInfo(Token *token) {
 char *stringifyToken(Token *token) {
 	switch(token->type)
 	{
+		case TT_empty:
+			return("$");
 		case TT_assignment:
 			return(":=");
 		case TT_colon:
