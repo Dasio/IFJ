@@ -8,7 +8,9 @@ SRCS=$(wildcard *.c)
 BINS=$(basename $(SRCS))
 OBJS=$(subst .c,.o,$(SRCS))
 
-all: $(BINS)
+all: all
+	$(MAKE) -C ../ -B -j8
+	$(MAKE) $(BINS) -B -j8
 
 depend: .depend
 
