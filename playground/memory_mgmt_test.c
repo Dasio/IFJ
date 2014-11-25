@@ -10,12 +10,13 @@
 
 int main() {
 	printAllMemoryItems();
-	for(int i = 0; i < 10; i++) {
-		mem_alloc(rand() % 10);
+	unsigned long *current;
+
+	for(unsigned long i = 0; i < 10*1000*1000; i++) {
+		current = mem_alloc(sizeof(unsigned long));
+		// Making pages dirty
+		*current = i;
 	}
-	//printAllMemoryItems();
 
-	printAllMemoryItems();
-	cleanAllMemory();
-
+	implodeMemory();
 }

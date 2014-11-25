@@ -5,23 +5,22 @@
  *      Author: Adam Lucansky <xlucan01@stud.fit.vutbr.cz>
  */
 
+#include "system.h"
+#include "vector.h"
+
 #ifndef MEMORY_MGMT_H
 #define MEMORY_MGMT_H
 
-struct mem_item;
-typedef struct mem_item MemItem;
-
-struct mem_item {
-	void* mem_ptr;
-	uint32_t length;
-	MemItem* prev_item;
-	MemItem* next_item;
-};
-
+/**
+ * Structure used for single allocation,
+ * stacked in MemItemVector (memory_layout)
+ */
 typedef struct {
-	MemItem *head;
-	MemItem *tail;
-} MemList;
+	void* mem_ptr;    // Pointer itself
+	uint16_t length;  // Length of allocated space
+} MemItem;
+
+GenVectorPrototypes(MemItem)
 
 /*
  * Replacement function for regular malloc(),
@@ -34,6 +33,13 @@ void *mem_alloc(size_t len);
  * Free's all allocated memory blocks
  */
 void cleanAllMemory();
+
+/**
+ * Cleans all pointers and deallocates memory management.
+ * Use right before returning from main, otherwise exit() must proceed after.
+ * Use with caution ^_^
+ */
+void implodeMemory();
 
 /*
  * Prints pointers to all allocated blocks

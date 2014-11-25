@@ -5,34 +5,23 @@
  *      Author: Adam Lucansky <xlucan01@stud.fit.vutbr.cz>
  */
 
-#include "system.h"
 #include "memory_mgmt.h"
 
-static MemList memory_layout = {
-	.head = NULL,
-	.tail = NULL
-};
+GenVectorFunctions(MemItem)
+
+static MemItemVector *memory_layout = NULL;
+
+/**
+ * ALLOCATION
+ */
 
 static inline void initMemItemAndAppend(void* mem_ptr, size_t len) {
-	MemItem *new_mem_item = malloc(sizeof(MemItem));
-	MALLOC_TEST(new_mem_item);
-
-	if(memory_layout.tail) {
-		memory_layout.tail->next_item = new_mem_item;
+	if(memory_layout == NULL) {
+		memory_layout = MemItemInitVector(512);
 	}
-	new_mem_item->mem_ptr = mem_ptr;
-	new_mem_item->prev_item = memory_layout.tail;
-	new_mem_item->next_item = NULL;
-	new_mem_item->length = len;
-	if(!memory_layout.head)
-		memory_layout.head = new_mem_item;
-	memory_layout.tail = new_mem_item;
-}
 
-static inline void mem_dealloc(MemItem *item) {
-	free(item->mem_ptr);
-	item->mem_ptr = NULL;
-	item->length = 0;
+	MemItem item = { .mem_ptr = mem_ptr, .length = len };
+	MemItemVectorAppend(memory_layout, item);
 }
 
 void *mem_alloc(size_t len) {
@@ -43,26 +32,52 @@ void *mem_alloc(size_t len) {
 	return mem_ptr;
 }
 
-void cleanAllMemory() {
-	MemItem *curr = memory_layout.tail;
-	MemItem *prev = NULL;
-	while(curr) {
-		prev = curr->prev_item;
-		mem_dealloc(curr);
-		free(curr);
+/**
+ * DEALLOCATION
+ */
 
-		if(prev == NULL)
-			break;
-
-		curr = prev;
+/**
+ * Use only after cleaning memory. Use implodeMemory().
+ */
+static inline void destroyMemoryManagement() {
+	if(memory_layout != NULL) {
+		// Memory must be already cleaned
+		MemItemVectorFree(memory_layout);
+		memory_layout = NULL;
 	}
 }
 
+void cleanAllMemory() {
+	if(memory_layout == NULL)
+		return;
+
+	MemItem *current;
+
+	while((current = MemItemVectorLast(memory_layout)) != NULL) {
+		free(current->mem_ptr);
+		MemItemVectorPop(memory_layout);
+	}
+}
+
+void implodeMemory() {
+	cleanAllMemory();
+	destroyMemoryManagement();
+}
+
+/**
+ * OTHER
+ */
+
 void printAllMemoryItems() {
-	MemItem *curr;
-	for (curr = memory_layout.head; curr != NULL;
-			curr = curr->next_item) {
-		printf("%p\n", curr->mem_ptr);
+	if(memory_layout == NULL)
+		return;
+
+	MemItem *current = MemItemVectorFirst(memory_layout);
+	if(current == NULL)
+		return;
+	MemItem *last = MemItemVectorLast(memory_layout);
+	for(; current <= last; current++) {
+		printf("Pointer %p, len: %d\n", current->mem_ptr, current->length);
 	}
 }
 
