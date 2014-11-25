@@ -15,6 +15,7 @@
 #include "token.h"
 #include "symbol.h"
 #include "instruction.h"
+#include "expr.h"
 
 /*
 ____ == type of vector
@@ -29,7 +30,7 @@ ____ == type of vector
 * ____VectorPop(*Vect);
 * ____VectorPopMore(*Vect, Number);
 *
-* ____VectorAtSet(*Vect, Index)
+* ____VectorAtSet(*Vect, Index, Value)
 * ____VectorAt(*Vect, Index);
 *
 * ____VectorFirst(*Vect);
@@ -134,7 +135,6 @@ GenVectorPrototypes(int)
 GenVectorPrototypesValues(int)
 GenVectorPrototypes(double)
 GenVectorPrototypesValues(double)
-GenVectorPrototypes(Token)
 GenVectorPrototypes(StackData)
 GenVectorPrototypes(Context)
 GenVectorPrototypes(Instruction)

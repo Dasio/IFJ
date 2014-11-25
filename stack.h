@@ -28,7 +28,7 @@
 
 	typedef struct
 	{
-		uint32_t Position;
+		uint64_t Position;
 		StackDataVector *Vec;
 	} STACK;
 

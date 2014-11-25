@@ -6,7 +6,7 @@ Context *mainContext;
 Context *funcContext;
 Context *activeContext;
 /*
-if(token->type != TT_integer)
+if(token-Rtype != TT_integer)
 	{
 		setError(ERR_Syntax);
 		return;
@@ -14,35 +14,64 @@ if(token->type != TT_integer)
 */
 
 
+typedef enum
+{
+	S,		// shift
+    R,		// reduce
+    H,		// handle
+    E,		// error
+} TokenPrecedence;
+
+static int precedence_table[TT_assignment][TT_assignment]
+{
+/*         +   -   *   /   <   >   <=  >=  =   <>  (   )   f   ,   $  var                     */
+/*  +  */{ R , R , S , S , R , R , R , R , R , R , S , R , R , S , R , S  }
+/*  -  */{ R , R , S , S , R , R , R , R , R , R , S , R , R , S , R , S  }
+/*  *  */{ R , R , R , R , R , R , R , R , R , R , S , R , R , S , R , S  }
+/*  /  */{ R , R , R , R , R , R , R , R , R , R , S , R , R , S , R , S  }
+/*  <  */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S  }
+/*  >  */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S  }
+/*  <= */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S  }
+/*  >= */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S  }
+/*  =  */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S  }
+/*  <> */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S  }
+/*  (  */{ S , S , S , S , S , S , S , S , S , S , S , H , E , S , H , S  }
+/*  )  */{ R , R , R , R , R , R , R , R , R , R , E , R , R , E , R , E  }
+/*  f  */{ E , E , E , E , E , E , E , E , E , E , H , E , E , E , E , E  }
+/*  ,  */{ S , S , S , S , S , S , S , S , S , S , S , H , E , S , H , S  }
+/*  $  */{ S , S , S , S , S , S , S , S , S , S , S , E , E , S , E , S  }
+/* var */{ R , R , R , R , R , R , R , R , R , R , E , R , R , E , R , E  }
+}
+
+
 void expr()
 {
-	TokenVector *tokenVector = TokenInitVector(32);
+	TokenVector *token_vector = TokenInitVector(32);
 	Token empty = initToken();
-	TokenVectorAppend(tokenVector, empty); // first token, (empty = $)
+	TokenVectorAppend(token_vector, empty); // first token, (empty = $)
 
 	token++;
-	TokenVectorAppend(tokenVector, *token);
+	TokenVectorAppend(token_vector, *token);
 
-	TokenVectorPrint(tokenVector);
+	TokenVectorPrint(token_vector);
 
-	if((token->type & 128) != 1) // Term ?
+	if(is_term(token)) // Term ?
 	{
 		setError(ERR_Syntax);
 		return;
 	}
 
-
-
-
+	precedence(TT_plus,TT_plus)
 }
 
-void TokenVectorPrint(TokenVector *tokenVector)
+
+void ExprTokenVectorPrint(ExprTokenVector *token_vector)
 {
 	//printf("\n");
 
-	for (uint32_t i = 0; i < tokenVector->used; i++)
+	for (uint32_t i = 0; i < token_vector-Rused; i++)
 	{
-		printf("%s ", stringifyToken(TokenVectorAt(tokenVector, i)));
+		printf("%s ", stringifyToken(TokenVectorAt(token_vector, i)));
 	}
 	printf("\n");
 }

@@ -1,16 +1,30 @@
+#include "symbol.h"
+#include "error.h"
+#include "parser.h"
+
 #ifndef EXPR_H
 #define EXPR_H
 
-#include "symbol.h"
-#include "error.h"
-#include "stack.h"
-#include "parser.h"
+/*#define TERM 128
+#define is_term(token) (token->type & TERM)*/
+#define precedence(type1, type2)
 
+typedef enum { ON_STACK, IN_TOKEN } Tplacement;
+
+typedef struct
+{
+	union
+    {
+        Token *token;
+        int64_t index;
+    };
+    Tplacement location;
+} ExprToken;
 
 
 // after a call of expr(), value of the expression is stored on the top of stack
 void expr();
-void TokenVectorPrint(TokenVector *tokenVector);
+void TokenVectorPrint(ExprTokenVector *tokenVector);
 
 
 #endif

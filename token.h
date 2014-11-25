@@ -13,40 +13,37 @@
 	 */
 	typedef enum {
 		/** Regular tokens, castable from scanner state */
-		TT_assignment,
-		TT_colon,
-		TT_comma,
-		TT_division,
-		TT_dot,
-		TT_equality,
-		TT_greater,
-		TT_greaterOrEqual,
-
-		TT_inequality,
-		TT_less,
-		TT_lessOrEqual,
-		TT_leftBrace,
-		TT_leftCurlyBrace,
-		TT_leftSquareBrace,
+		TT_plus,
 		TT_minus,
 		TT_multiply,
-		TT_plus,
+		TT_division,
+		TT_less,
+		TT_greater,
+		TT_lessOrEqual,
+		TT_greaterOrEqual,
+		TT_equality,
+		TT_inequality,
+		TT_leftBrace,
 		TT_rightBrace,
+		TT_function, // not used in scanner
+		TT_comma,
+		TT_empty, // special token, default value
+		TT_identifier,
+		TT_real,
+		TT_integer,
+		TT_string,
+		TT_bool,
+
+		TT_assignment, // must stay here !!! :D
+		TT_colon,
+		TT_dot,
+		TT_semicolon,
+		TT_leftCurlyBrace,
+		TT_leftSquareBrace,
 		TT_rightCurlyBrace,
 		TT_rightSquareBrace,
-		TT_semicolon,
 
-		TT_special_separator,
-		/** Special tokens, corresponding element from union */
-		TT_keyword = 64,
-		TT_identifier = 128, // 8. bit
-		TT_bool,
-		TT_integer,
-		TT_real,
-		TT_string,
-
-		/** Special special token, default */
-		TT_empty = 512
+		TT_keyword
 	} TokenType;
 
 	/**
