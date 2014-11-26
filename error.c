@@ -17,6 +17,9 @@ void printError()
         case ERR_Syntax:
             printErrorDetails("Syntax error");
             break;
+        case ERR_SyntaxExpr:
+            printErrorDetails("Error in syntax of expression");
+            break;
         case ERR_Unknown:
             printErrorDetails("Unknown error");
             break;
@@ -37,7 +40,7 @@ void printError()
 void printErrorDetails(const char *description)
 {
     fprintf(stderr,"%s in file \"%s\" at line: %u\n",description,error.file,error.line);
-    if(error.state == ERR_Syntax)
+    if(error.state == ERR_Syntax || error.state == ERR_SyntaxExpr)
     {
      fprintf(stderr,"Current token: %s\n",stringifyToken(token));
     }

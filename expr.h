@@ -30,8 +30,6 @@ GenVectorPrototypes(ExprToken)
 
 // after a call of expr(), value of the expression is stored on the top of stack
 void expr();
-ExprToken *allocExprToken();
-void destroyExprToken(ExprToken *expr_token);
 void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector);
 
 

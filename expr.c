@@ -1,5 +1,4 @@
 #include "expr.h"
-#include "vector.h"
 
 //extern void *mem_alloc(size_t len);
 extern Token *token;
@@ -21,15 +20,9 @@ typedef enum
 	S,		// shift
 	R,		// reduce
 	H,		// handle
-	E,		// error
+	E		// error
 } TokenPrecedence;
-enum
-{
-	SHIFT,		// shift
-    REDUCE,		// reduce
-    HANDLE,		// handle
-    ERROR,		// error
-};
+enum { SHIFT = S, REDUCE = R, HANDLE = H, ERROR = E};
 
 
 static int precedence_table[TT_assignment][TT_assignment] =
@@ -58,47 +51,40 @@ void expr()
 {
 	int action;
 	token++;
-	/*
-	if(token->type != TT_integer)
+
+
+	// TT_minus too if we want to implement unary minus
+	if(token->type != TT_leftBrace && !(token->type >= TT_identifier && token->type <= TT_bool))
 	{
-		setError(ERR_Syntax);
+		setError(ERR_SyntaxExpr);
+		printError();
 		return;
 	}
-	*/
 
 	ExprTokenVector *expr_token_vector = ExprTokenVectorInit(32);
 
 	assert(tokenVector);
 	convert_to_ExprToken(TokenVectorLast(tokenVector)); // add $ to expr. stack
 	ExprTokenVectorAppend(expr_token_vector, temp_expr_token); // first token, (empty = $)
-	// [$,,,,,]
+	// [$, , , , , ]
 
-
-
-
-	// if(is_term(token)) // Term ?
-	// {
-	// 	setError(ERR_Syntax);
-	// 	return;
-	// }
 	while (token_to_index(token) != TT_empty)
 	{
 		convert_to_ExprToken(token);
 		action = precedence(expr_token_vector);
 		if (action == ERROR)
 		{
-			fprintf(stderr, "A syntax error occurred during evaluation of expression.\n"
-							"Token: %s\n", stringifyToken(token));
 			setError(ERR_SyntaxExpr);
+			printError();
 			return;
 		}
 
-		printf(" %d\n", precedence(expr_token_vector));
+		//printf(" %d\n", action;
 
 		ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
 		token++;
 	}
-	ExprTokenVectorPrint(expr_token_vector);
+	//ExprTokenVectorPrint(expr_token_vector);
 
 	ExprTokenVectorFree(expr_token_vector);
 }
@@ -119,25 +105,13 @@ void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector)
 }
 
 /*
-typedef struct
-{
-	union
-	{
-		Token *token;
-		uint64_t index;
-	};
-	ExprToken_type type;
-
-} ExprToken;
-*/
-
 ExprToken *allocExprToken()
 {
 	ExprToken *new_expr_token = malloc(sizeof(ExprToken));
 	new_expr_token->type = TERM;
 
 	//new_expr_token->token = malloc(sizeof(Token));
-	//*(new_expr_token->token) = initToken();
+	//(new_expr_token->token) = initToken();
 
 	return new_expr_token;
 }
@@ -148,7 +122,7 @@ void destroyExprToken(ExprToken *expr_token)
 	//destroyToken(expr_token->token);
 	//free(expr_token->token);
 	free(expr_token);
-}
+}*/
 
 static inline void convert_to_ExprToken(Token *token)
 {
