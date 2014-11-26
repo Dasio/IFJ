@@ -333,7 +333,7 @@ void terms(uint8_t next)
 	}
 	token++;
 	// If token is not term(bool,int,double,string)
-	if(token->type < TT_bool || token->type > TT_string)
+	if(token->type < TT_real || token->type > TT_bool)
 	{
 		setError(ERR_Syntax);
 		return;
@@ -420,6 +420,7 @@ uint8_t stmt(uint8_t empty)
 				return 0;
 			}
 			expr();
+			token--;
 			if(getError())
 				return 0;
 			break;
@@ -432,7 +433,6 @@ uint8_t stmt(uint8_t empty)
 					if(getError())
 						return 0;
 
-					token++;
 					if(token->type != TT_keyword || token->keyword_token != Key_then)
 					{
 						setError(ERR_Syntax);
@@ -454,7 +454,6 @@ uint8_t stmt(uint8_t empty)
 					if(getError())
 						return 0;
 
-					token++;
 					if(token->type != TT_keyword || token->keyword_token != Key_do)
 					{
 						setError(ERR_Syntax);
