@@ -7,8 +7,8 @@
 #include "vector.h"
 #include "stack.h"
 
-#ifndef _INTERPRET_H
-#define _INTERPRET_H
+#ifndef _INTERPRETER_H
+#define _INTERPRETER_H
 	/**
 	 * Initializes instruction tape in module
 	 */
@@ -21,9 +21,7 @@
 	 * @param b  Operand B (Source B)
 	 * @param c  Operand C (Destination C)
 	 */
-	void appendInstruction(InstructionOp op, Operand a, Operand b, Operand c);
-
-	void setStartingPosition(uint32_t position);
+	void generateInstruction(InstructionOp op, Operand a, Operand b, Operand c);
 
 	void runInterpretation();
 
