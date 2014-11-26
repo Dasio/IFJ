@@ -173,11 +173,17 @@ SymbolTable *SymbolFind(Context *FunCont, char *name)
 
 SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext)
 {
-    if (SymbolFind(FunCont, name) != NULL)
+    SymbolTable *symbol = SymbolFind(FunCont, name);
+    if (symbol != NULL)
     {
         // Symbol already exist
-        setError(ERR_RedefVar);
-        return NULL;
+        // Dont set error for function, handled in addFunction
+        if (SymbolContext == NULL)
+        {
+            setError(ERR_RedefVar);
+            return NULL;
+        }
+        return symbol;
     }
     SymbolTable *newItem = malloc(sizeof(SymbolTable));
     if (newItem == NULL)
@@ -191,6 +197,7 @@ SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *S
     newItem->data.index = FunCont->LocCount++; // unique index in stack
     newItem->data.name = name;
     newItem->data.FunCont = SymbolContext;
+    newItem->data.stateFunc = FS_Undefined;
 
     uint32_t index = GetHash(name, FunCont->LocSize);
 

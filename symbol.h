@@ -21,7 +21,12 @@ typedef enum {
     T_bool,
     T_FunPointer
 } SymbolType;
-
+typedef enum
+{
+    FS_Undefined = 0, /**< Function is just added to GST */
+    FS_Declared, /**< Function is declared */
+    FS_Defined /**< Function is defined */
+} FuncState;
 struct SymbolTableStruct;
 typedef struct SymbolTableStruct SymbolTable;
 
@@ -40,11 +45,12 @@ typedef struct
 
 typedef struct
 {
-	SymbolType type;	// Enum what kind of data are stored
-	int index;			// for variable index in stack
-						// for function NULL
-	char *name;		// Name of variable/function
-	Context *FunCont;	// Pointer to Context of function
+    SymbolType type;	// Enum what kind of data are stored
+    int index;			// for variable index in stack
+                        // for function NULL
+    char *name;		// Name of variable/function
+    FuncState stateFunc; /**< 0- initial state 1-declared 2-defined*/
+    Context *FunCont;	// Pointer to Context of function
 } Symbol;
 
 // struct in Hash table with data and pointer to next value
@@ -75,6 +81,7 @@ Context *InitContext();
  *
  */
 SymbolTable *AddArgToContext(Context*, SymbolType, char*, Context*);
+
 
 void FreeContext(Context*);
 

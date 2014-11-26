@@ -7,12 +7,6 @@ Token *token;
 Context *mainContext;
 Context *funcContext;
 Context *activeContext;
-uint32_t argsCount = 0;
-int locMIndex = 1;
-int locFIndex = 1;
-int *locIndex = &locMIndex;
-int argIndex = -1;
-static const uint32_t argsMax = 128;
 
 void parse()
 {
@@ -20,7 +14,7 @@ void parse()
 	assignFile(&scanner.input, "testFile2.txt");
 	tokenVector = getTokenVector(&scanner);
 
-	mainContext = InitContext(0);
+	mainContext = InitContext();
 	activeContext = mainContext;
 	token = TokenVectorFirst(tokenVector);
 
@@ -135,9 +129,7 @@ void func()
 		return;
 	// keyword 'function' loaded
 	char *name;
-	// New function => need to reset values
-	argsCount = locFIndex= 0;
-	argIndex=-1;
+	SymbolType returnType;
 
 	token++;
 	if(token->type != TT_identifier)
@@ -146,7 +138,7 @@ void func()
 		return;
 	}
 	name = token->str.data;
-	funcContext = InitContext(argsMax);
+	funcContext = InitContext();
 	param_def_list();
 	if(getError())
 		return;
@@ -171,7 +163,7 @@ void func()
 		case Key_integer:
 		case Key_real:
 		case Key_string:
-			//dosmth
+			returnType = keywordToSymbol(token->keyword_token);
 			break;
 		default:
 			setError(ERR_Syntax);
@@ -184,13 +176,8 @@ void func()
 		setError(ERR_Syntax);
 		return;
 	}
-	// Add function to global symbol table
-	SymbolTable *x = SymbolAdd(mainContext, T_FunPointer, name, funcContext);
-	if(getError())
-		return;
-	printf("Symbol(Function) added name = %s type = %d, index = %d, argsCount = %d\n",x->data.name,x->data.type,x->data.index,funcContext->ArgCount);
 
-	forward();
+	forward(returnType,name);
 	if(getError())
 		return;
 
@@ -198,7 +185,7 @@ void func()
 	if(getError())
 		return;
 }
-void forward()
+void forward(SymbolType returnType, char *name)
 {
 	token++;
 	// 1. rule = Function Forward Declaration
@@ -210,13 +197,23 @@ void forward()
 			setError(ERR_Syntax);
 			return;
 		}
+	// Add declaration of function to GST
+	SymbolTable *x = addFunction(returnType,name,1);
+	if(getError())
+		return;
+	printf("Symbol(Function) added name = %s type = %d, index = %d, argsCount = %d\n",x->data.name,x->data.type,x->data.index,funcContext->ArgCount);
 	}
 	// 2. rule = Function Definition
 	else
 	{
+		// Add definition of function to GST
+		SymbolTable *x = addFunction(returnType,name,2);
+		if(getError())
+			return;
+		printf("Symbol(Function) added name = %s type = %d, index = %d, argsCount = %d\n",x->data.name,x->data.type,x->data.index,funcContext->ArgCount);
+
 		// Switch to function context
 		activeContext = funcContext;
-		locIndex = &locFIndex;
 		var_declr();
 		if(getError())
 			return;
@@ -226,7 +223,6 @@ void forward()
 			return;
 		// Switch back to main context
 		activeContext = mainContext;
-		locIndex = &locMIndex;
 	}
 	// Need load next token
 	token++;
@@ -553,4 +549,36 @@ void write()
 {
 	// keyword write already loaded from STMT
 	term_list();
+}
+
+SymbolTable *addFunction(SymbolType returnType,char* name,uint8_t definition)
+{
+	SymbolTable *symbol = SymbolAdd(mainContext, T_FunPointer, name, funcContext);
+	// Function was already in GST
+	if(symbol->data.stateFunc != FS_Undefined)
+	{
+		if(definition == FS_Defined)
+		{
+			// If was already defined -> error
+			if (symbol->data.stateFunc == FS_Defined)
+			{
+				setError(ERR_RedefVar);
+				return NULL;
+			}
+			// In GST is just declaration
+			else
+				symbol->data.stateFunc = FS_Defined;
+		}
+		else
+		{
+			setError(ERR_RedefVar);
+			return NULL;
+		}
+	}
+	else
+	{
+		symbol->data.stateFunc = definition;
+		funcContext->ReturnType = returnType;
+	}
+	return symbol;
 }
