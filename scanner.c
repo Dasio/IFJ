@@ -90,7 +90,15 @@ Token getToken(Scanner *scanner)
 		}
 	}
 
-	// TODO: Conversion
+	// switch(type.convertTo) {
+	// 	case TT_empty: {
+	// 		break;
+	// 	}
+	// 	case TT_real: {
+
+	// 	}
+
+	// }
 
 	return token;
 }
@@ -320,6 +328,8 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 		case SOS_realDot: {
 			if (isdigit(symbol)) {
 				setState(SOS_real);
+				convertTokenTo(TT_real);
+
 				append_symbol();
 
 				return true;
@@ -555,14 +565,17 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 		/* Strings begin here */
 		case (SOS_string): {
+			// Escape sequence of apostrophe may continue
 			if (symbol == '\'') {
 				setState(SOS_stringApostrophe);
 				return true;
 			}
-			else if (symbol > 31 && symbol <= 255) {
+			// Regular symbol in string
+			else if (symbol > 31) {
 				append_symbol();
 				return true;
 			}
+			// Invalid character
 			else {
 				setState(SOS_error);
 				return true;
