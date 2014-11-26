@@ -17,7 +17,7 @@ void initInterpret() {
 
 	// TODO: Test optimal initial size
 	if(!tape)
-		tape = InstructionInitVector(256);
+		tape = InstructionVectorInit(256);
 
 	return;
 }
