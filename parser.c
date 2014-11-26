@@ -1,6 +1,8 @@
 #include "parser.h"
+#include "expr.h"
 
 static Scanner scanner;
+TokenVector *tokenVector;
 Token *token;
 Context *mainContext;
 Context *funcContext;
@@ -16,7 +18,7 @@ void parse()
 {
 	scanner = initScanner();
 	assignFile(&scanner.input, "testFile2.txt");
-	TokenVector *tokenVector = getTokenVector(&scanner);
+	tokenVector = getTokenVector(&scanner);
 
 	mainContext = InitContext(0);
 	activeContext = mainContext;
