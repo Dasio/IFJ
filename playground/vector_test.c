@@ -6,7 +6,7 @@
 	printf("Last number %d\n", *tmp);
 
 int main() {
-	intVector *vector = intInitVector(4);
+	intVector *vector = intVectorInit(4);
 
 	//int t = {.attr = 1};
 

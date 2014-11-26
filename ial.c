@@ -113,7 +113,7 @@ void QuickSortRecursive(char *arr, int n)
  */
 void QuickSortNonRecursive(char arr[])
 {
-    intVector *vec = intInitVector(8);
+    intVector *vec = intVectorInit(8);
     int r,l,i,j;
     intVectorAppend(vec, 0); //left border of sorting
     intVectorAppend(vec, strlen(arr)-1); //rights border of sorting

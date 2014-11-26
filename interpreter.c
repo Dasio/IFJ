@@ -12,7 +12,7 @@ void initInterpret() {
 	if(tape)
 		return;
 	// TODO: Test optimal initial size
-	tape = InstructionInitVector(256);
+	tape = InstructionVectorInit(256);
 
 	StackInit(stack);
 

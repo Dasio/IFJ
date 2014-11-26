@@ -17,7 +17,7 @@ static MemItemVector *memory_layout = NULL;
 
 static inline void initMemItemAndAppend(void* mem_ptr, size_t len) {
 	if(memory_layout == NULL) {
-		memory_layout = MemItemInitVector(512);
+		memory_layout = MemItemVectorInit(512);
 	}
 
 	MemItem item = { .mem_ptr = mem_ptr, .length = len };

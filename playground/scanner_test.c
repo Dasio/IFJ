@@ -42,7 +42,7 @@ int main()
 
 	//TokenVector *tokvect = getTokenVector(&scanner);
 	//
-	TokenVector *tokvect = TokenInitVector(128);
+	TokenVector *tokvect = TokenVectorInit(128);
 
 	for(int i = 0; i < 4096; i++) {
 		TokenVectorAppend(tokvect, randomToken());

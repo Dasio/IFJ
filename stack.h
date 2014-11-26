@@ -10,7 +10,7 @@
 #define DEFAULT_STACK_SIZE 64
 #define StackInit(stack)			\
 			stack.Position = 0;		\
-			stack.Vec = StackDataInitVector(DEFAULT_STACK_SIZE)
+			stack.Vec = StackDataVectorInit(DEFAULT_STACK_SIZE)
 #define StackFree(stack) StackDataVectorFree(stack.Vec)
 
 	// stack structure

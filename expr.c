@@ -19,10 +19,17 @@ static inline ExprToken *findTopMostTerm(ExprTokenVector *expr_token_vector);
 typedef enum
 {
 	S,		// shift
-    R,		// reduce
-    H,		// handle
-    E,		// error
+	R,		// reduce
+	H,		// handle
+	E,		// error
 } TokenPrecedence;
+enum
+{
+	SHIFT,		// shift
+    REDUCE,		// reduce
+    HANDLE,		// handle
+    ERROR,		// error
+};
 
 
 static int precedence_table[TT_assignment][TT_assignment] =
@@ -49,25 +56,51 @@ static int precedence_table[TT_assignment][TT_assignment] =
 
 void expr()
 {
+	int action;
 	token++;
+	/*
+	if(token->type != TT_integer)
+	{
+		setError(ERR_Syntax);
+		return;
+	}
+	*/
 
-	ExprTokenVector *expr_token_vector = ExprTokenInitVector(32);
+	ExprTokenVector *expr_token_vector = ExprTokenVectorInit(32);
 
 	assert(tokenVector);
 	convert_to_ExprToken(TokenVectorLast(tokenVector)); // add $ to expr. stack
 	ExprTokenVectorAppend(expr_token_vector, temp_expr_token); // first token, (empty = $)
+	// [$,,,,,]
 
 
 
-	ExprTokenVectorPrint(expr_token_vector);
 
 	// if(is_term(token)) // Term ?
 	// {
 	// 	setError(ERR_Syntax);
 	// 	return;
 	// }
+	while (token_to_index(token) != TT_empty)
+	{
+		convert_to_ExprToken(token);
+		action = precedence(expr_token_vector);
+		if (action == ERROR)
+		{
+			fprintf(stderr, "A syntax error occurred during evaluation of expression.\n"
+							"Token: %s\n", stringifyToken(token));
+			setError(ERR_SyntaxExpr);
+			return;
+		}
 
-	precedence(expr_token_vector);
+		printf(" %d\n", precedence(expr_token_vector));
+
+		ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
+		token++;
+	}
+	ExprTokenVectorPrint(expr_token_vector);
+
+	ExprTokenVectorFree(expr_token_vector);
 }
 
 

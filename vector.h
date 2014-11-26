@@ -17,7 +17,7 @@ ____ == type of vector
 * GenVectorPrototypes(type)
 * return pointer for work with structures or values
 *
-* ____InitVector(initial_size);
+* ____VectorInit(initial_size);
 *
 * ____VectorAppend(*Vect, Value);
 * ____VectorPushMore(*Vect, Number);
@@ -62,7 +62,7 @@ struct Vector{
 	/** Initialized vector with initial_size*/					\
 	/** if zero, uses default (8) */							\
 	/** error if malloc failed: return NULL */ 					\
-	type##Vector * type##InitVector(uint32_t initial_size); 	\
+	type##Vector * type##VectorInit(uint32_t initial_size); 	\
 	\
 	/** Add Value to end of vector - ERR_Allocation */			\
 	/** error if realloc failed: return 0 */					\
@@ -135,7 +135,7 @@ struct Vector{
  *
  */
 #define GenVectorFunctions(type) 											\
-	type##Vector * type##InitVector(uint32_t initial_size) {				\
+	type##Vector * type##VectorInit(uint32_t initial_size) {				\
 		if(initial_size == 0)												\
 			initial_size = VECTOR_DEFAULT_SIZE;								\
 		type##Vector *Vect = malloc(sizeof(type##Vector));					\

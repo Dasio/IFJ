@@ -106,7 +106,7 @@ Token getToken(Scanner *scanner)
 TokenVector* getTokenVector(Scanner *scanner)
 {
 	Token t;
-	TokenVector *tokVect = TokenInitVector(128);
+	TokenVector *tokVect = TokenVectorInit(128);
 	while(true) {
 		t = getToken(scanner);
 
