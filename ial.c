@@ -171,19 +171,14 @@ SymbolTable *SymbolFind(Context *FunCont, char *name)
     return item;
 }
 
-SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext)
+SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext, SymbolTable *foundSymbol)
 {
-    SymbolTable *symbol = SymbolFind(FunCont, name);
+    SymbolTable *symbol = foundSymbol?foundSymbol:SymbolFind(FunCont, name);
     if (symbol != NULL)
     {
         // Symbol already exist
-        // Dont set error for function, handled in addFunction
-        if (SymbolContext == NULL)
-        {
-            setError(ERR_RedefVar);
-            return NULL;
-        }
-        return symbol;
+        setError(ERR_RedefVar);
+        return NULL;
     }
     SymbolTable *newItem = malloc(sizeof(SymbolTable));
     if (newItem == NULL)

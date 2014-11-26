@@ -15,6 +15,8 @@ typedef enum
     ERR_SyntaxExpr, /**< ERR_SyntaxExpr */
     ERR_OutOfRange, /**< ERR_OutOfRange */
     ERR_RedefVar, /**< ERR_RedefVar */
+    ERR_RedefFunc, /**< ERR_RedefFunc */
+    ERR_DeclrFunc, /**< ERR_DeclrFunc */
     ERR_Unknown, /**< ERR_Unknown */
 } EErrorStates;
 

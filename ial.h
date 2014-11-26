@@ -79,9 +79,10 @@ SymbolTable *SymbolFind(Context *Cont, char *name);
  * @param  type          Type of symbol
  * @param  name          Name of symbol
  * @param  SymbolContext Pointer to symbol's Context if type is T_FunPointer
+ * @param  foundSymbol   If not null, function dont have to call again SymbolFind
  * @return               Pointer to SymbolTable, NULL if failed
  */
-SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext);
+SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext, SymbolTable *foundSymbol);
 
 
 

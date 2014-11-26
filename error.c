@@ -23,6 +23,12 @@ void printError()
         case ERR_RedefVar:
             printErrorDetails("Variable was redefined");
             break;
+        case ERR_RedefFunc:
+            printErrorDetails("Function was already defined, can't be defined again");
+            break;
+        case ERR_DeclrFunc:
+            printErrorDetails("Function can't be declared more than one time");
+            break;
         default:
             printErrorDetails("Unrecognized error");
     }

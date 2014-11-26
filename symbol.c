@@ -60,7 +60,7 @@ SymbolTable *AddArgToContext(Context *FunCont, SymbolType type, char *name, Cont
 	}
 
 	// add symbol to hash table + add his pointer to array of arguments
-	FunCont->arg[FunCont->ArgCount++] = SymbolAdd(FunCont, type, name, SymbolContext);
+	FunCont->arg[FunCont->ArgCount++] = SymbolAdd(FunCont, type, name, SymbolContext, NULL);
 
 	return FunCont->arg[FunCont->ArgCount-1]; // return pointer to new symbol
 }
