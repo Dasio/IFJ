@@ -3,7 +3,7 @@
 int main() {
 	initInterpret();
 
-	generateInstruction(INST_Push, )
+	//generateInstruction(INST_Push, )
 
 	runInterpretation();
 }
