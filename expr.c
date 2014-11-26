@@ -1,17 +1,19 @@
 #include "expr.h"
 #include "vector.h"
 
+//extern void *mem_alloc(size_t len);
 extern Token *token;
-Context *mainContext;
-Context *funcContext;
-Context *activeContext;
-/*
-if(token-Rtype != TT_integer)
-	{
-		setError(ERR_Syntax);
-		return;
-	}
-*/
+extern TokenVector *tokenVector;
+extern Context *mainContext;
+extern Context *funcContext;
+extern Context *activeContext;
+
+static ExprToken temp_expr_token;
+
+static inline void convert_to_ExprToken(Token *token);
+static inline int token_to_index(Token *token);
+static inline int precedence(ExprTokenVector *expr_token_vector);
+static inline ExprToken *findTopMostTerm(ExprTokenVector *expr_token_vector);
 
 
 typedef enum
@@ -21,6 +23,7 @@ typedef enum
     H,		// handle
     E,		// error
 } TokenPrecedence;
+
 
 static int precedence_table[TT_assignment][TT_assignment] =
 {
@@ -46,14 +49,17 @@ static int precedence_table[TT_assignment][TT_assignment] =
 
 void expr()
 {
-	TokenVector *token_vector = TokenInitVector(32);
-	Token empty = initToken();
-	TokenVectorAppend(token_vector, empty); // first token, (empty = $)
-
 	token++;
-	TokenVectorAppend(token_vector, *token);
 
-	ExprTokenVectorPrint(token_vector);
+	ExprTokenVector *expr_token_vector = ExprTokenInitVector(32);
+
+	assert(tokenVector);
+	convert_to_ExprToken(TokenVectorLast(tokenVector)); // add $ to expr. stack
+	ExprTokenVectorAppend(expr_token_vector, temp_expr_token); // first token, (empty = $)
+
+
+
+	ExprTokenVectorPrint(expr_token_vector);
 
 	// if(is_term(token)) // Term ?
 	// {
@@ -61,17 +67,92 @@ void expr()
 	// 	return;
 	// }
 
-	precedence(TT_plus,TT_plus)
+	precedence(expr_token_vector);
 }
 
 
-void ExprTokenVectorPrint(ExprTokenVector *token_vector)
+void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector)
 {
+	assert(expr_token_vector);
 	//printf("\n");
+	ExprToken *expr_token = NULL;
 
-	for (uint32_t i = 0; i < token_vector->used; i++)
+	for (uint32_t i = 0; i < expr_token_vector->used; i++)
 	{
-		printf("%s ", stringifyToken(TokenVectorAt(token_vector, i)));
+		expr_token = ExprTokenVectorAt(expr_token_vector, i);
+		printf("%s ", stringifyToken(expr_token->token));
 	}
 	printf("\n");
 }
+
+/*
+typedef struct
+{
+	union
+	{
+		Token *token;
+		uint64_t index;
+	};
+	ExprToken_type type;
+
+} ExprToken;
+*/
+
+ExprToken *allocExprToken()
+{
+	ExprToken *new_expr_token = malloc(sizeof(ExprToken));
+	new_expr_token->type = TERM;
+
+	//new_expr_token->token = malloc(sizeof(Token));
+	//*(new_expr_token->token) = initToken();
+
+	return new_expr_token;
+}
+
+void destroyExprToken(ExprToken *expr_token)
+{
+	assert(expr_token);
+	//destroyToken(expr_token->token);
+	//free(expr_token->token);
+	free(expr_token);
+}
+
+static inline void convert_to_ExprToken(Token *token)
+{
+	assert(token); // just in case
+	temp_expr_token.type = TERM;
+	temp_expr_token.token = token;
+}
+
+static inline int token_to_index(Token *token)
+{
+	assert(token);
+	if (token->type > TT_bool)
+		return TT_empty;
+	if (token->type >= TT_identifier)
+		return TT_identifier;
+	return token->type;
+}
+
+static inline int precedence(ExprTokenVector *expr_token_vector)
+{
+	assert(expr_token_vector);
+	ExprToken *top_most_term = findTopMostTerm(expr_token_vector);
+	int index_1 = token_to_index(top_most_term->token); // top most term on expr. stack
+	int index_2 = token_to_index(temp_expr_token.token); // input
+
+	return precedence_table[index_1][index_2];
+}
+
+static inline ExprToken *findTopMostTerm(ExprTokenVector *expr_token_vector)
+{
+	assert(expr_token_vector);
+	ExprToken *top_most_term = ExprTokenVectorLast(expr_token_vector);
+	while(top_most_term->type != TERM)
+		top_most_term--;
+
+	return top_most_term;
+}
+
+
+GenVectorFunctions(ExprToken)
