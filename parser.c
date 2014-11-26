@@ -198,7 +198,7 @@ void forward(SymbolType returnType, char *name)
 			return;
 		}
 	// Add declaration of function to GST
-	SymbolTable *x = addFunction(returnType,name,1);
+	SymbolTable *x = addFunction(returnType,name,FS_Declared);
 	if(getError())
 		return;
 	printf("Symbol(Function) added name = %s type = %d, index = %d, argsCount = %d\n",x->data.name,x->data.type,x->data.index,funcContext->ArgCount);
@@ -207,7 +207,7 @@ void forward(SymbolType returnType, char *name)
 	else
 	{
 		// Add definition of function to GST
-		SymbolTable *x = addFunction(returnType,name,2);
+		SymbolTable *x = addFunction(returnType,name,FS_Defined);
 		if(getError())
 			return;
 		printf("Symbol(Function) added name = %s type = %d, index = %d, argsCount = %d\n",x->data.name,x->data.type,x->data.index,funcContext->ArgCount);
@@ -551,13 +551,13 @@ void write()
 	term_list();
 }
 
-SymbolTable *addFunction(SymbolType returnType,char* name,uint8_t definition)
+SymbolTable *addFunction(SymbolType returnType,char* name,FuncState funcState)
 {
 	SymbolTable *symbol = SymbolAdd(mainContext, T_FunPointer, name, funcContext);
 	// Function was already in GST
 	if(symbol->data.stateFunc != FS_Undefined)
 	{
-		if(definition == FS_Defined)
+		if(funcState == FS_Defined)
 		{
 			// If was already defined -> error
 			if (symbol->data.stateFunc == FS_Defined)
@@ -577,7 +577,7 @@ SymbolTable *addFunction(SymbolType returnType,char* name,uint8_t definition)
 	}
 	else
 	{
-		symbol->data.stateFunc = definition;
+		symbol->data.stateFunc = funcState;
 		funcContext->ReturnType = returnType;
 	}
 	return symbol;
