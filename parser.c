@@ -7,7 +7,9 @@ Token *token;
 Context *mainContext;
 Context *funcContext;
 Context *activeContext;
-ArgList *argList;
+Symbol *funcSymbol;
+uint8_t inGST = 0;
+uint32_t argIndex;
 
 void parse()
 {
@@ -18,14 +20,11 @@ void parse()
 	mainContext = InitContext();
 	activeContext = mainContext;
 	token = TokenVectorFirst(tokenVector);
-	argList = initArgList();
 
 	program();
 	if(getError())
 		printError();
 	// Cleanup
-	freeArgList(argList);
-	free(argList);
 	destroyTokenVector(tokenVector);
 	FreeContext(mainContext);
 	destroyScanner(&scanner);
@@ -132,7 +131,6 @@ void func()
 	if(token->type != TT_keyword || token->keyword_token != Key_function)
 		return;
 	// keyword 'function' loaded
-	char *name;
 	SymbolType returnType;
 	token++;
 	if(token->type != TT_identifier)
@@ -140,7 +138,7 @@ void func()
 		setError(ERR_Syntax);
 		return;
 	}
-	name = token->str.data;
+	addFunc(token->str.data);
 	param_def_list();
 	if(getError())
 		return;
@@ -179,15 +177,19 @@ void func()
 		return;
 	}
 
-	forward(returnType,name);
+	forward(returnType);
 	if(getError())
 		return;
-
+	if(funcContext->argCount != argIndex)
+	{
+		setError(ERR_BadDefArg);
+		return;
+	}
 	func();
 	if(getError())
 		return;
 }
-void forward(SymbolType returnType, char *name)
+void forward(SymbolType returnType)
 {
 	token++;
 	// 1. rule = Function Forward Declaration
@@ -200,19 +202,19 @@ void forward(SymbolType returnType, char *name)
 			return;
 		}
 	// Add declaration of function to GST
-	Symbol *x = addFunction(returnType,name,FS_Declared);
+	updateFunc(returnType,FS_Declared);
 	if(getError())
 		return;
-	printf("Function(Declaration) name = %s type = %d, index = %d, argsCount = %d\n",x->name,x->type,x->index,funcContext->argCount);
+	printf("Function(Declaration) name = %s type = %d, index = %d, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
 	}
 	// 2. rule = Function Definition
 	else
 	{
 		// Add definition of function to GST
-		Symbol *x = addFunction(returnType,name,FS_Defined);
+		updateFunc(returnType,FS_Defined);
 		if(getError())
 			return;
-		printf("Function(Definition) name = %s type = %d, index = %d, argsCount = %d\n",x->name,x->type,x->index,funcContext->argCount);
+		printf("Function(Definition) name = %s type = %d, index = %d, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
 
 		// Switch to function context
 		activeContext = funcContext;
@@ -295,7 +297,7 @@ void params_def(uint8_t next)
 			setError(ERR_Syntax);
 			return;
 	}
-	addArgToList(argList,name,symbolType);
+	addArgToFunc(symbolType,name);
 	if(getError())
 		return;
 	/*SymbolTable *x = AddArgToContext(funcContext, symbolType, name, NULL);
@@ -555,69 +557,77 @@ void write()
 	term_list();
 }
 
-Symbol *addFunction(SymbolType returnType,char* name,FuncState funcState)
+void addFunc(char *name)
 {
-	Symbol *symbol = SymbolFind(mainContext, name);
+	argIndex = 0;
+	funcSymbol = SymbolFind(mainContext, name);
+	if(funcSymbol == NULL)
+	{
+		printf("Added to GST -> ");
+		funcContext = InitContext();
+		if(getError())
+			return;
+		funcSymbol = SymbolAdd(mainContext, T_FunPointer, name, funcContext, NULL);
+		if(getError())
+			return;
+		funcSymbol->stateFunc = FS_Undefined;
+		inGST=0;
+	}
+	// Was already in GST
+	else
+		inGST=1;
+}
+void updateFunc(SymbolType returnType,FuncState funcState)
+{
 	// Function was already in GST
-	if(symbol)
+	if(inGST)
 	{
 		if(funcState == FS_Defined)
 		{
 			// If was already defined -> error
-			if (symbol->stateFunc == FS_Defined)
+			if (funcSymbol->stateFunc == FS_Defined)
 			{
 				setError(ERR_RedefFunc);
-				return NULL;
+				return;
 			}
 			// In GST is just declaration
 			else
 			{
-				if(funcContext->argCount != argList->argCount)
-				{
-					setError(ERR_BadDefArg);
-					return NULL;
-				}
-				Argument *arg = argList->head;
-				for(uint32_t i=0;i<funcContext->argCount;i++)
-				{
-					Symbol *symbol = funcContext->arg[i];
-					if(symbol->type != arg->type || strcmp(symbol->name,arg->name) != 0)
-					{
-						setError(ERR_BadDefArg);
-						return NULL;
-					}
-				}
+				//@todo Adresss Vector
 				printf("Defined -> ");
-				symbol->stateFunc = FS_Defined;
+				funcSymbol->stateFunc = FS_Defined;
 			}
 		}
 		else
 		{
 			setError(ERR_DeclrFunc);
-			return NULL;
+			return;
 		}
 	}
-	// Create new function
+	funcContext->returnType = returnType;
+}
+void addArgToFunc(SymbolType type, char *name)
+{
+	if(inGST)
+	{
+		//Check with declaration
+		if(funcContext->argCount <= argIndex)
+		{
+			setError(ERR_BadDefArg);
+			return;
+		}
+		Symbol *s = funcContext->arg[argIndex];
+		if(s->type != type || strcmp(s->name,name) != 0)
+		{
+			setError(ERR_BadDefArg);
+			return;
+		}
+	}
 	else
 	{
-		printf("Added to GST -> ");
-		funcContext = InitContext();
+		AddArgToContext(funcContext, type, name, NULL);
 		if(getError())
-			return NULL;
-		symbol = SymbolAdd(mainContext, T_FunPointer, name, funcContext, NULL);
-		if(getError())
-			return NULL;
-		symbol->stateFunc = funcState;
-		funcContext->returnType = returnType;
-		// From argList add every argument to context
-		for(Argument *arg = argList->head; arg; arg = arg->next)
-		{
-			AddArgToContext(funcContext, arg->type, arg->name, NULL);
-			if(getError())
-				return NULL;
-		}
-		// erase old arguments from arglist
-		freeArgList(argList);
+			return;
 	}
-	return symbol;
+	argIndex++;
 }

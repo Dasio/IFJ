@@ -5,6 +5,7 @@
 
 #include "error.h"
 #include "string.h"
+#include "vector.h"
 
 #ifndef SYMBOL_H
 #define SYMBOL_H
@@ -56,6 +57,7 @@ struct SymbolStruct
 	char *name;     /**< Name of variable/function */
 	FuncState stateFunc; /**< 0- initial state 1-declared 2-defined */
 	Context *funCont;   /**< Pointer to Context of function */
+    intVector *adressVector; /**< for adding addresses to instruction tape if function */
 };
 
 // struct in Hash table with data and pointer to next value
@@ -104,21 +106,4 @@ Symbol *AddArgToContext(Context*, SymbolType, char*, Context*);
 
 void FreeContext(Context*);
 
-/*
- * Init list for arguments
- */
-ArgList * initArgList();
-/*
- * Add argument to list
- * @param   list   Pointer to list where will argument be added
- * @param   name   Name of argument
- * @param   type   Type of argument
- * @return  Pointer to created argument
- */
-Argument *addArgToList(ArgList *list,char *name,SymbolType type);
-/*
- * Deallocate every item in list inlucding ArgList itself
- * @param   list    Pointer to list which will be destroyed
- */
-void freeArgList(ArgList *list);
 #endif

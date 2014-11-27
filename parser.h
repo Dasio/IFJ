@@ -12,7 +12,7 @@ void program();
 void var_declr();
 void var_def(uint8_t next);
 void func();
-void forward(SymbolType returnType, char *name);
+void forward(SymbolType returnType);
 void param_def_list();
 void params_def(uint8_t next);
 void compound_stmt(uint8_t semicolon);
@@ -34,7 +34,9 @@ uint8_t if_n();
 
 void readln();
 void write();
-Symbol *addFunction(SymbolType returnType,char* name,FuncState funcState);
+void addFunc(char *name);
+void updateFunc(SymbolType returnType,FuncState funcState);
+void addArgToFunc(SymbolType type, char *name);
 
 static inline SymbolType keywordToSymbol (KeywordTokenType key)
 {

@@ -189,7 +189,7 @@ Symbol *SymbolAdd(Context *funCont, SymbolType type, char *name, Context *symbol
 
 	// fill newItem
 	newItem->data.type = type;
-	newItem->data.index = funCont->locCount++; // unique index in stack
+	newItem->data.index = ++(funCont->locCount); // unique index in stack
 	newItem->data.name = name;
 	newItem->data.funCont = symbolContext;
 	newItem->data.stateFunc = FS_Undefined;
