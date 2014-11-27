@@ -51,25 +51,25 @@ void QuickSortRecursive(char *, int);
  */
 unsigned int GetHash(const char* name, unsigned range);
 
-// Free LocTable, use SymbolTableFree function
+// Free LocTable, use SymbolListFree function
 /**
  * Erase LocTable in Context and recursive all Contents stored in Hash table
  * @param Cont Pointer to Context
  */
 void ContextLocTableFree(Context* Cont);
 
-// Free SymbolTable and included Strin
+// Free SymbolList and included Strin
 /**
- * Free SymbolTable TODO? String if included?
- * @param symbol pointer to SymbolTable
+ * Free SymbolList TODO? String if included?
+ * @param symbol pointer to SymbolList
  */
-void SymbolTableFree(SymbolTable* symbol);
+void SymbolListFree(SymbolList* symbol);
 
 /**
  * Find Symbol with specific name
  * @param  Cont Content where to find
  * @param  name Name which we want
- * @return      Pointer to SymbolTable, NULL if failed
+ * @return      Pointer to SymbolList, NULL if failed
  */
 Symbol *SymbolFind(Context *Cont, char *name);
 
@@ -80,7 +80,7 @@ Symbol *SymbolFind(Context *Cont, char *name);
  * @param  name          Name of symbol
  * @param  SymbolContext Pointer to symbol's Context if type is T_FunPointer
  * @param  foundSymbol   If not null, function dont have to call again SymbolFind
- * @return               Pointer to SymbolTable, NULL if failed
+ * @return               Pointer to Symbol, NULL if failed
  */
 Symbol *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext, Symbol *foundSymbol);
 
