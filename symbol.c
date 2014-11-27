@@ -17,7 +17,7 @@ Context *InitContext()
 	}
 
 	// malloc arg array
-	FunCont->arg = malloc(sizeof(struct SymbolTable*)*DEFAULT_ARG_NUM);
+	FunCont->arg = malloc(sizeof(struct SymbolList*)*DEFAULT_ARG_NUM);
 	if(FunCont->arg == NULL)
 	{
 		setError(ERR_Allocation);
@@ -26,7 +26,7 @@ Context *InitContext()
 	}
 
 	// malloc HASH array
-	FunCont->LocTable = malloc(sizeof(struct SymbolTable*)*DEFAULT_HASH_SIZE);
+	FunCont->LocTable = malloc(sizeof(struct SymbolList*)*DEFAULT_HASH_SIZE);
 	if (FunCont->LocTable == NULL)
 	{
 		setError(ERR_Allocation);
@@ -38,6 +38,10 @@ Context *InitContext()
 	// erase HASH array
 	for(unsigned i=0;i<DEFAULT_HASH_SIZE;i++)
 		FunCont->LocTable[i]=NULL;
+
+	// erase arg array
+	for(unsigned i=0;i<DEFAULT_ARG_NUM;i++)
+		FunCont->arg[i]=NULL;
 
     // set other values of Context
 	FunCont->ArgCount = 0;
@@ -60,12 +64,9 @@ Symbol *AddArgToContext(Context *FunCont, SymbolType type, char *name, Context *
 	}
 
 	Symbol *symbol = SymbolAdd(FunCont, type, name, SymbolContext, NULL);
+	FunCont->arg[FunCont->ArgCount++] = symbol;
+	FunCont->LocCount--; // Arguments are not included in LocCount number
 	return symbol;
-
-	/*// add symbol to hash table + add his pointer to array of arguments
-	FunCont->arg[FunCont->ArgCount++] = SymbolAdd(FunCont, type, name, SymbolContext, NULL);
-
-	return FunCont->arg[FunCont->ArgCount-1]; // return pointer to new symbol*/
 }
 
 void FreeContext(Context *FunCont)

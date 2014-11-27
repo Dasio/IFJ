@@ -27,36 +27,41 @@ typedef enum
     FS_Declared, /**< Function is declared */
     FS_Defined /**< Function is defined */
 } FuncState;
-struct SymbolTableStruct;
-typedef struct SymbolTableStruct SymbolTable;
+
+struct SymbolListStruct;
+typedef struct SymbolListStruct SymbolList;
+
+struct SymbolStruct;
+typedef struct SymbolStruct Symbol;
 
 typedef struct
 {
-	SymbolTable **arg; // array of arguments, points to symbol in Hash
+	Symbol **arg; // array of arguments, points to symbol in Hash
 	uint32_t ArgCount;
 	uint32_t ArgMax;
 
-	SymbolTable **LocTable; // Hash of all symbols in this Context
+	SymbolList **LocTable; // Hash of all symbols in this Context
 	uint32_t LocSize; // size of HashTable
-	uint32_t LocCount; // number of symbols
+	uint32_t LocCount; // number of LOCAL symbols
+    // number of symbols in HASH == LocCount + ArgCount
 	uint32_t InstrucIndex; // index of start in Instruction Tape
 	SymbolType ReturnType; // Type of return value
 }Context;
 
-typedef struct
+struct SymbolStruct
 {
-    SymbolType type;	// Enum what kind of data are stored
-    int index;			// for variable index in stack
+    SymbolType type;    // Enum what kind of data are stored
+    int index;          // for variable index in stack
                         // for function NULL
-    char *name;		// Name of variable/function
+    char *name;     // Name of variable/function
     FuncState stateFunc; /**< 0- initial state 1-declared 2-defined*/
-    Context *FunCont;	// Pointer to Context of function
-} Symbol;
+    Context *FunCont;   // Pointer to Context of function
+};
 
 // struct in Hash table with data and pointer to next value
-struct SymbolTableStruct
+struct SymbolListStruct
 {
-	SymbolTable *next;
+	SymbolList *next;
 	Symbol data;
 };
 
@@ -77,7 +82,7 @@ Context *InitContext();
  * @param  SymbolType	type of new symbol
  * @param  char*		name of new symbol
  * @param  Context*		pointer to context if SymbolType == T_FunPointer
- * @return SymbolTable*	pointer to new symbol
+ * @return SymbolList*	pointer to new symbol
  *
  */
 Symbol *AddArgToContext(Context*, SymbolType, char*, Context*);
