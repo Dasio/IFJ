@@ -173,7 +173,7 @@ Symbol *SymbolFind(Context *FunCont, char *name)
 
 Symbol *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext, Symbol *foundSymbol)
 {
-	Symbol *symbol = foundSymbol?foundSymbol:SymbolFind(FunCont, name);
+	Symbol *symbol = foundSymbol?SymbolFind(FunCont, name):foundSymbol;
 	if (symbol != NULL)
 	{
 		// Symbol already exist
