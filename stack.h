@@ -39,7 +39,7 @@
  * @param  num   number of Global symbols
  * @return       true if all OK
  */
-bool LoadGlobalSymbol(STACK *stack, int num);
+bool ReserveGlobalSymbol(STACK *stack, int num);
 
 /**
  * Prepare stack for new function
@@ -57,11 +57,11 @@ bool CallFunction(STACK *stack, uint32_t var, uint32_t inst);
  * @param  stack pointer to stack
  * @param  arg   Number of arguments in function
  * @param  var   Number of local variables in function
- * @param  inst  pointer to InstPointer to change it to new value
+ * @param  inst  pointer to Inst index to change it to old function index +1 -- skip call instruction
  * @param  data  Return data
  * @return       true if all OK
  */
-bool ReturnFunction(STACK *stack, uint32_t arg, uint32_t var, uint32_t* inst, StackData data);
+bool ReturnFunction(STACK *stack, uint32_t arg, uint32_t var, uint32_t* inst);
 
 // StackData to write, int index - negativ represents argument
 /**
