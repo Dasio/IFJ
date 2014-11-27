@@ -9,10 +9,13 @@
 #ifndef _INSTRUCTION_H
 #define _INSTRUCTION_H
 
-	typedef union {
-		int32_t n;
-		double d;
-		String* str;
+	typedef struct {
+
+		union {
+			int32_t n;
+			double d;
+			String* str;
+		};
 	} Operand;
 
 	/**
@@ -32,6 +35,11 @@
 		 * Add's operands from src_1
 		 * Src1
 		 */
+
+
+		INST_SPIncrement,
+		INST_SPDecrement,
+
 		INST_AddI,
 		INST_AddD,
 		INST_AddS,
