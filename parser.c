@@ -7,6 +7,7 @@ Token *token;
 Context *mainContext;
 Context *funcContext;
 Context *activeContext;
+ArgList *argList;
 
 void parse()
 {
@@ -17,11 +18,14 @@ void parse()
 	mainContext = InitContext();
 	activeContext = mainContext;
 	token = TokenVectorFirst(tokenVector);
+	argList = initArgList();
 
 	program();
 	if(getError())
 		printError();
 	// Cleanup
+	freeArgList(argList);
+	free(argList);
 	destroyTokenVector(tokenVector);
 	FreeContext(mainContext);
 	destroyScanner(&scanner);
@@ -130,7 +134,6 @@ void func()
 	// keyword 'function' loaded
 	char *name;
 	SymbolType returnType;
-
 	token++;
 	if(token->type != TT_identifier)
 	{
@@ -292,6 +295,9 @@ void params_def(uint8_t next)
 			setError(ERR_Syntax);
 			return;
 	}
+	addArgToList(argList,name,symbolType);
+	if(getError())
+		return;
 	/*SymbolTable *x = AddArgToContext(funcContext, symbolType, name, NULL);
 	if(getError())
 		return;
@@ -589,6 +595,15 @@ Symbol *addFunction(SymbolType returnType,char* name,FuncState funcState)
 			return NULL;
 		symbol->stateFunc = funcState;
 		funcContext->ReturnType = returnType;
+		// From argList add every argument to context
+		for(Argument *arg = argList->head; arg; arg = arg->next)
+		{
+			AddArgToContext(funcContext, arg->type, arg->name, NULL);
+			if(getError())
+				return NULL;
+		}
+		// erase old arguments from arglist
+		freeArgList(argList);
 	}
 	return symbol;
 }

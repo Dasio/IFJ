@@ -65,6 +65,18 @@ struct SymbolListStruct
 	Symbol data;
 };
 
+typedef struct ArgumentStruct Argument;
+struct ArgumentStruct
+{
+    char* name;
+    SymbolType type;
+    Argument *next;
+};
+typedef struct
+{
+    Argument *head;
+    Argument *last;
+}ArgList;
 #include "ial.h"
 #include "stack.h"
 
@@ -90,4 +102,21 @@ Symbol *AddArgToContext(Context*, SymbolType, char*, Context*);
 
 void FreeContext(Context*);
 
+/*
+ * Init list for arguments
+ */
+ArgList * initArgList();
+/*
+ * Add argument to list
+ * @param   list   Pointer to list where will argument be added
+ * @param   name   Name of argument
+ * @param   type   Type of argument
+ * @return  Pointer to created argument
+ */
+Argument *addArgToList(ArgList *list,char *name,SymbolType type);
+/*
+ * Deallocate every item in list inlucding ArgList itself
+ * @param   list    Pointer to list which will be destroyed
+ */
+void freeArgList(ArgList *list);
 #endif

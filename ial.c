@@ -168,12 +168,12 @@ Symbol *SymbolFind(Context *FunCont, char *name)
 	for(; item != NULL; item=item->next)
 		if(strcmp(item->data.name, name) == 0)
 			break;
-	return &(item->data);
+	return item == NULL ? NULL : &(item->data);
 }
 
 Symbol *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext, Symbol *foundSymbol)
 {
-	Symbol *symbol = foundSymbol?SymbolFind(FunCont, name):foundSymbol;
+	Symbol *symbol = foundSymbol?foundSymbol:SymbolFind(FunCont, name);
 	if (symbol != NULL)
 	{
 		// Symbol already exist
