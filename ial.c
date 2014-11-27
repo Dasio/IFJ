@@ -159,21 +159,21 @@ uint32_t GetHash(const char *str, uint32_t htab_size)
 }
 
 
-Symbol *SymbolFind(Context *FunCont, char *name)
+Symbol *SymbolFind(Context *funCont, char *name)
 {
-	if (FunCont==NULL || name==NULL) return NULL;
+	if (funCont==NULL || name==NULL) return NULL;
 	/* Vypocitanie indexu kde je kluc ulozeny a ulozenie prveho listu*/
 	SymbolList *item;
-	item = FunCont->LocTable[GetHash(name,FunCont->LocSize)];
+	item = funCont->locTable[GetHash(name,funCont->locSize)];
 	for(; item != NULL; item=item->next)
 		if(strcmp(item->data.name, name) == 0)
 			break;
 	return item == NULL ? NULL : &(item->data);
 }
 
-Symbol *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext, Symbol *foundSymbol)
+Symbol *SymbolAdd(Context *funCont, SymbolType type, char *name, Context *symbolContext, Symbol *foundSymbol)
 {
-	Symbol *symbol = foundSymbol?foundSymbol:SymbolFind(FunCont, name);
+	Symbol *symbol = foundSymbol?foundSymbol:SymbolFind(funCont, name);
 	if (symbol != NULL)
 	{
 		// Symbol already exist
@@ -189,29 +189,29 @@ Symbol *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *Symbol
 
 	// fill newItem
 	newItem->data.type = type;
-	newItem->data.index = FunCont->LocCount++; // unique index in stack
+	newItem->data.index = funCont->locCount++; // unique index in stack
 	newItem->data.name = name;
-	newItem->data.FunCont = SymbolContext;
+	newItem->data.funCont = symbolContext;
 	newItem->data.stateFunc = FS_Undefined;
 
-	uint32_t index = GetHash(name, FunCont->LocSize);
+	uint32_t index = GetHash(name, funCont->locSize);
 
 	// save newItem to first position of hashTable[index]
-	newItem->next = FunCont->LocTable[index];
-	FunCont->LocTable[index] = newItem;
+	newItem->next = funCont->locTable[index];
+	funCont->locTable[index] = newItem;
 	return &(newItem->data);
 }
 
-bool ResizeHashTable(Context *FunCont, uint32_t NewSize)
+bool ResizeHashTable(Context *funCont, uint32_t NewSize)
 {
 	SymbolList **tmp = malloc(sizeof(struct SymbolList*)* NewSize);
 
 	SymbolList *item;
 	uint32_t x;
 
-	for (uint32_t i = 0; i < FunCont->LocSize; ++i)
+	for (uint32_t i = 0; i < funCont->locSize; ++i)
 	{
-		item = FunCont->LocTable[i];
+		item = funCont->locTable[i];
 		for(; item != NULL; item=item->next)
 		{
 			x = GetHash(item->data.name, NewSize);
@@ -220,8 +220,8 @@ bool ResizeHashTable(Context *FunCont, uint32_t NewSize)
 		}
 	}
 
-	free(FunCont->LocTable);
-	FunCont->LocTable = tmp;
+	free(funCont->locTable);
+	funCont->locTable = tmp;
 
 	return true;
 }
@@ -230,24 +230,24 @@ bool ResizeHashTable(Context *FunCont, uint32_t NewSize)
 void ContextLocTableFree(Context *t)
 {
 	if (t==NULL) return;
-	if (t->LocTable == NULL) return;
+	if (t->locTable == NULL) return;
 	SymbolList *item = NULL;
 	SymbolList *temp = NULL;
-	for (unsigned long i = 0; i < t->LocSize; i++)
+	for (unsigned long i = 0; i < t->locSize; i++)
 	{
-		if (t->LocTable[i]==NULL)
+		if (t->locTable[i]==NULL)
 			continue;
-		for(item=t->LocTable[i];item != NULL;item=temp)
+		for(item=t->locTable[i];item != NULL;item=temp)
 		{
 			temp=item->next;
 			if(item->data.type == T_FunPointer)
-				FreeContext(item->data.FunCont);
+				FreeContext(item->data.funCont);
 			SymbolListFree(item);
 		}
-		t->LocTable[i] = NULL;
+		t->locTable[i] = NULL;
 	}
-	free(t->LocTable);
-	t->LocTable = NULL;
+	free(t->locTable);
+	t->locTable = NULL;
 }
 
 void SymbolListFree(SymbolList *t)

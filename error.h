@@ -17,6 +17,7 @@ typedef enum
     ERR_RedefVar, /**< ERR_RedefVar */
     ERR_RedefFunc, /**< ERR_RedefFunc */
     ERR_DeclrFunc, /**< ERR_DeclrFunc */
+    ERR_BadDefArg, /**< ERR_BadDefArg */
     ERR_Unknown, /**< ERR_Unknown */
 } EErrorStates;
 

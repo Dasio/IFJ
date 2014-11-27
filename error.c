@@ -32,6 +32,9 @@ void printError()
         case ERR_DeclrFunc:
             printErrorDetails("Function can't be declared more than one time");
             break;
+        case ERR_BadDefArg:
+            printErrorDetails("Header of function definition don't match with declaration");
+            break;
         default:
             printErrorDetails("Unrecognized error");
     }

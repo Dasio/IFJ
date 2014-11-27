@@ -203,7 +203,7 @@ void forward(SymbolType returnType, char *name)
 	Symbol *x = addFunction(returnType,name,FS_Declared);
 	if(getError())
 		return;
-	printf("Function(Declaration) name = %s type = %d, index = %d, argsCount = %d\n",x->name,x->type,x->index,funcContext->ArgCount);
+	printf("Function(Declaration) name = %s type = %d, index = %d, argsCount = %d\n",x->name,x->type,x->index,funcContext->argCount);
 	}
 	// 2. rule = Function Definition
 	else
@@ -212,7 +212,7 @@ void forward(SymbolType returnType, char *name)
 		Symbol *x = addFunction(returnType,name,FS_Defined);
 		if(getError())
 			return;
-		printf("Function(Definition) name = %s type = %d, index = %d, argsCount = %d\n",x->name,x->type,x->index,funcContext->ArgCount);
+		printf("Function(Definition) name = %s type = %d, index = %d, argsCount = %d\n",x->name,x->type,x->index,funcContext->argCount);
 
 		// Switch to function context
 		activeContext = funcContext;
@@ -570,9 +570,23 @@ Symbol *addFunction(SymbolType returnType,char* name,FuncState funcState)
 				return NULL;
 			}
 			// In GST is just declaration
-			// @todo: Check arguments
 			else
 			{
+				if(funcContext->argCount != argList->argCount)
+				{
+					setError(ERR_BadDefArg);
+					return NULL;
+				}
+				Argument *arg = argList->head;
+				for(uint32_t i=0;i<funcContext->argCount;i++)
+				{
+					Symbol *symbol = funcContext->arg[i];
+					if(symbol->type != arg->type || strcmp(symbol->name,arg->name) != 0)
+					{
+						setError(ERR_BadDefArg);
+						return NULL;
+					}
+				}
 				printf("Defined -> ");
 				symbol->stateFunc = FS_Defined;
 			}
@@ -594,7 +608,7 @@ Symbol *addFunction(SymbolType returnType,char* name,FuncState funcState)
 		if(getError())
 			return NULL;
 		symbol->stateFunc = funcState;
-		funcContext->ReturnType = returnType;
+		funcContext->returnType = returnType;
 		// From argList add every argument to context
 		for(Argument *arg = argList->head; arg; arg = arg->next)
 		{

@@ -36,26 +36,26 @@ typedef struct SymbolStruct Symbol;
 
 typedef struct
 {
-	Symbol **arg; // array of arguments, points to symbol in Hash
-	uint32_t ArgCount;
-	uint32_t ArgMax;
+    Symbol **arg; /**< array of arguments, points to symbol in Hash */
+    uint32_t argCount;
+    uint32_t argMax;
 
-	SymbolList **LocTable; // Hash of all symbols in this Context
-	uint32_t LocSize; // size of HashTable
-	uint32_t LocCount; // number of LOCAL symbols
-    // number of symbols in HASH == LocCount + ArgCount
-	uint32_t InstrucIndex; // index of start in Instruction Tape
-	SymbolType ReturnType; // Type of return value
+    SymbolList **locTable; /**< Hash of all symbols in this Context */
+    uint32_t locSize; /**< size of HashTable */
+    uint32_t locCount; /**< number of LOCAL symbols
+                         number of symbols in HASH == LocCount + ArgCount */
+    uint32_t instrucIndex; /**< index of start in Instruction Tape */
+    SymbolType returnType; /**< Type of return value */
 }Context;
 
 struct SymbolStruct
 {
-    SymbolType type;    // Enum what kind of data are stored
-    int index;          // for variable index in stack
-                        // for function NULL
-    char *name;     // Name of variable/function
-    FuncState stateFunc; /**< 0- initial state 1-declared 2-defined*/
-    Context *FunCont;   // Pointer to Context of function
+    SymbolType type;    /**< Enum what kind of data are stored */
+    int index;          /**< for variable index in stack
+                         for function NULL */
+    char *name;     /**< Name of variable/function */
+    FuncState stateFunc; /**< 0- initial state 1-declared 2-defined */
+    Context *funCont;   /**< Pointer to Context of function */
 };
 
 // struct in Hash table with data and pointer to next value
@@ -68,15 +68,17 @@ struct SymbolListStruct
 typedef struct ArgumentStruct Argument;
 struct ArgumentStruct
 {
-    char* name;
-    SymbolType type;
-    Argument *next;
+    char* name; /**< Name of symbol(argument) */
+    SymbolType type; /**< Type of argument */
+    Argument *next; /**< Pointer to next argument */
 };
 typedef struct
 {
-    Argument *head;
-    Argument *last;
+    uint32_t argCount; /**< How many arguments are stored in list */
+    Argument *head; /**< Pointer to first item in list */
+    Argument *last; /**< Pointer to last item in list */
 }ArgList;
+
 #include "ial.h"
 #include "stack.h"
 
