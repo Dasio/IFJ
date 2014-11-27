@@ -2,7 +2,7 @@
 #include "../vector.c"
 
 START_TEST_SUITE(VECTORtest)
-    intVector *Vec = intInitVector(1);
+    intVector *Vec = intVectorInit(1);
     intVectorAppend(Vec, 1);
     intVectorAppend(Vec, 2);
     intVectorPushMore(Vec, 2);
