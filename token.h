@@ -35,7 +35,7 @@
 		TT_string,
 		TT_bool,
 
-		TT_assignment, // must stay here !!! :D
+		TT_assignment, // must stay here !!! :D (size of precedence_table array)
 		TT_colon,
 		TT_dot,
 		TT_semicolon,

@@ -43,7 +43,7 @@ Context *InitContext()
 	for(unsigned i=0;i<DEFAULT_ARG_NUM;i++)
 		funCont->arg[i]=NULL;
 
-    // set other values of Context
+	// set other values of Context
 	funCont->argCount = 0;
 	funCont->locCount = 0;
 	funCont->argMax = DEFAULT_ARG_NUM;

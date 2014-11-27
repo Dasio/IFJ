@@ -8,25 +8,25 @@
 /** Enumeration for errors that could occur */
 typedef enum
 {
-    ERR_None = 0, /**< ERR_None */
-    ERR_Allocation, /**<ERR_Allocation */
-    ERR_Lexical, /**< ERR_Lexical */
-    ERR_Syntax, /**< ERR_Syntax */
-    ERR_SyntaxExpr, /**< ERR_SyntaxExpr */
-    ERR_OutOfRange, /**< ERR_OutOfRange */
-    ERR_RedefVar, /**< ERR_RedefVar */
-    ERR_RedefFunc, /**< ERR_RedefFunc */
-    ERR_DeclrFunc, /**< ERR_DeclrFunc */
-    ERR_BadDefArg, /**< ERR_BadDefArg */
-    ERR_Unknown, /**< ERR_Unknown */
+	ERR_None = 0, /**< ERR_None */
+	ERR_Allocation, /**<ERR_Allocation */
+	ERR_Lexical, /**< ERR_Lexical */
+	ERR_Syntax, /**< ERR_Syntax */
+	ERR_SyntaxExpr, /**< ERR_SyntaxExpr */
+	ERR_OutOfRange, /**< ERR_OutOfRange */
+	ERR_RedefVar, /**< ERR_RedefVar */
+	ERR_RedefFunc, /**< ERR_RedefFunc */
+	ERR_DeclrFunc, /**< ERR_DeclrFunc */
+	ERR_BadDefArg, /**< ERR_BadDefArg */
+	ERR_Unknown, /**< ERR_Unknown */
 } EErrorStates;
 
 /** Structure that holds information about error */
 typedef struct
 {
-    EErrorStates state; /**< Which error occured */
-    unsigned line; /**< At which line error occured */
-    char *file; /**< In which file error occured */
+	EErrorStates state; /**< Which error occured */
+	unsigned line; /**< At which line error occured */
+	char *file; /**< In which file error occured */
 } SError;
 
 /**

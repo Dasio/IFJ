@@ -27,23 +27,34 @@ enum { SHIFT = S, REDUCE = R, HANDLE = H, ERROR = E};
 
 static int precedence_table[TT_assignment][TT_assignment] =
 {
-/*         +   -   *   /   <   >   <=  >=  =   <>  (   )   f   ,   $  var                     */
-/*  +  */{ R , R , S , S , R , R , R , R , R , R , S , R , R , S , R , S  },
-/*  -  */{ R , R , S , S , R , R , R , R , R , R , S , R , R , S , R , S  },
-/*  *  */{ R , R , R , R , R , R , R , R , R , R , S , R , R , S , R , S  },
-/*  /  */{ R , R , R , R , R , R , R , R , R , R , S , R , R , S , R , S  },
-/*  <  */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S  },
-/*  >  */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S  },
-/*  <= */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S  },
-/*  >= */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S  },
-/*  =  */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S  },
-/*  <> */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S  },
-/*  (  */{ S , S , S , S , S , S , S , S , S , S , S , H , E , S , H , S  },
-/*  )  */{ R , R , R , R , R , R , R , R , R , R , E , R , R , E , R , E  },
-/*  f  */{ E , E , E , E , E , E , E , E , E , E , H , E , E , E , E , E  },
-/*  ,  */{ S , S , S , S , S , S , S , S , S , S , S , H , E , S , H , S  },
-/*  $  */{ S , S , S , S , S , S , S , S , S , S , S , E , E , S , E , S  },
-/* var */{ R , R , R , R , R , R , R , R , R , R , E , R , R , E , R , E  }
+/*         +   -   *   /   <   >   <=  >=  =   <>  (   )   f   ,   $  var  */
+/*  +  */{ R , R , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
+/*  -  */{ R , R , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
+/*  *  */{ R , R , R , R , R , R , R , R , R , R , S , R , R , S , R , S },
+/*  /  */{ R , R , R , R , R , R , R , R , R , R , S , R , R , S , R , S },
+/*  <  */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
+/*  >  */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
+/*  <= */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
+/*  >= */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
+/*  =  */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
+/*  <> */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
+/*  (  */{ S , S , S , S , S , S , S , S , S , S , S , H , E , S , H , S },
+/*  )  */{ R , R , R , R , R , R , R , R , R , R , E , R , R , E , R , E },
+/*  f  */{ E , E , E , E , E , E , E , E , E , E , H , E , E , E , E , E },
+/*  ,  */{ S , S , S , S , S , S , S , S , S , S , S , H , E , S , H , S },
+/*  $  */{ S , S , S , S , S , S , S , S , S , S , S , E , E , S , E , S },
+/* var */{ R , R , R , R , R , R , R , R , R , R , E , R , R , E , R , E }
+};
+
+static int type_table[4][4] =
+{
+/*****************************************************************/
+/***********    T_String      T_double      T_int         T_bool  ***/
+	/*************************************************************/
+/* T_String */{ T_String    , T_Undefined , T_Undefined , T_Undefined },
+/* T_double */{ T_Undefined , T_double    , T_double    , T_Undefined },
+/*    T_int */{ T_Undefined , T_Undefined , T_String    , T_Undefined },
+/*   T_bool */{ T_Undefined , T_Undefined , T_Undefined , T_bool }
 };
 
 
@@ -130,6 +141,8 @@ static inline void convert_to_ExprToken(Token *token)
 	temp_expr_token.type = TERM;
 	temp_expr_token.token = token;
 	//
+	int lol = type_table[T_String][T_String];
+	lol = lol+1;
 }
 
 static inline int token_to_index(Token *token)

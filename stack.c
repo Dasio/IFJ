@@ -2,12 +2,12 @@
 
 bool ReserveGlobalSymbol(STACK *stack, int num)
 {
- 	StackDataVectorPushMore(stack->Vec, num+1);
- 	// push number of GlobalSymbols, skip index 0
- 	if(getError()!=0) // if error occured during PushMorefunctions
- 		return false;
- 	stack->Position = 0;
- 	return true;
+	StackDataVectorPushMore(stack->Vec, num+1);
+	// push number of GlobalSymbols, skip index 0
+	if(getError()!=0) // if error occured during PushMorefunctions
+		return false;
+	stack->Position = 0;
+	return true;
  }
 
 bool CallFunction(STACK *stack, uint32_t LocCount, uint32_t InstrIndexCurr)
@@ -15,9 +15,9 @@ bool CallFunction(STACK *stack, uint32_t LocCount, uint32_t InstrIndexCurr)
 	StackDataVectorAppend(stack->Vec, (StackData) {.Sint = stack->Position});
 	StackDataVectorAppend(stack->Vec, (StackData) {.Sint = InstrIndexCurr});
 	StackDataVectorPushMore(stack->Vec, LocCount);
- 	if(getError()!=0) // if error occured during PushMorefunctions
- 		return false;
- 	//skip temporary values on stack and calculate stack position from the end of stack
+	if(getError()!=0) // if error occured during PushMorefunctions
+		return false;
+	//skip temporary values on stack and calculate stack position from the end of stack
 	stack->Position = stack->Vec->used - LocCount - 1;
 	return true;
 }
@@ -31,8 +31,8 @@ bool ReturnFunction(STACK *stack, uint32_t ArgCount, uint32_t LocCount, uint32_t
 	stack->Position = x->Sint;
 	StackDataVectorPopMore(stack->Vec, ArgCount);
 	// leave return value in the stack
- 	if(getError()!=0) // if error occured during vector's functions
- 		return false;
+	if(getError()!=0) // if error occured during vector's functions
+		return false;
 	return true;
 }
 
