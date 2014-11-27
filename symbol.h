@@ -80,7 +80,7 @@ Context *InitContext();
  * @return SymbolTable*	pointer to new symbol
  *
  */
-SymbolTable *AddArgToContext(Context*, SymbolType, char*, Context*);
+Symbol *AddArgToContext(Context*, SymbolType, char*, Context*);
 
 
 void FreeContext(Context*);

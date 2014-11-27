@@ -71,7 +71,7 @@ void SymbolTableFree(SymbolTable* symbol);
  * @param  name Name which we want
  * @return      Pointer to SymbolTable, NULL if failed
  */
-SymbolTable *SymbolFind(Context *Cont, char *name);
+Symbol *SymbolFind(Context *Cont, char *name);
 
 /**
  * Add symbol to Context
@@ -82,7 +82,7 @@ SymbolTable *SymbolFind(Context *Cont, char *name);
  * @param  foundSymbol   If not null, function dont have to call again SymbolFind
  * @return               Pointer to SymbolTable, NULL if failed
  */
-SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext, SymbolTable *foundSymbol);
+Symbol *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext, Symbol *foundSymbol);
 
 
 

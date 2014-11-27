@@ -20,6 +20,8 @@ int main()
 	//printf("%s\n", stringifyToken(TokenVectorLast(tokenVector)));
 
 	expr();
+	//token++;
+	expr();
 
 	if(!getError()) printf("EXPRESSION OK\n");
 	return 0;

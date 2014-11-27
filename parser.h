@@ -34,7 +34,7 @@ uint8_t if_n();
 
 void readln();
 void write();
-SymbolTable *addFunction(SymbolType returnType,char* name,FuncState funcState);
+Symbol *addFunction(SymbolType returnType,char* name,FuncState funcState);
 
 static inline SymbolType keywordToSymbol (KeywordTokenType key)
 {

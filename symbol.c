@@ -51,7 +51,7 @@ Context *InitContext()
 
 // to add Symbol without argument call htab_addSymbol in ial.c file
 // SymbolContext is NULL if SymbolType is variable
-SymbolTable *AddArgToContext(Context *FunCont, SymbolType type, char *name, Context *SymbolContext)
+Symbol *AddArgToContext(Context *FunCont, SymbolType type, char *name, Context *SymbolContext)
 {
 	if(FunCont->ArgCount >= FunCont->ArgMax)
 	{
@@ -59,10 +59,13 @@ SymbolTable *AddArgToContext(Context *FunCont, SymbolType type, char *name, Cont
 		FunCont->arg = realloc(FunCont->arg, FunCont->ArgMax);
 	}
 
-	// add symbol to hash table + add his pointer to array of arguments
+	Symbol *symbol = SymbolAdd(FunCont, type, name, SymbolContext, NULL);
+	return symbol;
+
+	/*// add symbol to hash table + add his pointer to array of arguments
 	FunCont->arg[FunCont->ArgCount++] = SymbolAdd(FunCont, type, name, SymbolContext, NULL);
 
-	return FunCont->arg[FunCont->ArgCount-1]; // return pointer to new symbol
+	return FunCont->arg[FunCont->ArgCount-1]; // return pointer to new symbol*/
 }
 
 void FreeContext(Context *FunCont)

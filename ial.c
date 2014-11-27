@@ -159,7 +159,7 @@ unsigned int GetHash(const char *str, unsigned htab_size)
 }
 
 
-SymbolTable *SymbolFind(Context *FunCont, char *name)
+Symbol *SymbolFind(Context *FunCont, char *name)
 {
     if (FunCont==NULL || name==NULL) return NULL;
     /* Vypocitanie indexu kde je kluc ulozeny a ulozenie prveho listu*/
@@ -168,12 +168,12 @@ SymbolTable *SymbolFind(Context *FunCont, char *name)
     for(; item != NULL; item=item->next)
         if(strcmp(item->data.name, name) == 0)
             break;
-    return item;
+    return &(item->data);
 }
 
-SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext, SymbolTable *foundSymbol)
+Symbol *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext, Symbol *foundSymbol)
 {
-    SymbolTable *symbol = foundSymbol?foundSymbol:SymbolFind(FunCont, name);
+    Symbol *symbol = foundSymbol?foundSymbol:SymbolFind(FunCont, name);
     if (symbol != NULL)
     {
         // Symbol already exist
@@ -199,7 +199,7 @@ SymbolTable *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *S
     // save newItem to first position of hashTable[index]
     newItem->next = FunCont->LocTable[index];
     FunCont->LocTable[index] = newItem;
-    return newItem;
+    return &(newItem->data);
 }
 
 

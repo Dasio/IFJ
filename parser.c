@@ -113,10 +113,10 @@ void var_def(uint8_t next)
 		return;
 	}
 	// Add variable to symbol table
-	SymbolTable *x = SymbolAdd(activeContext, symbolType, name, NULL, NULL);
+	Symbol *x = SymbolAdd(activeContext, symbolType, name, NULL, NULL);
 	if(getError())
 		return;
-	printf("Symbol added name = %s type = %d, index = %d\n",x->data.name,x->data.type,x->data.index);
+	printf("Symbol added name = %s type = %d, index = %d\n",x->name,x->type,x->index);
 	var_def(1);
 	if(getError())
 		return;
@@ -197,19 +197,19 @@ void forward(SymbolType returnType, char *name)
 			return;
 		}
 	// Add declaration of function to GST
-	SymbolTable *x = addFunction(returnType,name,FS_Declared);
+	Symbol *x = addFunction(returnType,name,FS_Declared);
 	if(getError())
 		return;
-	printf("Function(Declaration) name = %s type = %d, index = %d, argsCount = %d\n",x->data.name,x->data.type,x->data.index,funcContext->ArgCount);
+	printf("Function(Declaration) name = %s type = %d, index = %d, argsCount = %d\n",x->name,x->type,x->index,funcContext->ArgCount);
 	}
 	// 2. rule = Function Definition
 	else
 	{
 		// Add definition of function to GST
-		SymbolTable *x = addFunction(returnType,name,FS_Defined);
+		Symbol *x = addFunction(returnType,name,FS_Defined);
 		if(getError())
 			return;
-		printf("Function(Definition) name = %s type = %d, index = %d, argsCount = %d\n",x->data.name,x->data.type,x->data.index,funcContext->ArgCount);
+		printf("Function(Definition) name = %s type = %d, index = %d, argsCount = %d\n",x->name,x->type,x->index,funcContext->ArgCount);
 
 		// Switch to function context
 		activeContext = funcContext;
@@ -549,16 +549,16 @@ void write()
 	term_list();
 }
 
-SymbolTable *addFunction(SymbolType returnType,char* name,FuncState funcState)
+Symbol *addFunction(SymbolType returnType,char* name,FuncState funcState)
 {
-	SymbolTable *symbol = SymbolFind(mainContext, name);
+	Symbol *symbol = SymbolFind(mainContext, name);
 	// Function was already in GST
 	if(symbol)
 	{
 		if(funcState == FS_Defined)
 		{
 			// If was already defined -> error
-			if (symbol->data.stateFunc == FS_Defined)
+			if (symbol->stateFunc == FS_Defined)
 			{
 				setError(ERR_RedefFunc);
 				return NULL;
@@ -568,7 +568,7 @@ SymbolTable *addFunction(SymbolType returnType,char* name,FuncState funcState)
 			else
 			{
 				printf("Defined -> ");
-				symbol->data.stateFunc = FS_Defined;
+				symbol->stateFunc = FS_Defined;
 			}
 		}
 		else
@@ -584,10 +584,10 @@ SymbolTable *addFunction(SymbolType returnType,char* name,FuncState funcState)
 		funcContext = InitContext();
 		if(getError())
 			return NULL;
-		symbol = SymbolAdd(mainContext, T_FunPointer, name, funcContext, symbol);
+		symbol = SymbolAdd(mainContext, T_FunPointer, name, funcContext, NULL);
 		if(getError())
 			return NULL;
-		symbol->data.stateFunc = funcState;
+		symbol->stateFunc = funcState;
 		funcContext->ReturnType = returnType;
 	}
 	return symbol;

@@ -79,12 +79,12 @@ void expr()
 			return;
 		}
 
-		//printf(" %d\n", action;
+		printf(" %d\n", action);
 
 		ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
 		token++;
 	}
-	//ExprTokenVectorPrint(expr_token_vector);
+	ExprTokenVectorPrint(expr_token_vector);
 
 	ExprTokenVectorFree(expr_token_vector);
 }
@@ -129,6 +129,7 @@ static inline void convert_to_ExprToken(Token *token)
 	assert(token); // just in case
 	temp_expr_token.type = TERM;
 	temp_expr_token.token = token;
+	//
 }
 
 static inline int token_to_index(Token *token)
