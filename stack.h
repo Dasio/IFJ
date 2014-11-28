@@ -6,20 +6,23 @@
 #ifndef _STACK_H
 #define _STACK_H
 
-#define NUMBER_OF_CONTEXT_INFO 2 // pointer to stact and instruction tape
-#define DEFAULT_STACK_SIZE 64
+#define DEFAULT_STACK_SIZE 8192
 #define StackInit(stack)			\
-			stack.Position = 0;		\
+			stack.SP = 0;		\
 			stack.Vec = StackDataVectorInit(DEFAULT_STACK_SIZE)
 #define StackFree(stack) StackDataVectorFree(stack.Vec)
 
 	// stack structure
 
-	typedef union
+	typedef struct
 	{
-		int Sint;
-		double Sdouble;
-		String Sstring;
+		bool initialized : 1;
+
+		union {
+			int Sint;
+			double Sdouble;
+			String Sstring;
+		};
 	} StackData;
 
 	/**
@@ -29,7 +32,8 @@
 
 	typedef struct
 	{
-		uint64_t Position;
+		uint64_t SP;
+		uint64_t BP;
 		StackDataVector *Vec;
 	} STACK;
 

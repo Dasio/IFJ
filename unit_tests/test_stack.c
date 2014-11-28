@@ -52,7 +52,7 @@ START_TEST_SUITE(STACKtest);
 
 
 // tests
-    TEST_EXPR("Position in stack", stack.Position == 9);
+    TEST_EXPR("SP in stack", stack.SP == 9);
     TEST_EXPR("Number of items in stack", stack.Vec->used == 15);
     TEST_EXPR("Local value", StackReadValue(&stack, 3)->Sint == 333); // test local variable with index 3
     TEST_EXPR("Global value", StackDataVectorAt(stack.Vec, 4)->Sint == 4); // test local variable with index 4
