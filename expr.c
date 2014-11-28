@@ -50,13 +50,13 @@ static int precedence_table[TT_assignment][TT_assignment] =
 
 static int type_table[4][4] =
 {
-/*****************************************************************/
-/***********    T_String      T_double      T_int         T_bool  ***/
-	/*************************************************************/
-/* T_String */{ T_String    , T_Undefined , T_Undefined , T_Undefined },
-/* T_double */{ T_Undefined , T_double    , T_double    , T_Undefined },
-/*    T_int */{ T_Undefined , T_double    , T_int       , T_Undefined },
-/*   T_bool */{ T_Undefined , T_Undefined , T_Undefined , T_bool      }
+/*****************************************************/
+/**********   STRING    DOUBLE    INT       BOOL   ***/
+/*****************************************************/
+/* STRING */{ STRING ,  UNDEF  ,  UNDEF  ,  UNDEF },
+/* DOUBLE */{ UNDEF  ,  DOUBLE ,  DOUBLE ,  UNDEF },
+/*    INT */{ UNDEF  ,  DOUBLE ,  INT    ,  UNDEF },
+/*   BOOL */{ UNDEF  ,  UNDEF  ,  UNDEF  ,  BOOL  }
 };
 
 

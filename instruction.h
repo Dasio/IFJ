@@ -15,7 +15,8 @@
 		STRING = T_String,
 		DOUBLE = T_double,
 		INT = T_int,
-		BOOL = T_bool
+		BOOL = T_bool,
+		UNDEF = T_Undefined
 	} DataType;
 
 	typedef enum {
