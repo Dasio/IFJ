@@ -47,6 +47,10 @@ char *stringifyToken(Token *token) {
 	{
 		case TT_empty:
 			return("$");
+		case TT_real:
+			return("REAL");
+		case TT_integer:
+			return("INT");
 		case TT_assignment:
 			return(":=");
 		case TT_colon:

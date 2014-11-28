@@ -24,6 +24,8 @@ typedef enum
 } TokenPrecedence;
 enum { SHIFT = S, REDUCE = R, HANDLE = H, ERROR = E};
 
+static const char *actions[] = {"shift", "reduce", "handle", "error"};
+
 
 static int precedence_table[TT_assignment][TT_assignment] =
 {
@@ -53,14 +55,16 @@ static int type_table[4][4] =
 	/*************************************************************/
 /* T_String */{ T_String    , T_Undefined , T_Undefined , T_Undefined },
 /* T_double */{ T_Undefined , T_double    , T_double    , T_Undefined },
-/*    T_int */{ T_Undefined , T_Undefined , T_String    , T_Undefined },
-/*   T_bool */{ T_Undefined , T_Undefined , T_Undefined , T_bool }
+/*    T_int */{ T_Undefined , T_double    , T_int       , T_Undefined },
+/*   T_bool */{ T_Undefined , T_Undefined , T_Undefined , T_bool      }
 };
 
 
-void expr()
+DataType expr()
 {
 	int action;
+	DataType expr_data_type = EXPR_ERROR;
+
 	token++;
 
 
@@ -69,7 +73,7 @@ void expr()
 	{
 		setError(ERR_SyntaxExpr);
 		printError();
-		return;
+		return EXPR_ERROR;
 	}
 
 	ExprTokenVector *expr_token_vector = ExprTokenVectorInit(32);
@@ -87,10 +91,10 @@ void expr()
 		{
 			setError(ERR_SyntaxExpr);
 			printError();
-			return;
+			return EXPR_ERROR;
 		}
 
-		printf(" %d\n", action);
+		printf(" %s\n", actions[action]);
 
 		ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
 		token++;
@@ -98,6 +102,8 @@ void expr()
 	ExprTokenVectorPrint(expr_token_vector);
 
 	ExprTokenVectorFree(expr_token_vector);
+
+	return expr_data_type;
 }
 
 
@@ -114,6 +120,69 @@ void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector)
 	}
 	printf("\n");
 }
+
+
+static inline void convert_to_ExprToken(Token *token)
+{
+	Symbol *id = NULL;
+	assert(token); // just in case
+	temp_expr_token.type = TERM;
+
+	if (token->type == TT_identifier)
+	{
+		id = SymbolFind(funcContext, token->str.data);
+		if (id) // loc. var. or arg. or function
+		{
+
+		}
+		id = SymbolFind(mainContext, token->str.data);
+		if (id) // glob. variable or function
+		{
+
+		}
+	}
+
+	temp_expr_token.token = token;
+	//
+	int lol = type_table[T_String][T_String];
+	lol = lol+1;
+}
+
+
+static inline int token_to_index(Token *token)
+{
+	assert(token);
+	if (token->type > TT_bool)
+		return TT_empty;
+	if (token->type >= TT_identifier)
+		return TT_identifier;
+	return token->type;
+}
+
+
+static inline int precedence(ExprTokenVector *expr_token_vector)
+{
+	assert(expr_token_vector);
+	ExprToken *top_most_term = findTopMostTerm(expr_token_vector);
+	int index_1 = token_to_index(top_most_term->token); // top most term on expr. stack
+	int index_2 = token_to_index(temp_expr_token.token); // input
+
+	return precedence_table[index_1][index_2];
+}
+
+
+static inline ExprToken *findTopMostTerm(ExprTokenVector *expr_token_vector)
+{
+	assert(expr_token_vector);
+	ExprToken *top_most_term = ExprTokenVectorLast(expr_token_vector);
+	while(top_most_term->type != TERM)
+		top_most_term--;
+
+	return top_most_term;
+}
+
+
+GenVectorFunctions(ExprToken)
 
 /*
 ExprToken *allocExprToken()
@@ -134,46 +203,3 @@ void destroyExprToken(ExprToken *expr_token)
 	//free(expr_token->token);
 	free(expr_token);
 }*/
-
-static inline void convert_to_ExprToken(Token *token)
-{
-	assert(token); // just in case
-	temp_expr_token.type = TERM;
-	temp_expr_token.token = token;
-	//
-	int lol = type_table[T_String][T_String];
-	lol = lol+1;
-}
-
-static inline int token_to_index(Token *token)
-{
-	assert(token);
-	if (token->type > TT_bool)
-		return TT_empty;
-	if (token->type >= TT_identifier)
-		return TT_identifier;
-	return token->type;
-}
-
-static inline int precedence(ExprTokenVector *expr_token_vector)
-{
-	assert(expr_token_vector);
-	ExprToken *top_most_term = findTopMostTerm(expr_token_vector);
-	int index_1 = token_to_index(top_most_term->token); // top most term on expr. stack
-	int index_2 = token_to_index(temp_expr_token.token); // input
-
-	return precedence_table[index_1][index_2];
-}
-
-static inline ExprToken *findTopMostTerm(ExprTokenVector *expr_token_vector)
-{
-	assert(expr_token_vector);
-	ExprToken *top_most_term = ExprTokenVectorLast(expr_token_vector);
-	while(top_most_term->type != TERM)
-		top_most_term--;
-
-	return top_most_term;
-}
-
-
-GenVectorFunctions(ExprToken)

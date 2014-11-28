@@ -18,6 +18,11 @@
 		BOOL = T_bool
 	} DataType;
 
+	typedef enum {
+		LOCAL,
+		GLOBAL
+	} VariableType;
+
 	typedef struct {
 		bool empty : 1;
 		bool sp_inc : 1;
