@@ -1,0 +1,8 @@
+	function a(b:integer):integer;
+	begin
+	end;
+
+	function a(b:integer):integer; forward;
+begin
+
+end.

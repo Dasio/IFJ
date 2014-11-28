@@ -1,0 +1,9 @@
+{Rozne prototypy}
+
+	function a(b:integer, b:integer):integer; forward;
+	function a(b:integer, b:integer):integer;
+	begin
+	end;
+begin
+
+end.
