@@ -180,7 +180,7 @@ void func()
 	forward(returnType);
 	if(getError())
 		return;
-	if(funcContext->argCount != argIndex)
+	if(inGST && funcContext->argCount != argIndex)
 	{
 		setError(ERR_BadDefArg);
 		return;
@@ -340,8 +340,8 @@ void terms(uint8_t next)
 			return;
 	}
 	token++;
-	// If token is not term(bool,int,double,string)
-	if(token->type < TT_real || token->type > TT_bool)
+	// If token is not term(bool,int,double,string) or id
+	if(token->type < TT_identifier || token->type > TT_bool)
 	{
 		setError(ERR_Syntax);
 		return;
@@ -571,6 +571,9 @@ void addFunc(char *name)
 		if(getError())
 			return;
 		funcSymbol->stateFunc = FS_Undefined;
+		SymbolAdd(funcContext, T_Undefined, name, NULL, NULL);
+		if(getError())
+			return;
 		inGST=0;
 	}
 	// Was already in GST
@@ -604,7 +607,12 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 			return;
 		}
 	}
+	Symbol *returnSymbol = SymbolFind(funcContext,funcSymbol->name);
+	if(getError())
+		return;
+	returnSymbol->type = returnType;
 	funcContext->returnType = returnType;
+	funcSymbol->stateFunc = funcState;
 }
 void addArgToFunc(SymbolType type, char *name)
 {

@@ -34,8 +34,26 @@ uint8_t if_n();
 
 void readln();
 void write();
+
+/**
+ * Add function to GST without returnType and stateFunc
+ * Add return symbol to LST of function
+ * @param name Name of function
+ */
 void addFunc(char *name);
+
+/**
+ * Update info about actual function and check declaration and definition
+ * @param returnType Which type is function returning
+ * @param funcState  Declaration/Definition
+ */
 void updateFunc(SymbolType returnType,FuncState funcState);
+
+/**
+ * Add argument to function or if is called second time it will check name and type of arguments.
+ * @param type Type of argment
+ * @param name Name of argument
+ */
 void addArgToFunc(SymbolType type, char *name);
 
 static inline SymbolType keywordToSymbol (KeywordTokenType key)
