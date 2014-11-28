@@ -6,7 +6,6 @@
 #include "string.h"
 #include "symbol.h"
 #include "vector.h"
-#include "expr.h"
 
 #ifndef _INSTRUCTION_H
 #define _INSTRUCTION_H
@@ -22,11 +21,11 @@
 	typedef struct {
 		bool empty : 1;
 		bool sp_inc : 1;
-		DataType type : 2;
+		DataType data_type : 2;
+		VariableType var_type : 1; // global/local
 
-		// typ
 		// var/const
-		// global/local
+
 		union {
 			int32_t n;
 			double d;
