@@ -8,7 +8,7 @@ static InstructionVector *tape;
 /**
  * Pointer to instruction tape at beginning
  */
-static Instruction *IP;
+static uint64_t IP;
 
 static STACK stack;
 
@@ -22,24 +22,27 @@ void initInterpret() {
 	return;
 }
 
-void setInitialInterpreterPosition(uint32_t pos) {
+void setInitialInterpreterPosition(uint64_t pos) {
 	assert(tape && "Call initInterpret() before running interpreter");
 
-	IP = InstructionVectorAt(tape, pos);
-
-	assert(IP && "IP still not initialized, no instruction on tape?");
+	IP = pos;
 }
 
 /**
  * CORE
  */
 
-static void interpretationStep() {
-	switch(IP->opcode) {
-		case INST_AddI:
-			return;
+static bool interpretationStep() {
+	Instruction *IP_ptr = InstructionVectorAt(tape, IP);
+	assert(IP_ptr);
+
+	switch(IP_ptr->opcode) {
+		case INST_Halt:
+			return false;
 		default:
 			assert(false && "Unknown instruction");
+			//setError()
+			return false;
 	}
 }
 
@@ -50,6 +53,8 @@ void runInterpretation() {
 		setInitialInterpreterPosition(0);
 
 	while(true) {
-		interpretationStep();
+		bool ret = interpretationStep();
+		if(!ret)
+			break;
 	}
 }
