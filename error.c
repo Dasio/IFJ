@@ -5,6 +5,22 @@
 SError error;
 extern Token *token;
 
+/* Error code to return code conversion table */
+static int returnCodeTable[] = {
+	[ERR_None]              = 0,
+	[ERR_Allocation]        = 99,
+	[ERR_Lexical]           = 1,
+	[ERR_LexicalConversion] = 1,
+	[ERR_Syntax]            = 2,
+	[ERR_SyntaxExpr]        = 2,
+	[ERR_OutOfRange]        = 9,
+	[ERR_RedefVar]          = 3,
+	[ERR_RedefFunc]         = 3,
+	[ERR_DeclrFunc]         = 3,
+	[ERR_BadDefArg]         = 3,
+	[ERR_Unknown]           = 9
+};
+
 void printError()
 {
 	switch(error.state) {
@@ -59,4 +75,12 @@ void setErrorDetails(EErrorStates state, unsigned line, char *file)
 EErrorStates getError()
 {
 	return error.state;
+}
+
+int getReturnError()
+{
+	if(error.state >= ERR_None || error.state <= ERR_Unknown)
+		return returnCodeTable[error.state];
+	else
+		return returnCodeTable[ERR_Unknown];
 }

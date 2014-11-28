@@ -11,7 +11,7 @@ typedef enum
 	ERR_None = 0, /**< ERR_None */
 	ERR_Allocation, /**<ERR_Allocation */
 	ERR_Lexical, /**< ERR_Lexical */
-	ERR_LexicalConversion, /**< String -> Readl/Integer conversion failure */
+	ERR_LexicalConversion, /**< String -> Real/Integer conversion failure */
 	ERR_Syntax, /**< ERR_Syntax */
 	ERR_SyntaxExpr, /**< ERR_SyntaxExpr */
 	ERR_OutOfRange, /**< ERR_OutOfRange */
@@ -53,5 +53,11 @@ void setErrorDetails(EErrorStates state, unsigned line, char *file);
  * @return lastError
  */
 EErrorStates getError();
+
+/**
+ * Returns bash return code according to state
+ * @return Return code
+ */
+int getReturnError();
 
 #endif
