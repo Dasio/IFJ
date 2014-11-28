@@ -24,7 +24,7 @@
 	} VariableType;
 
 	typedef struct {
-		bool empty : 1;
+		bool initialized : 1;
 		bool sp_inc : 1;
 		DataType data_type : 2;
 		VariableType var_type : 1; // global/local
@@ -37,6 +37,8 @@
 			String* str;
 		};
 	} Operand;
+
+	//typedef Operand StackData;
 
 	/**
 	 * Instruction is three address code
@@ -61,6 +63,13 @@
 		Operand src_2;
 		Operand dst;
 	} Instruction;
+
+
+	// Pri kazdom priradeni do premennej treba flag empty nastavit
+
+	// Inkrementuje SP o parameter integer, vycisti polozku
+	// (popr. len flag empty)
+	//SPIncrement
 
 	GenVectorPrototypes(Instruction)
 
