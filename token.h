@@ -82,11 +82,11 @@
 	 */
 	typedef struct {
 		TokenType type;
+		KeywordTokenType keyword_token;
 		union {
 			String str;  // string
 			double r;  // real
 			int32_t n; // integer
-			KeywordTokenType keyword_token;
 		};
 	} Token;
 

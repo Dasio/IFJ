@@ -68,8 +68,6 @@ Token getToken(Scanner *scanner)
 
 		// Returning token if FSM decided so
 		if(scanner->foundToken) {
-			// Cleanup
-			resetScanner(scanner);
 			break;
 		}
 
@@ -83,22 +81,73 @@ Token getToken(Scanner *scanner)
 		KeywordTokenType kword = identifierToKeyword(&token.str);
 
 		if(kword != Key_none) {
-			destroyString(&token.str);
+			//destroyString(&token.str);
 
 			token.type = TT_keyword;
 			token.keyword_token = kword;
 		}
 	}
 
-	// switch(type.convertTo) {
-	// 	case TT_empty: {
-	// 		break;
-	// 	}
-	// 	case TT_real: {
+	switch(scanner->convertTo) {
+		case TT_real: {
+			String str = token.str;
 
-	// 	}
+			char *err = NULL;
+			token.r = strtod(str.data, &err);
 
-	// }
+			if(*err != 0)
+				setError(ERR_LexicalConversion);
+
+			destroyString(&str);
+
+			token.type = TT_real;
+
+			break;
+		}
+		case TT_integer: {
+			String str = token.str;
+
+			char *err = NULL;
+			token.n = (int32_t) strtol(str.data, &err, 10);
+
+			if(*err != 0)
+				setError(ERR_LexicalConversion);
+
+			destroyString(&str);
+
+			token.type = TT_integer;
+
+			break;
+		}
+		default: {
+			break;
+		}
+	}
+
+	if(token.type == TT_keyword) {
+		switch(token.keyword_token) {
+			case Key_true: {
+				token.type = TT_bool;
+				token.n = 1;
+
+				destroyString(&token.str);
+				break;
+			}
+			case Key_false: {
+				token.type = TT_bool;
+				token.n = 0;
+
+				destroyString(&token.str);
+				break;
+			}
+			default: {
+				break;
+			}
+		}
+	}
+
+	// Cleanup
+	resetScanner(scanner);
 
 	return token;
 }
@@ -320,6 +369,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 						return true;
 					}
 					default: {
+						terminalState();
 						return false;
 					}
 				}
