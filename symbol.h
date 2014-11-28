@@ -52,8 +52,8 @@ typedef struct
 struct SymbolStruct
 {
 	SymbolType type;    /**< Enum what kind of data are stored */
-	int index;          /**< for variable index in stack
-						 for function NULL */
+	uint64_t index;          /**< for variable index in stack */
+
 	char *name;     /**< Name of variable/function */
 	FuncState stateFunc; /**< 0- initial state 1-declared 2-defined */
 	Context *funCont;   /**< Pointer to Context of function */
