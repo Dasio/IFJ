@@ -43,8 +43,7 @@ typedef struct
 
 	SymbolList **locTable;	/**< Hash of all symbols in this Context */
 	uint32_t locSize;	/**< size of HashTable */
-	uint32_t locCount;	/**< number of LOCAL symbols
-						/** number of symbols in HASH == LocCount + ArgCount */
+	uint32_t locCount;	/**< number of LOCAL variables */
 	uint32_t instrucIndex; /**< index of start in Instruction Tape */
 	SymbolType returnType; /**< Type of return value */
 }Context;
@@ -52,12 +51,13 @@ typedef struct
 struct SymbolStruct
 {
 	SymbolType type;	/**< Enum what kind of data are stored */
-	uint64_t index;		/**< for variable index to stack */
-						/**  for function index to instruction tape */
+	uint64_t index;		/**< for variable index to stack
+							 for function index to instruction tape */
 	char *name;		/**< Name of variable/function */
 	FuncState stateFunc; /**< 0- initial state 1-declared 2-defined */
 	Context *funCont;   /**< Pointer to Context of function */
-	intVector *adressVector; /**< for adding addresses to instruction tape if function */
+	intVector *adressVector; 	/**< for adding addresses to instruction tape
+								if function was called before definition */
 }; // Symbol
 
 // struct in Hash table with data and pointer to next value
@@ -72,7 +72,6 @@ struct SymbolListStruct
 
 /**
  * Init content for funciton
- * @param  uint32_t number of arguments
  * @return          pointer to context
  *
  */

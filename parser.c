@@ -123,7 +123,7 @@ void var_def(uint8_t next)
 	Symbol *x = SymbolAdd(activeContext, symbolType, name, NULL, NULL);
 	if(getError())
 		return;
-	fprintf(stderr,"Symbol added name = %s type = %d, index = %d\n",x->name,x->type,x->index);
+	fprintf(stderr,"Symbol added name = %s type = %d, index = %lu\n",x->name,x->type,x->index);
 	var_def(1);
 	if(getError())
 		return;
@@ -211,7 +211,7 @@ void forward(SymbolType returnType)
 	updateFunc(returnType,FS_Declared);
 	if(getError())
 		return;
-	fprintf(stderr,"Function(Declaration) name = %s type = %d, index = %d, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
+	fprintf(stderr,"Function(Declaration) name = %s type = %d, index = %lu, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
 	}
 	// 2. rule = Function Definition
 	else
@@ -220,7 +220,7 @@ void forward(SymbolType returnType)
 		updateFunc(returnType,FS_Defined);
 		if(getError())
 			return;
-		fprintf(stderr,"Function(Definition) name = %s type = %d, index = %d, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
+		fprintf(stderr,"Function(Definition) name = %s type = %d, index = %lu, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
 
 		// Switch to function context
 		activeContext = funcContext;
