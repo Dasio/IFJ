@@ -10,15 +10,23 @@ typedef enum
 {
 	ERR_None = 0, /**< ERR_None */
 	ERR_Allocation, /**<ERR_Allocation */
+
+	// Lexical analysis
 	ERR_Lexical, /**< ERR_Lexical */
 	ERR_LexicalConversion, /**< String -> Real/Integer conversion failure */
+	// Parser
 	ERR_Syntax, /**< ERR_Syntax */
 	ERR_SyntaxExpr, /**< ERR_SyntaxExpr */
-	ERR_OutOfRange, /**< ERR_OutOfRange */
 	ERR_RedefVar, /**< ERR_RedefVar */
 	ERR_RedefFunc, /**< ERR_RedefFunc */
 	ERR_DeclrFunc, /**< ERR_DeclrFunc */
 	ERR_BadDefArg, /**< ERR_BadDefArg */
+	// Interpreter
+	ERR_UnknownInstruction,
+	ERR_UnitializedAccess,
+
+	// Other
+	ERR_OutOfRange, /**< ERR_OutOfRange */
 	ERR_Unknown, /**< ERR_Unknown */
 } EErrorStates;
 

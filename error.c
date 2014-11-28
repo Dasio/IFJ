@@ -9,17 +9,27 @@ extern Token *token;
 static int returnCodeTable[] = {
 	[ERR_None]              = 0,
 	[ERR_Allocation]        = 99,
+
 	[ERR_Lexical]           = 1,
 	[ERR_LexicalConversion] = 1,
+
 	[ERR_Syntax]            = 2,
 	[ERR_SyntaxExpr]        = 2,
-	[ERR_OutOfRange]        = 9,
 	[ERR_RedefVar]          = 3,
 	[ERR_RedefFunc]         = 3,
 	[ERR_DeclrFunc]         = 3,
 	[ERR_BadDefArg]         = 3,
+
+	// Interpreter
+	[ERR_UnknownInstruction]= 99,
+	[ERR_UnitializedAccess] = 7,
+
+	[ERR_OutOfRange]        = 9,
 	[ERR_Unknown]           = 9
+
 };
+
+//static_assert(sizeof(returnCodeTable)/sizeof(int) == 14);
 
 void printError()
 {
