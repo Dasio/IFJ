@@ -57,6 +57,8 @@ void program()
 		return;
 	}
 
+	checkFuncDefinitions();
+
 }
 void var_declr()
 {
@@ -119,7 +121,7 @@ void var_def(uint8_t next)
 	Symbol *x = SymbolAdd(activeContext, symbolType, name, NULL, NULL);
 	if(getError())
 		return;
-	printf("Symbol added name = %s type = %d, index = %d\n",x->name,x->type,x->index);
+	fprintf(stderr,"Symbol added name = %s type = %d, index = %d\n",x->name,x->type,x->index);
 	var_def(1);
 	if(getError())
 		return;
@@ -207,7 +209,7 @@ void forward(SymbolType returnType)
 	updateFunc(returnType,FS_Declared);
 	if(getError())
 		return;
-	printf("Function(Declaration) name = %s type = %d, index = %d, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
+	fprintf(stderr,"Function(Declaration) name = %s type = %d, index = %d, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
 	}
 	// 2. rule = Function Definition
 	else
@@ -216,7 +218,7 @@ void forward(SymbolType returnType)
 		updateFunc(returnType,FS_Defined);
 		if(getError())
 			return;
-		printf("Function(Definition) name = %s type = %d, index = %d, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
+		fprintf(stderr,"Function(Definition) name = %s type = %d, index = %d, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
 
 		// Switch to function context
 		activeContext = funcContext;
@@ -302,11 +304,6 @@ void params_def(uint8_t next)
 	addArgToFunc(symbolType,name);
 	if(getError())
 		return;
-	/*SymbolTable *x = AddArgToContext(funcContext, symbolType, name, NULL);
-	if(getError())
-		return;
-	printf("Symbol(Variable) added name = %s type = %d, index = %d\n",x->data.name,x->data.type,x->data.index);
-*/
 	params_def(1);
 	if(getError())
 		return;
@@ -565,7 +562,7 @@ void addFunc(char *name)
 	funcSymbol = SymbolFind(mainContext, name);
 	if(funcSymbol == NULL)
 	{
-		printf("Added to GST -> ");
+		fprintf(stderr,"Added to GST -> ");
 		funcContext = InitContext();
 		if(getError())
 			return;
@@ -606,7 +603,7 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 			else
 			{
 				//@todo Adresss Vector
-				printf("Defined -> ");
+				fprintf(stderr,"Defined -> ");
 				funcSymbol->stateFunc = FS_Defined;
 			}
 		}
@@ -647,4 +644,18 @@ void addArgToFunc(SymbolType type, char *name)
 			return;
 	}
 	argIndex++;
+}
+void checkFuncDefinitions()
+{
+	SymbolList *item;
+	SymbolList **table = mainContext->locTable;
+	for(uint32_t index = 0; index<mainContext->locSize; index++)
+	{
+		item = table[index];
+		for(; item != NULL; item=item->next)
+		{
+			if(item->data.type == T_FunPointer && item->data.stateFunc != FS_Defined)
+				setError(ERR_NoDefFunc);
+		}
+	}
 }

@@ -56,6 +56,11 @@ void updateFunc(SymbolType returnType,FuncState funcState);
  */
 void addArgToFunc(SymbolType type, char *name);
 
+/**
+ * Check if all functions were defined
+ */
+void checkFuncDefinitions();
+
 static inline SymbolType keywordToSymbol (KeywordTokenType key)
 {
     switch(key)

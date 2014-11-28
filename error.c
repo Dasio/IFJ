@@ -19,6 +19,7 @@ static int returnCodeTable[] = {
 	[ERR_RedefFunc]         = 3,
 	[ERR_DeclrFunc]         = 3,
 	[ERR_BadDefArg]         = 3,
+	[ERR_NoDefFunc]         = 3,
 
 	// Interpreter
 	[ERR_UnknownInstruction]= 99,
@@ -60,6 +61,9 @@ void printError()
 			break;
 		case ERR_BadDefArg:
 			printErrorDetails("Header of function definition don't match with declaration");
+			break;
+		case ERR_NoDefFunc:
+			printErrorDetails("Function was declared, but it afterward it wasn't defined");
 			break;
 		default:
 			printErrorDetails("Unrecognized error");

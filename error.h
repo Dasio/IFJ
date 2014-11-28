@@ -21,6 +21,7 @@ typedef enum
 	ERR_RedefFunc, /**< ERR_RedefFunc */
 	ERR_DeclrFunc, /**< ERR_DeclrFunc */
 	ERR_BadDefArg, /**< ERR_BadDefArg */
+	ERR_NoDefFunc, /**< Function was declared and no defintion was found */
 	// Interpreter
 	ERR_UnknownInstruction,
 	ERR_UnitializedAccess,
