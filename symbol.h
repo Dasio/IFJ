@@ -58,7 +58,7 @@ struct SymbolStruct
 	FuncState stateFunc; /**< 0- initial state 1-declared 2-defined */
 	Context *funCont;   /**< Pointer to Context of function */
     intVector *adressVector; /**< for adding addresses to instruction tape if function */
-};
+}; // Symbol
 
 // struct in Hash table with data and pointer to next value
 struct SymbolListStruct
@@ -66,20 +66,6 @@ struct SymbolListStruct
 	SymbolList *next;
 	Symbol data;
 }; // SymbolList
-
-typedef struct ArgumentStruct Argument;
-struct ArgumentStruct
-{
-	char* name; /**< Name of symbol(argument) */
-	SymbolType type; /**< Type of argument */
-	Argument *next; /**< Pointer to next argument */
-};
-typedef struct
-{
-	uint32_t argCount; /**< How many arguments are stored in list */
-	Argument *head; /**< Pointer to first item in list */
-	Argument *last; /**< Pointer to last item in list */
-}ArgList;
 
 #include "ial.h"
 #include "stack.h"
