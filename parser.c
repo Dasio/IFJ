@@ -139,6 +139,8 @@ void func()
 		return;
 	}
 	addFunc(token->str.data);
+	if(getError())
+		return;
 	param_def_list();
 	if(getError())
 		return;
@@ -578,7 +580,14 @@ void addFunc(char *name)
 	}
 	// Was already in GST
 	else
+	{
+		if(funcSymbol->stateFunc == FS_Undefined)
+		{
+			setError(ERR_RedefVar);
+			return;
+		}
 		inGST=1;
+	}
 }
 void updateFunc(SymbolType returnType,FuncState funcState)
 {
