@@ -31,6 +31,8 @@ void parse()
 }
 void program()
 {
+	addBuiltInFunctions();
+
 	var_declr();
 	if(getError())
 		return;
@@ -655,7 +657,47 @@ void checkFuncDefinitions()
 		for(; item != NULL; item=item->next)
 		{
 			if(item->data.type == T_FunPointer && item->data.stateFunc != FS_Defined)
+			{
 				setError(ERR_NoDefFunc);
+				return;
+			}
 		}
 	}
+}
+
+void addBuiltInFunctions()
+{
+	Symbol *symbol;
+	// length(s : string) : integer
+	funcContext = InitContext();
+	symbol = SymbolAdd(mainContext, T_FunPointer, "length", funcContext, NULL);
+	symbol->stateFunc = FS_Defined;
+	funcContext->returnType = T_int;
+	AddArgToContext(funcContext, T_String, "s", NULL);
+
+	// copy(s : string; i : integer; n : integer) : string
+	funcContext = InitContext();
+	symbol = SymbolAdd(mainContext, T_FunPointer, "copy", funcContext, NULL);
+	symbol->stateFunc = FS_Defined;
+	funcContext->returnType = T_String;
+	AddArgToContext(funcContext, T_String, "s", NULL);
+	AddArgToContext(funcContext, T_int, "i", NULL);
+	AddArgToContext(funcContext, T_int, "n", NULL);
+
+	// find(s : string; search : string) : integer
+	funcContext = InitContext();
+	symbol = SymbolAdd(mainContext, T_FunPointer, "find", funcContext, NULL);
+	symbol->stateFunc = FS_Defined;
+	funcContext->returnType = T_int;
+	AddArgToContext(funcContext, T_String, "s", NULL);
+	AddArgToContext(funcContext, T_String, "search", NULL);
+
+	// sort(s : string) : string
+	funcContext = InitContext();
+	symbol = SymbolAdd(mainContext, T_FunPointer, "sort", funcContext, NULL);
+	symbol->stateFunc = FS_Defined;
+	funcContext->returnType = T_String;
+	AddArgToContext(funcContext, T_String, "s", NULL);
+
+	funcContext = NULL;
 }

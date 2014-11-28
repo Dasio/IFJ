@@ -61,6 +61,11 @@ void addArgToFunc(SymbolType type, char *name);
  */
 void checkFuncDefinitions();
 
+/**
+ * Add builtin functions
+ */
+void addBuiltInFunctions();
+
 static inline SymbolType keywordToSymbol (KeywordTokenType key)
 {
     switch(key)
