@@ -8,3 +8,4 @@ core.*
 .*project
 test
 _test
+*~
