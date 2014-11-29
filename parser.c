@@ -1,7 +1,6 @@
 #include "parser.h"
 #include "expr.h"
 
-static Scanner scanner;
 TokenVector *tokenVector;
 Token *token;
 Context *mainContext;
@@ -11,11 +10,9 @@ Symbol *funcSymbol;
 uint8_t inGST = 0;
 uint32_t argIndex;
 
-void parse()
+void parse(TokenVector *tokvect)
 {
-	scanner = initScanner();
-	assignFile(&scanner.input, "testFile2.txt");
-	tokenVector = getTokenVector(&scanner);
+	tokenVector = tokvect;
 
 	mainContext = InitContext();
 	activeContext = mainContext;
@@ -25,9 +22,8 @@ void parse()
 	if(getError())
 		printError();
 	// Cleanup
-	destroyTokenVector(tokenVector);
+
 	FreeContext(mainContext);
-	destroyScanner(&scanner);
 }
 void program()
 {

@@ -7,7 +7,7 @@
 #include "stack.h"
 #include "expr.h"
 
-void parse();
+void parse(TokenVector *tokvect);
 void program();
 void var_declr();
 void var_def(uint8_t next);
