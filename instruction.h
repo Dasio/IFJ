@@ -27,7 +27,7 @@
 	typedef struct {
 		bool initialized : 1;
 		bool sp_inc : 1;
-		DataType data_type : 2;
+		DataType data_type : 3;
 		VariableType var_type : 1; // global/local
 
 		// var/const
