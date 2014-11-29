@@ -36,6 +36,7 @@ static inline void resetScanner(Scanner *scanner)
 	scanner->state = SOS_start;
 	scanner->convertTo = TT_empty;
 	scanner->ascii_to_char_val = 0;
+	scanner->base = 10;
 }
 
 extern inline bool scannerFinished(Scanner *scanner);
@@ -108,17 +109,17 @@ Token getToken(Scanner *scanner)
 			String str = token.str;
 
 			char *err = NULL;
-			if (scanner->base == 2)
-				token.n = (int32_t) strtol(str.data, &err, 2);
-			else if (scanner->base == 8)
-				token.n = (int32_t) strtol(str.data, &err, 8);
-			else if (scanner->base == 16)
-				token.n = (int32_t) strtol(str.data, &err, 16);
-			else 
-				setError(ERR_LexicalConversion);
 
-			if(*err != 0)
+			if(scanner->base == 10 || scanner->base == 2 ||
+				scanner->base == 8 || scanner->base == 16) {
+				token.n = (int32_t) strtol(str.data, &err, scanner->base);
+				if(*err != 0) {
+					setError(ERR_LexicalConversion);
+					fprintf(stderr, "strtol() conversion failed\n");
+				}
+			} else {
 				setError(ERR_LexicalConversion);
+			}
 
 			destroyString(&str);
 
@@ -759,7 +760,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				else {
 					terminalState();
 
-					return false;			
+					return false;
 				}
 			}
 		}
