@@ -57,6 +57,7 @@ Token getToken(Scanner *scanner)
 		char_accepted = processNextSymbol(scanner, &token, symbol);
 
 		if(scanner->state == SOS_error) {
+			setError(ERR_Lexical);
 			break;
 		}
 
