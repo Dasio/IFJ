@@ -6,9 +6,10 @@ SError error;
 extern Token *token;
 
 /* Error code to return code conversion table */
-static int returnCodeTable[] = {
+static const int returnCodeTable[] = {
 	[ERR_None]              = 0,
 	[ERR_Allocation]        = 99,
+	[ERR_CannotOpenFile]    = 9,
 
 	[ERR_Lexical]           = 1,
 	[ERR_LexicalConversion] = 1,
@@ -30,13 +31,14 @@ static int returnCodeTable[] = {
 
 };
 
-//static_assert(sizeof(returnCodeTable)/sizeof(int) == 14);
-
 void printError()
 {
 	switch(error.state) {
 		case ERR_None:
 			return;
+		case ERR_CannotOpenFile:
+			printErrorDetails("Cannot open specified file.");
+			break;
 		case ERR_Lexical:
 			printErrorDetails("Invalid input file, "
 							  "lexical analysis cannot proceed");

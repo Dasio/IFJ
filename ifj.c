@@ -2,13 +2,18 @@
 #include "scanner.h"
 #include "parser.h"
 
-int main() {
+int main(int argc, char *argv[]) {
 	// Error code initialized to success
 	int ecode = 0;
 
 	// Scanner initialization
 	Scanner scanner = initScanner();
-	assignFile(&scanner.input, "playground/testFile2.txt");
+
+	if(argc <= 1) {
+		setError(ERR_CannotOpenFile);
+		goto err;
+	}
+	assignFile(&scanner.input, argv[1]);
 
 	if(getError())
 		goto err;

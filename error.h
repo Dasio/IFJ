@@ -5,11 +5,16 @@
 
 #define setError(state) setErrorDetails(state, __LINE__, __FILE__);
 
-/** Enumeration for errors that could occur */
+/**
+ * Enumeration for errors that could occur.
+ * !!! ADD ERROR STATE ALSO TO error.c IN returnCodeTable[]
+ * with appropriate return code.
+ */
 typedef enum
 {
 	ERR_None = 0, /**< ERR_None */
 	ERR_Allocation, /**<ERR_Allocation */
+	ERR_CannotOpenFile,    /**< Occurs when IStream cannot open file */
 
 	// Lexical analysis
 	ERR_Lexical,           /**< Generic lexical analysis error */
@@ -27,8 +32,8 @@ typedef enum
 	ERR_UnitializedAccess,
 
 	// Other
-	ERR_OutOfRange, /**< ERR_OutOfRange */
-	ERR_Unknown, /**< ERR_Unknown */
+	ERR_OutOfRange,        /**< ERR_OutOfRange */
+	ERR_Unknown,           /**< ERR_Unknown */
 } EErrorStates;
 
 /** Structure that holds information about error */

@@ -15,7 +15,7 @@ IStream initIStream() {
 void destroyIStream(IStream *stream) {
 	assert(stream);
 
-	if(stream->src_type == IStream_FILE) {
+	if(stream->src_type == IStream_FILE && stream->src_file != NULL) {
 		fclose(stream->src_file);
 	}
 
@@ -36,6 +36,8 @@ bool assignFile(IStream *stream, char *input_file) {
 
 	stream->src_type = IStream_FILE;
 	stream->src_file = fopen(input_file, "r");
+	if(stream->src_file == NULL)
+		setError(ERR_CannotOpenFile);
 
 	return stream->src_file;
 }
