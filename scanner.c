@@ -108,7 +108,14 @@ Token getToken(Scanner *scanner)
 			String str = token.str;
 
 			char *err = NULL;
-			token.n = (int32_t) strtol(str.data, &err, 10);
+			if (scanner->base == 2)
+				token.n = (int32_t) strtol(str.data, &err, 2);
+			else if (scanner->base == 8)
+				token.n = (int32_t) strtol(str.data, &err, 8);
+			else if (scanner->base == 16)
+				token.n = (int32_t) strtol(str.data, &err, 16);
+			else 
+				setError(ERR_LexicalConversion);
 
 			if(*err != 0)
 				setError(ERR_LexicalConversion);
@@ -282,6 +289,27 @@ static inline void processSingleCharToken(Scanner *scanner, Token *token, char s
 		case '\'': {
 			scanner->state = SOS_string;
 			token->type = TT_string;
+			return;
+		}
+		case '%': {
+			scanner->state = SOS_baseExtract;
+			scanner->convertTo = TT_integer;
+			token->type = TT_integer;
+			scanner->base = 2;
+			return;
+		}
+		case '&': {
+			scanner->state = SOS_baseExtract;
+			scanner->convertTo = TT_integer;
+			token->type = TT_integer;
+			scanner->base = 8;
+			return;
+		}
+		case '$': {
+			scanner->state = SOS_baseExtract;
+			scanner->convertTo = TT_integer;
+			token->type = TT_integer;
+			scanner->base = 16;
 			return;
 		}
 		default: {
@@ -614,7 +642,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 		}
 
 		/* Strings begin here */
-		case (SOS_string): {
+		case SOS_string: {
 			// Escape sequence of apostrophe may continue
 			if (symbol == '\'') {
 				setState(SOS_stringApostrophe);
@@ -631,7 +659,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				return true;
 			}
 		}
-		case (SOS_stringApostrophe): {
+		case SOS_stringApostrophe: {
 			if (symbol == '#') {
 				setState(SOS_stringHashtag);
 				return true;
@@ -645,23 +673,26 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			else {
 				// String reached right pair of quote
 				terminalState();
+
 				return true;
 			}
 		}
-		case (SOS_stringHashtag): {
+		case SOS_stringHashtag: {
 			if (symbol == '0')
 				return true;
 			else if (symbol >= '1' && symbol <= '9') {
 				setState(SOS_stringASCII);
 				scanner->ascii_to_char_val = (scanner->ascii_to_char_val*10) + (symbol - '0');
+
 				return true;
 			}
 			else {
 				setState(SOS_error);
+
 				return true;
 			}
 		}
-		case (SOS_stringASCII): {
+		case SOS_stringASCII: {
 			if (symbol >= '0' && symbol <= '9') {
 				scanner->ascii_to_char_val = (scanner->ascii_to_char_val*10) + (symbol - '0');
 				if (scanner->ascii_to_char_val > 255) {
@@ -674,14 +705,64 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				setState(SOS_string);
 				appendCharToToken(token, (char)scanner->ascii_to_char_val);
 				scanner->ascii_to_char_val = 0;
+
 				return true;
 			}
 			else
 				setState(SOS_error);
+
 				return true;
 		}
 		/* Strings end here */
+		//values with bin/hex/oct base
+		case SOS_baseExtract: {
+			if (symbol == '0') {
+				if(atString(&token->str, 0) == '0') {
+					setAtString(&token->str, 0, symbol);
+				}
+				else {
+					append_symbol();
+				}
 
+				return true;
+			}
+			else if (scanner->base == 2) {
+				if (symbol == '1' ) {
+					append_symbol();
+
+					return true;
+				}
+				else {
+					terminalState();
+
+					return false;
+				}
+			}
+			else if (scanner->base == 8) {
+				if (symbol >= '1' && symbol <= '7') {
+					append_symbol();
+
+					return true;
+				}
+				else {
+					terminalState();
+
+					return false;
+				}
+			}
+			else if (scanner->base == 16) {
+				if ((symbol >= '1' && symbol <= '9') || (symbol >= 'A' && symbol <= 'E')) {
+					append_symbol();
+
+					return true;
+				}
+				else {
+					terminalState();
+
+					return false;			
+				}
+			}
+		}
 		// In case of state with one character long tokens
 		default: {
 			terminalState();

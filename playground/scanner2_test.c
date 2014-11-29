@@ -3,8 +3,8 @@
 int main() {
 	Scanner scanner = initScanner();
 
-	//assignFile(&scanner.input, "testFile.txt");
-	assignString(&scanner.input, "begin  53e4 false False true end\n");
+	assignFile(&scanner.input, "testFile.txt");
+	//assignString(&scanner.input, "begin  53e4 false False true end\n");
 
 	TokenVector *tokvect = getTokenVector(&scanner);
 	if(getError()) {

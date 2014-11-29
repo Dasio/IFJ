@@ -1,4 +1,6 @@
-var
+var a := %11101;
+var b := &0654;
+var c := $0B2;
 str1 : string;
 str2 : string;
 n : integer;
