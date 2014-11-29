@@ -13,7 +13,12 @@ BIN=ifj
 SRCS=$(wildcard *.c)
 OBJS=$(subst .c,.o,$(SRCS))
 
+LEADER_NAME=xmikus15
+
 all: $(BIN)
+
+release: all
+	zip $(LEADER_NAME).zip *.c *.h Makefile .depend README.md
 
 $(BIN): $(OBJS) lib.a
 	$(CC) $(LDFLAGS) -o $(BIN) $(BIN).o lib.a $(LDLIBS)
