@@ -1,4 +1,4 @@
-NAME=doc
+NAME=dokumentace
 
 $(NAME).pdf: $(NAME).tex title.tex
 	# Double-pass compiling
@@ -6,4 +6,4 @@ $(NAME).pdf: $(NAME).tex title.tex
 	pdflatex $(NAME).tex
 
 clean:
-	-rm $(NAME).dvi $(NAME).aux $(NAME).toc $(NAME).log $(NAME).out
+	-rm *.tdo $(NAME).dvi $(NAME).aux $(NAME).toc $(NAME).log $(NAME).out $(NAME).pdf
