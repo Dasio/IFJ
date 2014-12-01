@@ -38,6 +38,7 @@ typedef struct SymbolStruct Symbol;
 typedef struct
 {
 	Symbol **arg; /**< array of arguments, points to symbol in Hash */
+	Symbol *ret_value; /**< pointer to symbol with return value of function */
 	uint32_t argCount;
 	uint32_t argMax;
 
