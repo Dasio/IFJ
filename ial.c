@@ -214,7 +214,7 @@ Symbol *SymbolAdd(Context *funCont, SymbolType type, char *name, Context *symbol
 
 bool ResizeHashTable(Context *funCont, uint32_t NewSize)
 {
-	SymbolList **tmp = malloc(sizeof(struct SymbolList*)* NewSize);
+	SymbolList **tmp = malloc(sizeof(SymbolList*)* NewSize);
 
 	SymbolList *item;
 	uint32_t x;
