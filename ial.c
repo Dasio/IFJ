@@ -13,11 +13,17 @@
 		index which point to input index (start from "0")
 	  UNSUCCESSFUL
 		length of input length
+		ERR_Allocation if unable to malloc
  */
 
 int FindString(String *input, String *find)
 {
 	int *Mask = GetFormula(find);
+	if(Mask = NULL)
+	{
+		setError(ERR_Allocation);
+		return input->length; // did not find value + ERROR
+	}
 	uint32_t inInd=1, fiInd=1;
 	while(inInd<=input->length && fiInd<=find->length)
 	{
@@ -36,9 +42,12 @@ int FindString(String *input, String *find)
 			}
 		}
 	}
+	free(Mask);
+	Mask = NULL;
 	if(fiInd>find->length)
-		return inInd-find->length-1;
-	return input->length;
+		return inInd - find->length-1; // index where strings match
+
+	return input->length; // did not find value
 }
 
 
@@ -51,7 +60,8 @@ int *GetFormula(String *find)
 {
 	int r;
 	int *Mask = malloc((find->length) * sizeof(int));
-	if(Mask==NULL) return 0;
+	if(Mask==NULL)
+		return NULL;
 	Mask[0] = 0;
 	for (uint32_t i = 1; i < find->length; ++i)
 	{

@@ -22,13 +22,14 @@
  * 	                      index where substring start
  * 	                 FAILED
  * 	                      Length of input String
+ * 	                      ERR_Allocation if unable to malloc
  */
 int FindString(String *in, String *substring);
 
 /**
  * Make formula for KMP algorithm
  * @param  find String which must include it's length
- * @return      FORMULA
+ * @return      FORMULA, NULL if unable to malloc
  */
 int *GetFormula(String *find);
 
