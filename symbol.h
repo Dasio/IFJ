@@ -56,7 +56,7 @@ struct SymbolStruct
 	char *name;		/**< Name of variable/function */
 	FuncState stateFunc; /**< 0- initial state 1-declared 2-defined */
 	Context *funCont;   /**< Pointer to Context of function */
-	intVector *adressVector; 	/**< for adding addresses to instruction tape
+	uint64_tVector *adressVector; 	/**< for adding addresses to instruction tape
 								if function was called before definition */
 }; // Symbol
 

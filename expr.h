@@ -12,7 +12,6 @@
 
 
 typedef enum { TERM, NONTERM } ExprTokenType;
-typedef enum { CONST, VAR } Constness;
 
 typedef struct
 {
@@ -21,8 +20,9 @@ typedef struct
 		Token *token;
 		uint64_t index;
 	};
-	ExprTokenType type;
-	VariableType var_type;
+	ExprTokenType type;    // TERM / NONTERM
+	VariableType var_type; // LOCAL / GLOBAL
+	Constness constness; // CONST / VAR
 
 } ExprToken;
 

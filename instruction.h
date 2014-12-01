@@ -24,17 +24,22 @@
 		GLOBAL
 	} VariableType;
 
+	typedef enum {
+		CONST,
+		VAR
+	} Constness;
+
 	typedef struct {
 		bool initialized : 1;
 		bool sp_inc : 1;
-		DataType data_type : 3;
-		VariableType var_type : 1; // global/local
-
-		// var/const
+		DataType data_type : 3; // STRING / DOUBLE / INT / BOOL
+		VariableType var_type : 1; // GLOBAL / LOCAL
+		Constness constness : 1; // CONST / VAR
 
 		union {
-			int32_t n;
-			double d;
+			uint64_t offset;
+			int32_t int_;
+			double double_;
 			String* str;
 		};
 	} Operand;

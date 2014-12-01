@@ -133,12 +133,20 @@ static inline void convert_to_ExprToken(Token *token)
 		id = SymbolFind(funcContext, token->str.data);
 		if (id) // loc. var. or arg. or function
 		{
-
+			temp_expr_token.var_type = LOCAL;
 		}
 		id = SymbolFind(mainContext, token->str.data);
 		if (id) // glob. variable or function
 		{
-
+			if (id->type == T_FunPointer) // function
+			{
+				temp_expr_token.type = TERM;
+				token->type = TT_function;
+			}
+			else
+			{
+				temp_expr_token.var_type = GLOBAL;
+			}
 		}
 	}
 

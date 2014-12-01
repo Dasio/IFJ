@@ -254,5 +254,7 @@ struct Vector{
 
 GenVectorPrototypes(int)
 GenVectorPrototypesValues(int)
+GenVectorPrototypes(uint64_t)
+GenVectorPrototypesValues(uint64_t)
 
 #endif // VECTOR_H
