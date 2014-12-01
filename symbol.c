@@ -17,7 +17,7 @@ Context *InitContext()
 	}
 
 	// malloc arg array
-	funCont->arg = malloc(sizeof(struct SymbolList*)*DEFAULT_ARG_NUM);
+	funCont->arg = malloc(sizeof(Symbol*)*DEFAULT_ARG_NUM);
 	if(funCont->arg == NULL)
 	{
 		setError(ERR_Allocation);
@@ -26,7 +26,7 @@ Context *InitContext()
 	}
 
 	// malloc HASH array
-	funCont->locTable = malloc(sizeof(struct SymbolList*)*DEFAULT_HASH_SIZE);
+	funCont->locTable = malloc(sizeof(SymbolList*)*DEFAULT_HASH_SIZE);
 	if (funCont->locTable == NULL)
 	{
 		setError(ERR_Allocation);
