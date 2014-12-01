@@ -19,7 +19,7 @@
 int FindString(String *input, String *find)
 {
 	int *Mask = GetFormula(find);
-	if(Mask = NULL)
+	if(Mask == NULL)
 	{
 		setError(ERR_Allocation);
 		return input->length; // did not find value + ERROR
