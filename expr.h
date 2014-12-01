@@ -2,15 +2,17 @@
 #include "error.h"
 #include "vector.h"
 #include "token.h"
+#include "system.h"
+#include "instruction.h"
 
 #ifndef EXPR_H
 #define EXPR_H
 
-/*#define TERM 128
-#define is_term(token) (token->type & TERM)*/
-//#define precedence(type1, type2) do {} while(0)
+#define EXPR_ERROR -1
 
-typedef enum { TERM, NONTERM } ExprToken_type;
+
+typedef enum { TERM, NONTERM } ExprTokenType;
+typedef enum { CONST, VAR } Constness;
 
 typedef struct
 {
@@ -19,7 +21,8 @@ typedef struct
 		Token *token;
 		uint64_t index;
 	};
-	ExprToken_type type;
+	ExprTokenType type;
+	VariableType var_type;
 
 } ExprToken;
 
@@ -29,7 +32,7 @@ typedef struct
 GenVectorPrototypes(ExprToken)
 
 // after a call of expr(), value of the expression is stored on the top of stack
-void expr();
+DataType expr();
 void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector);
 
 

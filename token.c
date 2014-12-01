@@ -12,6 +12,16 @@ Token initToken() {
 
 void destroyToken(Token *token) {
 	assert(token);
+
+	// Skipping types which after conversion have string already free'd
+	switch(token->type) {
+		case TT_real:
+		case TT_integer:
+		case TT_bool:
+			return;
+		default: break;
+	}
+
 	destroyString(&token->str);
 }
 
@@ -37,6 +47,10 @@ char *stringifyToken(Token *token) {
 	{
 		case TT_empty:
 			return("$");
+		case TT_real:
+			return("REAL");
+		case TT_integer:
+			return("INT");
 		case TT_assignment:
 			return(":=");
 		case TT_colon:
@@ -82,9 +96,6 @@ char *stringifyToken(Token *token) {
 		case TT_semicolon:
 			return(";");
 		case TT_string:
-			return token->str.data;
-		case TT_integer:
-			// FIXME: Uses bug
 			return token->str.data;
 		case TT_keyword:
 			switch (token->keyword_token)

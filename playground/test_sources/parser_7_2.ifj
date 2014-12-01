@@ -1,0 +1,7 @@
+{Missing semicolon}
+begin
+	while 10 do
+		begin
+		end
+	a := 20
+end.

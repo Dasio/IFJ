@@ -5,6 +5,7 @@
 
 #include "error.h"
 #include "string.h"
+#include "vector.h"
 
 #ifndef SYMBOL_H
 #define SYMBOL_H
@@ -14,18 +15,18 @@
 
 // Types of symbols
 typedef enum {
-    T_Undefined = 0,
-    T_int,
-    T_double,
-    T_String,
-    T_bool,
-    T_FunPointer
+	T_String,
+	T_double,
+	T_int,
+	T_bool,
+	T_FunPointer,
+	T_Undefined
 } SymbolType;
 typedef enum
 {
-    FS_Undefined = 0, /**< Function is just added to GST */
-    FS_Declared, /**< Function is declared */
-    FS_Defined /**< Function is defined */
+	FS_Undefined = 0, /**< Function is just added to GST */
+	FS_Declared, /**< Function is declared */
+	FS_Defined /**< Function is defined */
 } FuncState;
 
 struct SymbolListStruct;
@@ -36,41 +37,41 @@ typedef struct SymbolStruct Symbol;
 
 typedef struct
 {
-	Symbol **arg; // array of arguments, points to symbol in Hash
-	uint32_t ArgCount;
-	uint32_t ArgMax;
+	Symbol **arg; /**< array of arguments, points to symbol in Hash */
+	uint32_t argCount;
+	uint32_t argMax;
 
-	SymbolList **LocTable; // Hash of all symbols in this Context
-	uint32_t LocSize; // size of HashTable
-	uint32_t LocCount; // number of LOCAL symbols
-    // number of symbols in HASH == LocCount + ArgCount
-	uint32_t InstrucIndex; // index of start in Instruction Tape
-	SymbolType ReturnType; // Type of return value
+	SymbolList **locTable;	/**< Hash of all symbols in this Context */
+	uint32_t locSize;	/**< size of HashTable */
+	uint32_t locCount;	/**< number of LOCAL variables */
+	uint32_t instrucIndex; /**< index of start in Instruction Tape */
+	SymbolType returnType; /**< Type of return value */
 }Context;
 
 struct SymbolStruct
 {
-    SymbolType type;    // Enum what kind of data are stored
-    int index;          // for variable index in stack
-                        // for function NULL
-    char *name;     // Name of variable/function
-    FuncState stateFunc; /**< 0- initial state 1-declared 2-defined*/
-    Context *FunCont;   // Pointer to Context of function
-};
+	SymbolType type;	/**< Enum what kind of data are stored */
+	uint64_t index;		/**< for variable index to stack
+							 for function index to instruction tape */
+	char *name;		/**< Name of variable/function */
+	FuncState stateFunc; /**< 0- initial state 1-declared 2-defined */
+	Context *funCont;   /**< Pointer to Context of function */
+	intVector *adressVector; 	/**< for adding addresses to instruction tape
+								if function was called before definition */
+}; // Symbol
 
 // struct in Hash table with data and pointer to next value
 struct SymbolListStruct
 {
 	SymbolList *next;
 	Symbol data;
-};
+}; // SymbolList
 
 #include "ial.h"
 #include "stack.h"
 
 /**
  * Init content for funciton
- * @param  uint32_t number of arguments
  * @return          pointer to context
  *
  */

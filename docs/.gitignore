@@ -1,7 +1,7 @@
-doc.pdf
 *.dvi
 *.aux
 *.toc
 *.log
 *.out
+*.tdo
 *eps-converted-to*

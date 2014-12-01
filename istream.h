@@ -5,6 +5,7 @@
  */
 
 #include "system.h"
+#include "error.h"
 
 #ifndef ISTREAM_H_
 #define ISTREAM_H_

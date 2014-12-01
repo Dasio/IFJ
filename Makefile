@@ -7,13 +7,18 @@ endif
 RM=rm -f
 CFLAGS=-g -ffast-math -Ofast -std=c11 -pedantic -Wall -Wextra -ftrapv -fstack-protector-all -funsigned-char
 LDFLAGS=
-#LDLIBS=-lpthread
+LDLIBS=
 
 BIN=ifj
 SRCS=$(wildcard *.c)
 OBJS=$(subst .c,.o,$(SRCS))
 
+LEADER_NAME=xmikus15
+
 all: $(BIN)
+
+release: all
+	zip $(LEADER_NAME).zip *.c *.h Makefile rozdeleni
 
 $(BIN): $(OBJS) lib.a
 	$(CC) $(LDFLAGS) -o $(BIN) $(BIN).o lib.a $(LDLIBS)
@@ -30,15 +35,17 @@ lib.a: $(filter-out $(BIN).o, $(OBJS))
 	ar -rcs $@ $(filter-out $(BIN).o, $(OBJS))
 
 playground: all
-	$(MAKE) -C playground
+	test -d "playground" && $(MAKE) -C playground || true
 
 test: all
-	$(MAKE) -C unit_tests
+	test -d "unit_tests" && $(MAKE) -C unit_tests || true
 
 clean:
-	$(RM) *.o *.a $(BIN) core*
-	$(MAKE) -C unit_tests clean
-	$(MAKE) -C playground clean
+	$(RM) *.o *.a $(BIN) core* *.zip
+
+	# Must be true at the end, because make clean fails unsuccessfully
+	test -d "unit_tests" && $(MAKE) -C unit_tests clean || true
+	test -d "playground" && $(MAKE) -C playground clean || true
 
 dist-clean: clean
 	$(RM) *~ .dependtool

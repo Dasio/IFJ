@@ -18,9 +18,6 @@
 #include "istream.h"
 #include "token.h"
 
-/*
- * Enumeration of possible states of scanner.
- */
 typedef enum
 {
 	// Special states
@@ -33,42 +30,43 @@ typedef enum
 
 	// Terminal states
 	SOS_assignment = 8,
-	SOS_colon,			// 9
-	SOS_comma,			// 10
-	SOS_divide,			// 11
-	SOS_dot,			// 12 ADD
-	SOS_equality,		// 13
-	SOS_greater,		// 14
-	SOS_greaterOrEqual,	// 15
-	SOS_identifier,		// 16
-	SOS_inequality,		// 17
-	SOS_keyword,		// 18
-	SOS_less,			// 19
-	SOS_lessOrEqual,	// 20
-	SOS_leftBrace,		// 21
-	SOS_leftCurlyBrace,	// 22
-	SOS_leftSquareBrace,// 23
-	SOS_minus,			// 24
-	SOS_multiply,		// 25
-	SOS_integer,		// 26
-	SOS_integerE,		// 27
-	SOS_integerESign,	// 28
-	SOS_integerEValue,	// 29
-	SOS_plus,			// 30
-	SOS_real,			// 31
-	SOS_realDot,		// 32
-	SOS_realE,			// 33
-	SOS_realESign,		// 34
-	SOS_realEValue,		// 35
-	SOS_rightBrace,		// 36
-	SOS_rightCurlyBrace,// 37
-	SOS_rightSquareBrace,	// 38
-	SOS_semicolon,		// 39
-	SOS_string,			// 40 ADD
-	SOS_stringHashtag,	// 41 ADD
-	SOS_stringASCII,	// 42 ADD
-	SOS_stringApostrophe,// 43 ADD
-	SOS_whitespace		// 44
+	SOS_baseExtract,	// 9
+	SOS_colon,			// 10
+	SOS_comma,			// 11
+	SOS_divide,			// 12
+	SOS_dot,			// 13 ADD
+	SOS_equality,		// 14
+	SOS_greater,		// 15
+	SOS_greaterOrEqual,	// 16
+	SOS_identifier,		// 17
+	SOS_inequality,		// 18
+	SOS_keyword,		// 19
+	SOS_less,			// 20
+	SOS_lessOrEqual,	// 21
+	SOS_leftBrace,		// 22
+	SOS_leftCurlyBrace,	// 23
+	SOS_leftSquareBrace,// 24
+	SOS_minus,			// 25
+	SOS_multiply,		// 26
+	SOS_integer,		// 27
+	SOS_integerE,		// 28
+	SOS_integerESign,	// 29
+	SOS_integerEValue,	// 30
+	SOS_plus,			// 31
+	SOS_real,			// 32
+	SOS_realDot,		// 33
+	SOS_realE,			// 34
+	SOS_realESign,		// 35
+	SOS_realEValue,		// 36
+	SOS_rightBrace,		// 37
+	SOS_rightCurlyBrace,// 38
+	SOS_rightSquareBrace,	// 39
+	SOS_semicolon,		// 40
+	SOS_string,			// 41 ADD
+	SOS_stringHashtag,	// 42 ADD
+	SOS_stringASCII,	// 43 ADD
+	SOS_stringApostrophe,// 44 ADD
+	SOS_whitespace		// 45
 } stateOfScanner;
 
 typedef struct
@@ -83,6 +81,11 @@ typedef struct
 	  * (conversion after getting token)
 	  */
 	TokenType convertTo;
+
+	/** Describes base of value stored in token / string
+	  * Used for bin/hex/oct conversion to decimal
+	  */
+	uint8_t base;
 
 	/**
 	 * Temporary value used in ASCII value escaped char in string

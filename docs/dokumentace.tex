@@ -13,7 +13,10 @@
 \usepackage{verbatim}
 \usepackage{amsmath}
 
-\usepackage[T1]{fontenc}
+%todo
+\usepackage[colorinlistoftodos,prependcaption]{todonotes}
+
+%\usepackage[T1]{fontenc}
 \usepackage{times}
 
 %http://stackoverflow.com/questions/1788598/how-to-force-two-figures-to-stay-on-the-same-page-in-latex
@@ -39,6 +42,8 @@
 \setcounter{page}{1}
 \tableofcontents
 
+\listoftodos[Notes]
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % textova zprava
 \newpage
@@ -50,23 +55,33 @@
 \section{Úvod} \label{uvod}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Projekt sa zaoberá ...
+\todo[inline]{Vymyslieť text}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Sekcia} \label{analyza}
+\section{Riešenie projektu} \label{riesenie}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%=============================================================================
-\subsection{Subsekcia}\label{zadanie}
+\subsection{Interpret}
 
+\subsection{Algoritmy}
+	\todo[inline]{Sem dopíše Tomáš postupy riešenia algoritmov etc.}
+
+\subsection{Práca v tíme}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % přílohy
 \appendix
 
 \section{Metriky kódu} \label{metriky}
 \paragraph{Počet súborov:} 1 súbor
-\paragraph{Počet riadkov zdrojového textu:} 377 riadkov
+\paragraph{Počet riadkov zdrojového textu:} 3407 riadkov
 \paragraph{Veľkosť statických dát:} 6147B
 \paragraph{Veľkosť spustiteľného programu:} 13294B
+\todo[inline]{Aktualizovať metriky po dopísani projektu}
+
+%
+\section{LL Gramatika} \label{gramatika}
+
+%
+\section{Precedenčná tabuľka} \label{precedencna_tabulka}
 
 \end{document}

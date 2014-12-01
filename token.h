@@ -35,7 +35,7 @@
 		TT_string,
 		TT_bool,
 
-		TT_assignment, // must stay here !!! :D
+		TT_assignment, // must stay here !!! :D (size of precedence_table array)
 		TT_colon,
 		TT_dot,
 		TT_semicolon,
@@ -82,11 +82,11 @@
 	 */
 	typedef struct {
 		TokenType type;
+		KeywordTokenType keyword_token;
 		union {
 			String str;  // string
 			double r;  // real
 			int32_t n; // integer
-			KeywordTokenType keyword_token;
 		};
 	} Token;
 

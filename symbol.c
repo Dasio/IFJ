@@ -9,81 +9,81 @@
 Context *InitContext()
 {
 	// malloc Context
-	Context *FunCont = malloc(sizeof(Context));
-	if(FunCont == NULL)
+	Context *funCont = malloc(sizeof(Context));
+	if(funCont == NULL)
 	{
 		setError(ERR_Allocation)
 		return NULL;
 	}
 
 	// malloc arg array
-	FunCont->arg = malloc(sizeof(struct SymbolList*)*DEFAULT_ARG_NUM);
-	if(FunCont->arg == NULL)
+	funCont->arg = malloc(sizeof(struct SymbolList*)*DEFAULT_ARG_NUM);
+	if(funCont->arg == NULL)
 	{
 		setError(ERR_Allocation);
-		free(FunCont);
+		free(funCont);
 		return NULL;
 	}
 
 	// malloc HASH array
-	FunCont->LocTable = malloc(sizeof(struct SymbolList*)*DEFAULT_HASH_SIZE);
-	if (FunCont->LocTable == NULL)
+	funCont->locTable = malloc(sizeof(struct SymbolList*)*DEFAULT_HASH_SIZE);
+	if (funCont->locTable == NULL)
 	{
 		setError(ERR_Allocation);
-		free(FunCont->arg);
-		free(FunCont);
+		free(funCont->arg);
+		free(funCont);
 		return NULL;
 	}
 
 	// erase HASH array
 	for(unsigned i=0;i<DEFAULT_HASH_SIZE;i++)
-		FunCont->LocTable[i]=NULL;
+		funCont->locTable[i]=NULL;
 
 	// erase arg array
 	for(unsigned i=0;i<DEFAULT_ARG_NUM;i++)
-		FunCont->arg[i]=NULL;
+		funCont->arg[i]=NULL;
 
-    // set other values of Context
-	FunCont->ArgCount = 0;
-	FunCont->LocCount = 0;
-	FunCont->ArgMax = DEFAULT_ARG_NUM;
-	FunCont->LocSize = DEFAULT_HASH_SIZE;
-	FunCont->InstrucIndex = 0;
-	FunCont->ReturnType = T_Undefined;
-	return FunCont;
+	// set other values of Context
+	funCont->argCount = 0;
+	funCont->locCount = 0;
+	funCont->argMax = DEFAULT_ARG_NUM;
+	funCont->locSize = DEFAULT_HASH_SIZE;
+	funCont->instrucIndex = 0;
+	funCont->returnType = T_Undefined;
+	return funCont;
 }
 
 // to add Symbol without argument call htab_addSymbol in ial.c file
 // SymbolContext is NULL if SymbolType is variable
-Symbol *AddArgToContext(Context *FunCont, SymbolType type, char *name, Context *SymbolContext)
+Symbol *AddArgToContext(Context *funCont, SymbolType type, char *name, Context *symbolContext)
 {
-	if(FunCont->ArgCount >= FunCont->ArgMax)
+	if(funCont->argCount >= funCont->argMax)
 	{
-		FunCont->ArgMax *= 2;
-		FunCont->arg = realloc(FunCont->arg, FunCont->ArgMax);
+		funCont->argMax *= 2;
+		funCont->arg = realloc(funCont->arg, funCont->argMax);
 	}
 
-	Symbol *symbol = SymbolAdd(FunCont, type, name, SymbolContext, NULL);
-	FunCont->arg[FunCont->ArgCount++] = symbol;
-	FunCont->LocCount--; // Arguments are not included in LocCount number
+	Symbol *symbol = SymbolAdd(funCont, type, name, symbolContext, NULL);
+	funCont->arg[funCont->argCount++] = symbol;
+	funCont->locCount--; // Arguments are not included in locCount number
 	return symbol;
 }
 
-void FreeContext(Context *FunCont)
+void FreeContext(Context *funCont)
 {
-	if (FunCont==NULL)
+	if (funCont==NULL)
 		return;
 
-	ContextLocTableFree(FunCont);
+	ContextLocTableFree(funCont);
 
-	if(FunCont->LocTable != NULL)
-		free(FunCont->LocTable);
-	FunCont->LocTable = NULL;
+	if(funCont->locTable != NULL)
+		free(funCont->locTable);
+	funCont->locTable = NULL;
 
-	if(FunCont->arg != NULL)
-		free(FunCont->arg);
-	FunCont->arg = NULL;
+	if(funCont->arg != NULL)
+		free(funCont->arg);
+	funCont->arg = NULL;
 
-	free(FunCont);
-	FunCont = NULL;
+	free(funCont);
+	funCont = NULL;
 }

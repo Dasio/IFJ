@@ -1,0 +1,9 @@
+{Nesedia identifikatory parametrov}
+
+	function a(b:integer):integer; forward;
+	function a(c:integer):integer;
+	begin
+	end;
+begin
+
+end.

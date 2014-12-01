@@ -4,12 +4,33 @@
 
 #include "system.h"
 #include "string.h"
+#include "symbol.h"
 #include "vector.h"
 
 #ifndef _INSTRUCTION_H
 #define _INSTRUCTION_H
 
+	// Data types
+	typedef enum {
+		STRING = T_String,
+		DOUBLE = T_double,
+		INT = T_int,
+		BOOL = T_bool,
+		UNDEF = T_Undefined
+	} DataType;
+
+	typedef enum {
+		LOCAL,
+		GLOBAL
+	} VariableType;
+
 	typedef struct {
+		bool initialized : 1;
+		bool sp_inc : 1;
+		DataType data_type : 3;
+		VariableType var_type : 1; // global/local
+
+		// var/const
 
 		union {
 			int32_t n;
@@ -18,6 +39,8 @@
 		};
 	} Operand;
 
+	//typedef Operand StackData;
+
 	/**
 	 * Instruction is three address code
 	 *
@@ -25,38 +48,14 @@
 	 *
 	 */
 	typedef enum {
-		/**
-		 * Copies data from Src to Dst
-		 * Src ___ Dst
-		 */
-		INST_Mov,
-
-		/**
-		 * Add's operands from src_1
-		 * Src1
-		 */
-
+		INST_Pop,
+		INST_Push,
+		INST_Call,
 
 		INST_SPIncrement,
 		INST_SPDecrement,
 
-		INST_AddI,
-		INST_AddD,
-		INST_AddS,
-
-		INST_SubI,
-		INST_SubD,
-
-		INST_MulI,
-		INST_MulD,
-
-		INST_SortS,
-
-		INST_Jmp,
-		INST_JmpEq,
-		INST_JmpZ,
-
-		INST_Sub
+		INST_Halt
 	} InstructionOp;
 
 	typedef struct {
@@ -65,6 +64,13 @@
 		Operand src_2;
 		Operand dst;
 	} Instruction;
+
+
+	// Pri kazdom priradeni do premennej treba flag empty nastavit
+
+	// Inkrementuje SP o parameter integer, vycisti polozku
+	// (popr. len flag empty)
+	//SPIncrement
 
 	GenVectorPrototypes(Instruction)
 
