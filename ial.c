@@ -1,6 +1,6 @@
 
 #include "ial.h"
-
+const int64_t bultInFuncs = 4;
 /*
 	Find substring in string
 	original input->data
@@ -199,7 +199,7 @@ Symbol *SymbolAdd(Context *funCont, SymbolType type, char *name, Context *symbol
 
 	// fill newItem
 	newItem->data.type = type;
-	newItem->data.index = ++(funCont->locCount); // unique index in stack
+	newItem->data.index = ++(funCont->locCount) - bultInFuncs; // unique index in stack
 	newItem->data.name = name;
 	newItem->data.funCont = symbolContext;
 	newItem->data.stateFunc = FS_Undefined;

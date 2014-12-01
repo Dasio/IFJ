@@ -37,7 +37,7 @@
 		Constness constness : 1; // CONST / VAR
 
 		union {
-			uint64_t offset;
+			int64_t offset;
 			int32_t int_;
 			double double_;
 			String* str;

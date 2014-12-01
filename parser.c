@@ -119,7 +119,7 @@ void var_def(uint8_t next)
 	Symbol *x = SymbolAdd(activeContext, symbolType, name, NULL, NULL);
 	if(getError())
 		return;
-	fprintf(stderr,"Symbol added name = %s type = %d, index = %lu\n",x->name,x->type,x->index);
+	fprintf(stderr,"Symbol added name = %s type = %d, index = %ld\n",x->name,x->type,x->index);
 	var_def(1);
 	if(getError())
 		return;
@@ -637,9 +637,10 @@ void addArgToFunc(SymbolType type, char *name)
 	}
 	else
 	{
-		AddArgToContext(funcContext, type, name, NULL);
+		Symbol *x = AddArgToContext(funcContext, type, name, NULL);
 		if(getError())
 			return;
+		fprintf(stderr,"Arg name = %s index = %d\n",x->name,x->index);
 	}
 	argIndex++;
 }
@@ -667,6 +668,7 @@ void addBuiltInFunctions()
 	// length(s : string) : integer
 	funcContext = InitContext();
 	symbol = SymbolAdd(mainContext, T_FunPointer, "length", funcContext, NULL);
+	symbol->index = -1;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_int;
 	AddArgToContext(funcContext, T_String, "s", NULL);
@@ -674,6 +676,7 @@ void addBuiltInFunctions()
 	// copy(s : string; i : integer; n : integer) : string
 	funcContext = InitContext();
 	symbol = SymbolAdd(mainContext, T_FunPointer, "copy", funcContext, NULL);
+	symbol->index = -2;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_String;
 	AddArgToContext(funcContext, T_String, "s", NULL);
@@ -682,6 +685,7 @@ void addBuiltInFunctions()
 
 	// find(s : string; search : string) : integer
 	funcContext = InitContext();
+	symbol->index = -3;
 	symbol = SymbolAdd(mainContext, T_FunPointer, "find", funcContext, NULL);
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_int;
@@ -691,6 +695,7 @@ void addBuiltInFunctions()
 	// sort(s : string) : string
 	funcContext = InitContext();
 	symbol = SymbolAdd(mainContext, T_FunPointer, "sort", funcContext, NULL);
+	symbol->index = -4;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_String;
 	AddArgToContext(funcContext, T_String, "s", NULL);

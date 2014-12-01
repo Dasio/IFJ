@@ -64,7 +64,10 @@ Symbol *AddArgToContext(Context *funCont, SymbolType type, char *name, Context *
 	}
 
 	Symbol *symbol = SymbolAdd(funCont, type, name, symbolContext, NULL);
+	if(getError())
+		return NULL;
 	funCont->arg[funCont->argCount++] = symbol;
+	symbol->index = -funCont->argCount;
 	funCont->locCount--; // Arguments are not included in locCount number
 	return symbol;
 }

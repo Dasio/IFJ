@@ -52,7 +52,7 @@ typedef struct
 struct SymbolStruct
 {
 	SymbolType type;	/**< Enum what kind of data are stored */
-	uint64_t index;		/**< for variable index to stack
+	int64_t index;		/**< for variable index/offset(global/local) to stack
 							 for function index to instruction tape */
 	char *name;		/**< Name of variable/function */
 	FuncState stateFunc; /**< 0- initial state 1-declared 2-defined */
