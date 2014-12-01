@@ -119,7 +119,6 @@ void var_def(uint8_t next)
 	Symbol *x = SymbolAdd(activeContext, symbolType, name, NULL, NULL);
 	if(getError())
 		return;
-	fprintf(stderr,"Symbol added name = %s type = %d, index = %ld\n",x->name,x->type,x->index);
 	var_def(1);
 	if(getError())
 		return;
@@ -617,6 +616,7 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 	returnSymbol->type = returnType;
 	funcContext->returnType = returnType;
 	funcSymbol->stateFunc = funcState;
+	funcSymbol->index = -funcContext->argCount - 1;
 }
 void addArgToFunc(SymbolType type, char *name)
 {
@@ -640,7 +640,6 @@ void addArgToFunc(SymbolType type, char *name)
 		Symbol *x = AddArgToContext(funcContext, type, name, NULL);
 		if(getError())
 			return;
-		fprintf(stderr,"Arg name = %s index = %d\n",x->name,x->index);
 	}
 	argIndex++;
 }
