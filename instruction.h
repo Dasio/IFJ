@@ -21,24 +21,20 @@
 
 	typedef enum {
 		LOCAL,
-		GLOBAL
+		GLOBAL,
+		CONST
 	} VariableType;
-
-	typedef enum {
-		CONST,
-		VAR
-	} Constness;
 
 	typedef struct {
 		bool initialized : 1;
 		bool sp_inc : 1;
 		DataType data_type : 3; // STRING / DOUBLE / INT / BOOL
-		VariableType var_type : 1; // GLOBAL / LOCAL
-		Constness constness : 1; // CONST / VAR
+		VariableType var_type : 2; // GLOBAL / LOCAL / CONST
 
 		union {
 			int64_t offset;
 			int32_t int_;
+			bool bool_;
 			double double_;
 			String* str;
 		};
@@ -49,18 +45,25 @@
 	/**
 	 * Instruction is three address code
 	 *
-	 *	SRC_1  -  SRC_2  -  DST
+	 *	DST  -  SRC_1  -  SRC_2
 	 *
 	 */
 	typedef enum {
-		INST_Pop,
-		INST_Push,
-		INST_Call,
-
-		INST_SPIncrement,
-		INST_SPDecrement,
-
-		INST_Halt
+		NEG, // 8  {L,G}{L,G}{I,D}
+		NOT, // 4  {L,G}{L,G}{B}
+		MUL, // 72 {L,G}{C,L,G}{C,L,G}{II,DI,ID,II}
+		DIV, // 72 {L,G}{C,L,G}{C,L,G}{II,DI,ID,II}
+		AND, // 18 {L,G}{C,L,G}{C,L,G}{BB}
+		ADD, // 90 {L,G}{C,L,G}{C,L,G}{II,DI,ID,II,SS}
+		SUB, // 72 {L,G}{C,L,G}{C,L,G}{II,DI,ID,II}
+		OR , // 18 {L,G}{C,L,G}{C,L,G}{BB}
+		XOR, // 18 {L,G}{C,L,G}{C,L,G}{BB}
+		L  , // 72 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}     ????
+		G  , // 72 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}     ????
+		LE , // 72 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}     ????
+		GE , // 72 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}     ????
+		EQ , // 72 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}     ????
+		NE   // 72 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}     ????
 	} InstructionOp;
 
 	typedef struct {
@@ -70,6 +73,7 @@
 		Operand dst;
 	} Instruction;
 
+	typedef void (*instrFunc)(Operand*, Operand*, Operand*);
 
 	// Pri kazdom priradeni do premennej treba flag empty nastavit
 

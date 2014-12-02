@@ -21,7 +21,7 @@
 	 * @param b  Operand B (Source B)
 	 * @param c  Operand C (Destination C)
 	 */
-	void generateInstruction(InstructionOp op, Operand a, Operand b, Operand c);
+	void generateInstruction(InstructionOp op, Operand* a, Operand* b, Operand* c);
 
 	void runInterpretation();
 
