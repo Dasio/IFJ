@@ -83,11 +83,13 @@
 		Key_integer,
 		Key_readln,
 		Key_real,
+		Key_repeat,
 		Key_sort,
 		Key_string,
 		Key_then,
 		Key_true,
 		Key_var,
+		Key_until,
 		Key_while,
 		Key_write,
 

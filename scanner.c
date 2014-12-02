@@ -113,6 +113,7 @@ Token getToken(Scanner *scanner)
 
 			if(scanner->base == 10 || scanner->base == 2 ||
 				scanner->base == 8 || scanner->base == 16) {
+
 				token.n = (int32_t) strtol(str.data, &err, scanner->base);
 				if(*err != 0) {
 					setError(ERR_LexicalConversion);
@@ -343,6 +344,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				setState(SOS_identifier);
 				token->type = TT_identifier;
 
+				symbol = tolower(symbol);
 				append_symbol();
 			}
 			else if(isdigit(symbol)) {
@@ -382,48 +384,62 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				return false;
 			}
 		}
-		case SOS_real: {
+		case SOS_integer: {
 			if (isdigit(symbol)) {
-				// Token already type'd as real
-				append_symbol();
-
+				// Prefix zeroes skipping
+				if(atString(&token->str, 0) == '0') {
+					setAtString(&token->str, 0, symbol);
+				}
+				else {
+					append_symbol();
+				}
 				return true;
 			}
 			else {
-				switch(symbol) {
+				//direct behind integer is alphabetic character(except e/E)
+				if ( isalpha(symbol) && (symbol != 'e' && symbol != 'E')) {
+					setState(SOS_error);
+
+					terminalState();
+
+					setError(ERR_Lexical);
+					fprintf(stderr, "Wrong integer value\n");
+
+					return false;
+				}
+				switch (symbol) {
 					case 'e':
 					case 'E': {
 						setState(SOS_realE);
+
+						token->type = TT_real;
+						scanner->convertTo = TT_real;
+
+						append_symbol();
+
+						return true;
+					}
+					case '.': {
+						setState(SOS_realDot);
+
+						token->type = TT_real;
+						scanner->convertTo = TT_real;
+
 						append_symbol();
 
 						return true;
 					}
 					default: {
+
 						terminalState();
+
 						return false;
 					}
 				}
-			}
-		}
-		case SOS_realDot: {
-			if (isdigit(symbol)) {
-				setState(SOS_real);
-				convertTokenTo(TT_real);
-
-				append_symbol();
-
 				return true;
 			}
-			else {
-				setState(SOS_error);
-				terminalState();
-
-				setError(ERR_Lexical);
-				fprintf(stderr, "Wrong decimal part of number\n");
-
-				return false;
-			}
 		}
+		//whole part followed by e/E, expects value of exponent, otherwise, an error occurs
 		case SOS_realE: {
 			if (isdigit(symbol)) {
 				setState(SOS_realEValue);
@@ -439,16 +455,16 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 			}
 			else {
 				setState(SOS_error);
+
 				terminalState();
 
 				setError(ERR_Lexical);
-				fprintf(stderr, "Wrong E exponent value with real\n");
+				fprintf(stderr, "Wrong E exponent value\n");
 
-				terminalState();
 				return false;
 			}
 		}
-
+		//whole part of number followed by e/E and +/-, expects exponent value
 		case SOS_realESign: {
 			if (isdigit(symbol)) {
 				setState(SOS_realEValue);
@@ -461,18 +477,29 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				terminalState();
 
 				setError(ERR_Lexical);
-				fprintf(stderr, "Wrong exponent value with real\n");
+				fprintf(stderr, "Wrong exponent value of real number\n");
 
 				return false;
 			}
 		}
-
+		//whole part of number followed by e/E and exponent value
 		case SOS_realEValue: {
-			// TODO: cover zeroes in 20.2E+005
+			// TODO : Cover zeros in 20E+005
 			if (isdigit(symbol)) {
 				append_symbol();
 
 				return true;
+			}
+			//exponent includes alphabetic characters
+			if (isalpha(symbol)) {
+				setState(SOS_error);
+
+				terminalState();
+
+				setError(ERR_Lexical);
+				fprintf(stderr, "Wrong exponent value of real number\n");
+
+				return false;
 			}
 			else {
 				terminalState();
@@ -480,7 +507,61 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				return false;
 			}
 		}
+		//whole part of number followed by dot, expects decimal part
+		case SOS_realDot: {
+			if (isdigit(symbol)) {
+				setState(SOS_realDotValue);
+				convertTokenTo(TT_real);
 
+				append_symbol();
+
+				return true;
+			}
+			else {
+				setState(SOS_error);
+				terminalState();
+
+				setError(ERR_Lexical);
+				fprintf(stderr, "Wrong decimal part of real number\n");
+
+				return false;
+			}
+		}
+		//whole part of number followed by dot with decimal part
+		case SOS_realDotValue: {
+			if (isdigit(symbol)) {
+
+				append_symbol();
+				return true;
+			}
+			else if ( symbol == 'e' || symbol == 'E') {
+				setState(SOS_realE);
+
+				token->type = TT_real;
+				scanner->convertTo = TT_real;
+
+				append_symbol();
+
+				return true;
+			}
+			//decimal part cannot include alphabetic characters
+			else if (isalpha(symbol))
+			{
+				setState(SOS_error);
+				terminalState();
+
+				setError(ERR_Lexical);
+				fprintf(stderr, "Wrong decimal part of real number\n");
+
+				return false;
+			}
+			else {
+				terminalState();
+
+				return false;
+			}
+
+		}
 		case SOS_greater: {
 			if (symbol == '=') {
 				token->type = TT_greaterOrEqual;
@@ -497,9 +578,21 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 		case SOS_identifier: {
 			if (isalnum(symbol) || (symbol == '_')) {
+				symbol = tolower(symbol);
 				append_symbol();
 
 				return true;
+			}
+			//cannot stay directly behind identifier (represents another than 10 base value)
+			else if ( symbol == '&' || symbol == '%' || symbol == '$') {
+				setState(SOS_error);
+
+				terminalState();
+
+				setError(ERR_Lexical);
+				fprintf(stderr, "Wrong identifier\n");
+
+				return false;
 			}
 			else {
 				terminalState();
@@ -538,111 +631,6 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				return false;
 			}
 		}
-
-		case SOS_integer: {
-			if (isdigit(symbol)) {
-				// Prefix zeroes skipping
-				if(atString(&token->str, 0) == '0') {
-					setAtString(&token->str, 0, symbol);
-				}
-				else {
-					append_symbol();
-				}
-				return true;
-			}
-			else {
-				switch (symbol) {
-					case 'e':
-					case 'E': {
-						setState(SOS_integerE);
-
-						token->type = TT_real;
-						scanner->convertTo = TT_real;
-
-						append_symbol();
-
-						return true;
-					}
-					case '.': {
-						setState(SOS_realDot);
-
-						token->type = TT_real;
-						scanner->convertTo = TT_real;
-
-						append_symbol();
-
-						return true;
-					}
-					default: {
-						terminalState();
-
-						return false;
-					}
-				}
-				return true;
-			}
-		}
-
-		//expects value of exponent, otherwise, an error occurs
-		case SOS_integerE: {
-			if (isdigit(symbol)) {
-				setState(SOS_integerEValue);
-				append_symbol();
-
-				return true;
-			}
-			else if (symbol == '+' || symbol == '-') {
-				setState(SOS_integerESign);
-				append_symbol();
-
-				return true;
-			}
-			else {
-				setState(SOS_error);
-
-				terminalState();
-
-				setError(ERR_Lexical);
-				fprintf(stderr, "Wrong E exponent value\n");
-
-				return false;
-			}
-		}
-
-		//expects value of exponent, otherwise, an error occurs
-		case SOS_integerESign: {
-			if (isdigit(symbol)) {
-				setState(SOS_integerEValue);
-				append_symbol();
-
-				return true;
-			}
-			else {
-				setState(SOS_error);
-
-				terminalState();
-
-				setError(ERR_Lexical);
-				fprintf(stderr, "Wrong exponent value with integer\n");
-
-				return false;
-			}
-		}
-
-		case SOS_integerEValue: {
-			// TODO : Cover zeros in 20E+005
-			if (isdigit(symbol)) {
-				append_symbol();
-
-				return true;
-			}
-			else {
-				terminalState();
-
-				return false;
-			}
-		}
-
 		/* Strings begin here */
 		case SOS_string: {
 			// Escape sequence of apostrophe may continue
@@ -676,7 +664,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				// String reached right pair of quote
 				terminalState();
 
-				return true;
+				return false;
 			}
 		}
 		case SOS_stringHashtag: {
@@ -837,6 +825,9 @@ KeywordTokenType identifierToKeyword(String *str)
 			if(keyword_cmp("real")) {
 				return Key_real;
 			}
+			if(keyword_cmp("repeat")) {
+				return Key_repeat;
+			}			
 			return Key_none;
 		}
 		case 's': {
@@ -856,6 +847,11 @@ KeywordTokenType identifierToKeyword(String *str)
 				return Key_true;
 			}
 			return Key_none;
+		}
+		case 'u': {
+			if(keyword_cmp("until")) {
+				return Key_until;
+			}			
 		}
 		case 'v': {
 			if(keyword_cmp("var")) {

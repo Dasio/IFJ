@@ -1,14 +1,25 @@
 var a := %11101;
-var b := &0654;
-var c := $0B2;
-str1 : string;
-str2 : string;
+vAR b := 0654;
+Var c := $0B2;
+c := 10 ab;
+var X := 0.778
+var D := 0.1238e+5;
+STR1 : sTring;
+sTr2 : string;
 n : integer;
+n := 2155500002;
+o := 2e5;2e5
 begin
 str1 := 'Toto je nejaky text';
 str2 := copy(str1, 9, 11);
-write(str1, ''#10'', str2, ''#10'');
+write(str1, ''#33'', str2, ''#38'');
+repeat
+    writeln('Zadej cislo (0 = konec): ');
+    readln(i);
+ until c <> 0;
+
 n := find(str2, 'text');
+until 
 write('Pozice retezce "text" v str2: ', n, ''#10'');
 write('Zadejte posloupnost vsech malych pismen a-h, ',
 'aby se pismena v posloupnosti neopakovala:');

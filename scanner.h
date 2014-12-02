@@ -8,6 +8,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdint.h>
+#include <float.h>
+
 
 #include "system.h"
 #include "string.h"
@@ -49,24 +52,22 @@ typedef enum
 	SOS_minus,			// 25
 	SOS_multiply,		// 26
 	SOS_integer,		// 27
-	SOS_integerE,		// 28
-	SOS_integerESign,	// 29
-	SOS_integerEValue,	// 30
-	SOS_plus,			// 31
-	SOS_real,			// 32
-	SOS_realDot,		// 33
-	SOS_realE,			// 34
-	SOS_realESign,		// 35
-	SOS_realEValue,		// 36
-	SOS_rightBrace,		// 37
-	SOS_rightCurlyBrace,// 38
-	SOS_rightSquareBrace,	// 39
-	SOS_semicolon,		// 40
-	SOS_string,			// 41 ADD
-	SOS_stringHashtag,	// 42 ADD
-	SOS_stringASCII,	// 43 ADD
-	SOS_stringApostrophe,// 44 ADD
-	SOS_whitespace		// 45
+	SOS_plus,			// 28
+	SOS_real,			// 29
+	SOS_realDot,		// 30
+	SOS_realDotValue,	// 31
+	SOS_realE,			// 32
+	SOS_realESign,		// 33
+	SOS_realEValue,		// 34
+	SOS_rightBrace,		// 35
+	SOS_rightCurlyBrace,// 36
+	SOS_rightSquareBrace,	// 37
+	SOS_semicolon,		// 38
+	SOS_string,			// 39 ADD
+	SOS_stringHashtag,	// 40 ADD
+	SOS_stringASCII,	// 41 ADD
+	SOS_stringApostrophe,// 42 ADD
+	SOS_whitespace		// 43
 } stateOfScanner;
 
 typedef struct

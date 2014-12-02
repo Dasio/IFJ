@@ -126,6 +126,8 @@ char *stringifyToken(Token *token) {
 					return("readln");
 				case Key_real:
 					return("real");
+				case Key_repeat:
+					return("repeat");
 				case Key_sort:
 					return("sort");
 				case Key_string:
@@ -136,6 +138,8 @@ char *stringifyToken(Token *token) {
 					return("true");
 				case Key_var:
 					return("var");
+				case Key_until:
+					return("until");
 				case Key_while:
 					return("while");
 				case Key_write:
