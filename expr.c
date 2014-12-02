@@ -74,9 +74,8 @@ DataType expr()
 
 	token++;
 
-
-	// TT_minus too if we want to implement unary minus
-	if(token->type != TT_leftBrace && !(token->type >= TT_identifier && token->type <= TT_bool))
+	if(token->type != TT_leftBrace
+		&& !(token->type >= TT_identifier && token->type <= TT_bool))
 	{
 		setError(ERR_SyntaxExpr);
 		printError();
@@ -146,7 +145,6 @@ static inline void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vect
 			else
 			{
 				temp_expr_token.var_type = LOCAL;
-				temp_expr_token.constness = VAR;
 			}
 		}
 		else
@@ -162,7 +160,6 @@ static inline void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vect
 				else
 				{
 					temp_expr_token.var_type = GLOBAL;
-					temp_expr_token.constness = VAR;
 				}
 			}
 		}
