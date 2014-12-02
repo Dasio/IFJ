@@ -16,6 +16,7 @@ static inline int precedence(ExprTokenVector *expr_token_vector);
 static inline ExprToken *findTopMostTerm(ExprTokenVector *expr_token_vector);
 static inline bool check_id_function(Symbol *identifier);
 static inline bool check_unary_minus(ExprTokenVector *expr_vector);
+static inline void print_type_table(int operator);
 
 
 typedef enum
@@ -29,7 +30,7 @@ enum { SHIFT = S, REDUCE = R, HANDLE = H, ERROR = E};
 
 static const char *actions[] = {"shift", "reduce", "handle", "error"};
 
-static int precedence_table[TT_assignment][TT_assignment] =
+static const int precedence_table[TT_assignment][TT_assignment] =
 {
 /*         U- not  *   /  and  +   -  or  xor  <   >   <=  >=  =   <>  (   )   f   ,   $  var  */
 /*  U- */{ H , R , R , R , R , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
@@ -55,15 +56,146 @@ static int precedence_table[TT_assignment][TT_assignment] =
 /* var */{ R , R , R , R , R , R , R , R , R , R , R , R , R , R , R , E , R , E , R , R , E }
 };
 
-static int type_table[4][4] =
+#define OPERATORS_COUNT 15
+#define num_of_data_types 4
+
+static const int type_table[OPERATORS_COUNT][num_of_data_types][num_of_data_types] =
 {
-/*****************************************************/
-/**********   STRING    DOUBLE    INT       BOOL   ***/
-/*****************************************************/
-/* STRING */{ STRING ,  UNDEF  ,  UNDEF  ,  UNDEF },
-/* DOUBLE */{ UNDEF  ,  DOUBLE ,  DOUBLE ,  UNDEF },
-/*    INT */{ UNDEF  ,  DOUBLE ,  INT    ,  UNDEF },
-/*   BOOL */{ UNDEF  ,  UNDEF  ,  UNDEF  ,  BOOL  }
+	{
+	/*****************************************************/
+	/*                 TT_unaryMinus                     */
+	/*****************************************************/
+	/* STRING */{ UNDEF  ,  UNDEF  ,  UNDEF  ,  UNDEF  },
+	/* DOUBLE */{ DOUBLE ,  DOUBLE ,  DOUBLE ,  DOUBLE },
+	/*    INT */{ INT    ,  INT    ,  INT    ,  INT    },
+	/*   BOOL */{ UNDEF  ,  UNDEF  ,  UNDEF  ,  UNDEF  }
+	},
+	{
+	/*****************************************************/
+	/*                    TT_not                         */
+	/*****************************************************/
+	/* STRING */{ UNDEF ,  UNDEF ,  UNDEF ,  UNDEF },
+	/* DOUBLE */{ UNDEF ,  UNDEF ,  UNDEF ,  UNDEF },
+	/*    INT */{ UNDEF ,  UNDEF ,  UNDEF ,  UNDEF },
+	/*   BOOL */{ BOOL  ,  BOOL  ,  BOOL  ,  BOOL  }
+	},
+	{
+/***************************************************************/
+/*    TT_multiply   *   STRING    DOUBLE    INT       BOOL   ***/
+/***************************************************************/
+	      /* STRING */{ UNDEF  ,  UNDEF  ,  UNDEF  ,  UNDEF },
+	      /* DOUBLE */{ UNDEF  ,  DOUBLE ,  DOUBLE ,  UNDEF },
+	      /*    INT */{ UNDEF  ,  DOUBLE ,  INT    ,  UNDEF },
+	      /*   BOOL */{ UNDEF  ,  UNDEF  ,  UNDEF  ,  UNDEF }
+	},
+	{
+/***************************************************************/
+/*   TT_division    *   STRING    DOUBLE    INT       BOOL   ***/
+/***************************************************************/
+	      /* STRING */{ UNDEF  ,  UNDEF  ,  UNDEF  ,  UNDEF },
+	      /* DOUBLE */{ UNDEF  ,  DOUBLE ,  DOUBLE ,  UNDEF },
+	      /*    INT */{ UNDEF  ,  DOUBLE ,  DOUBLE ,  UNDEF },
+	      /*   BOOL */{ UNDEF  ,  UNDEF  ,  UNDEF  ,  UNDEF }
+	},
+	{
+/***************************************************************/
+/*      TT_and      *   STRING    DOUBLE    INT       BOOL   ***/
+/***************************************************************/
+	      /* STRING */{ UNDEF  ,  UNDEF  ,  UNDEF ,  UNDEF },
+	      /* DOUBLE */{ UNDEF  ,  UNDEF  ,  UNDEF ,  UNDEF },
+	      /*    INT */{ UNDEF  ,  UNDEF  ,  UNDEF ,  UNDEF },
+	      /*   BOOL */{ UNDEF  ,  UNDEF  ,  UNDEF ,  BOOL  }
+	},
+	{
+/***************************************************************/
+/*     TT_plus      *   STRING    DOUBLE    INT       BOOL   ***/
+/***************************************************************/
+	      /* STRING */{ STRING ,  UNDEF  ,  UNDEF  ,  UNDEF },
+	      /* DOUBLE */{ UNDEF  ,  DOUBLE ,  DOUBLE ,  UNDEF },
+	      /*    INT */{ UNDEF  ,  DOUBLE ,  INT    ,  UNDEF },
+	      /*   BOOL */{ UNDEF  ,  UNDEF  ,  UNDEF  ,  UNDEF }
+	},
+	{
+/***************************************************************/
+/*     TT_minus     *   STRING    DOUBLE    INT       BOOL   ***/
+/***************************************************************/
+	      /* STRING */{ STRING ,  UNDEF  ,  UNDEF  ,  UNDEF },
+	      /* DOUBLE */{ UNDEF  ,  DOUBLE ,  DOUBLE ,  UNDEF },
+	      /*    INT */{ UNDEF  ,  DOUBLE ,  INT    ,  UNDEF },
+	      /*   BOOL */{ UNDEF  ,  UNDEF  ,  UNDEF  ,  UNDEF }
+	},
+	{
+/***************************************************************/
+/*      TT_or       *   STRING    DOUBLE    INT       BOOL   ***/
+/***************************************************************/
+	      /* STRING */{ UNDEF  ,  UNDEF  ,  UNDEF ,  UNDEF },
+	      /* DOUBLE */{ UNDEF  ,  UNDEF  ,  UNDEF ,  UNDEF },
+	      /*    INT */{ UNDEF  ,  UNDEF  ,  UNDEF ,  UNDEF },
+	      /*   BOOL */{ UNDEF  ,  UNDEF  ,  UNDEF ,  BOOL  }
+	},
+	{
+/***************************************************************/
+/*      TT_xor      *   STRING    DOUBLE     INT     BOOL   ***/
+/***************************************************************/
+	      /* STRING */{ UNDEF  ,  UNDEF  ,  UNDEF ,  UNDEF },
+	      /* DOUBLE */{ UNDEF  ,  UNDEF  ,  UNDEF ,  UNDEF },
+	      /*    INT */{ UNDEF  ,  UNDEF  ,  UNDEF ,  UNDEF },
+	      /*   BOOL */{ UNDEF  ,  UNDEF  ,  UNDEF ,  BOOL  }
+	},
+	{
+/************************************************************/
+/*     TT_less      *   STRING   DOUBLE    INT     BOOL   ***/
+/************************************************************/
+	      /* STRING */{ BOOL  ,  UNDEF ,  UNDEF ,  UNDEF },
+	      /* DOUBLE */{ UNDEF ,  BOOL  ,  UNDEF ,  UNDEF },
+	      /*    INT */{ UNDEF ,  UNDEF ,  BOOL  ,  UNDEF },
+	      /*   BOOL */{ UNDEF ,  UNDEF ,  UNDEF ,  BOOL  }
+	},
+	{
+/************************************************************/
+/*    TT_greater    *   STRING   DOUBLE   INT      BOOL   ***/
+/************************************************************/
+	      /* STRING */{ BOOL  ,  UNDEF ,  UNDEF ,  UNDEF },
+	      /* DOUBLE */{ UNDEF ,  BOOL  ,  UNDEF ,  UNDEF },
+	      /*    INT */{ UNDEF ,  UNDEF ,  BOOL  ,  UNDEF },
+	      /*   BOOL */{ UNDEF ,  UNDEF ,  UNDEF ,  BOOL  }
+	},
+	{
+/************************************************************/
+/*  TT_lessOrEqual  *   STRING   DOUBLE    INT     BOOL   ***/
+/************************************************************/
+	      /* STRING */{ BOOL  ,  UNDEF ,  UNDEF ,  UNDEF },
+	      /* DOUBLE */{ UNDEF ,  BOOL  ,  UNDEF ,  UNDEF },
+	      /*    INT */{ UNDEF ,  UNDEF ,  BOOL  ,  UNDEF },
+	      /*   BOOL */{ UNDEF ,  UNDEF ,  UNDEF ,  BOOL  }
+	},
+	{
+/************************************************************/
+/* TT_greaterOrEqual*   STRING   DOUBLE    INT     BOOL   ***/
+/************************************************************/
+	      /* STRING */{ BOOL  ,  UNDEF ,  UNDEF ,  UNDEF },
+	      /* DOUBLE */{ UNDEF ,  BOOL  ,  UNDEF ,  UNDEF },
+	      /*    INT */{ UNDEF ,  UNDEF ,  BOOL  ,  UNDEF },
+	      /*   BOOL */{ UNDEF ,  UNDEF ,  UNDEF ,  BOOL  }
+	},
+	{
+/************************************************************/
+/*   TT_equality    *   STRING   DOUBLE    INT     BOOL   ***/
+/************************************************************/
+	      /* STRING */{ BOOL  ,  UNDEF ,  UNDEF ,  UNDEF },
+	      /* DOUBLE */{ UNDEF ,  BOOL  ,  UNDEF ,  UNDEF },
+	      /*    INT */{ UNDEF ,  UNDEF ,  BOOL  ,  UNDEF },
+	      /*   BOOL */{ UNDEF ,  UNDEF ,  UNDEF ,  BOOL  }
+	},
+	{
+/************************************************************/
+/*  TT_inequality   *   STRING   DOUBLE    INT     BOOL   ***/
+/************************************************************/
+	      /* STRING */{ BOOL  ,  UNDEF ,  UNDEF ,  UNDEF },
+	      /* DOUBLE */{ UNDEF ,  BOOL  ,  UNDEF ,  UNDEF },
+	      /*    INT */{ UNDEF ,  UNDEF ,  BOOL  ,  UNDEF },
+	      /*   BOOL */{ UNDEF ,  UNDEF ,  UNDEF ,  BOOL  }
+	},
 };
 
 
@@ -108,6 +240,13 @@ DataType expr()
 	ExprTokenVectorPrint(expr_token_vector);
 
 	ExprTokenVectorFree(expr_token_vector);
+
+	/*for (int i = TT_unaryMinus; i <= TT_inequality; i++)
+	{
+		printf("%d\n", i);
+		print_type_table(i);
+	}*/
+
 
 	return expr_data_type;
 }
@@ -172,7 +311,7 @@ static inline void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vect
 
 	temp_expr_token.token = token;
 	//
-	int lol = type_table[T_String][T_String];
+	int lol = type_table[TT_plus][T_String][T_String];
 	lol = lol+1;
 }
 
@@ -237,6 +376,18 @@ static inline bool check_unary_minus(ExprTokenVector *expr_vector)
 		return false;
 
 	return true;
+}
+
+static inline void print_type_table(int operator)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int x = 0; x < 4; x++)
+		{
+			printf("%d ", type_table[operator][i][x]);
+		}
+		printf("\n");
+	}
 }
 
 

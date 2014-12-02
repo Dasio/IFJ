@@ -20,8 +20,7 @@ typedef struct
 		uint64_t index;
 	};
 	ExprTokenType type;    // TERM / NONTERM
-	VariableType var_type; // LOCAL / GLOBAL
-	Constness constness; // CONST / VAR
+	VariableType var_type; // LOCAL / GLOBAL / CONST
 	bool handle_start;
 
 } ExprToken;
