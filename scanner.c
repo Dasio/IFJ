@@ -395,29 +395,26 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				}
 				return true;
 			}
+			//next character is space -> end of token
+			else if (isspace(symbol)) {
+				terminalState();
+
+				return false;
+			}
 			else {
-				//direct behind integer is alphabetic character(except e/E)
-				if ( isalpha(symbol) && (symbol != 'e' && symbol != 'E')) {
-					setState(SOS_error);
-
-					terminalState();
-
-					setError(ERR_Lexical);
-					fprintf(stderr, "Wrong integer value\n");
-
-					return false;
-				}
+				//another possible characters for actual token state
 				switch (symbol) {
-					case 'e':
-					case 'E': {
-						setState(SOS_realE);
+					case '+':
+					case '-':
+					case '*':
+					case '/':
+					case ';':
+					case ',':
+					case ')': 
+					case ']': {
+						terminalState();
 
-						token->type = TT_real;
-						scanner->convertTo = TT_real;
-
-						append_symbol();
-
-						return true;
+						return false;
 					}
 					case '.': {
 						setState(SOS_realDot);
@@ -429,9 +426,24 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 						return true;
 					}
-					default: {
+					case 'e':
+					case 'E': {
+						setState(SOS_realE);
 
+						token->type = TT_real;
+						scanner->convertTo = TT_real;
+
+						append_symbol();
+
+						return true;
+					}
+					//wrong character behind token
+					default: {
+						setState(SOS_error);
 						terminalState();
+
+						setError(ERR_Lexical);
+						fprintf(stderr, "Wrong constant value\n");
 
 						return false;
 					}
@@ -459,7 +471,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				terminalState();
 
 				setError(ERR_Lexical);
-				fprintf(stderr, "Wrong E exponent value\n");
+				fprintf(stderr, "Missing exponent value\n");
 
 				return false;
 			}
@@ -477,7 +489,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				terminalState();
 
 				setError(ERR_Lexical);
-				fprintf(stderr, "Wrong exponent value of real number\n");
+				fprintf(stderr, "Missing exponent value of real number\n");
 
 				return false;
 			}
@@ -490,21 +502,39 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 				return true;
 			}
-			//exponent includes alphabetic characters
-			if (isalpha(symbol)) {
-				setState(SOS_error);
-
+			//next character is space -> end of token
+			else if (isspace(symbol)) {
 				terminalState();
-
-				setError(ERR_Lexical);
-				fprintf(stderr, "Wrong exponent value of real number\n");
 
 				return false;
 			}
 			else {
-				terminalState();
+				//another possible characters for actual token state
+				switch (symbol) {
+					case ' ':
+					case '+':
+					case '-':
+					case '*':
+					case '/':
+					case ';':
+					case ',':
+					case ')': 
+					case ']': {
+						terminalState();
 
-				return false;
+						return false;
+					}
+					//wrong character behind token
+					default: {
+						setState(SOS_error);
+						terminalState();
+
+						setError(ERR_Lexical);
+						fprintf(stderr, "Wrong exponent value of real number\n");
+
+						return false;
+					}
+				}
 			}
 		}
 		//whole part of number followed by dot, expects decimal part
@@ -522,7 +552,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				terminalState();
 
 				setError(ERR_Lexical);
-				fprintf(stderr, "Wrong decimal part of real number\n");
+				fprintf(stderr, "Missing decimal part of real number\n");
 
 				return false;
 			}
@@ -534,33 +564,49 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				append_symbol();
 				return true;
 			}
-			else if ( symbol == 'e' || symbol == 'E') {
-				setState(SOS_realE);
-
-				token->type = TT_real;
-				scanner->convertTo = TT_real;
-
-				append_symbol();
-
-				return true;
-			}
-			//decimal part cannot include alphabetic characters
-			else if (isalpha(symbol))
-			{
-				setState(SOS_error);
+			//next character is space -> end of token
+			else if (isspace(symbol)) {
 				terminalState();
-
-				setError(ERR_Lexical);
-				fprintf(stderr, "Wrong decimal part of real number\n");
 
 				return false;
 			}
 			else {
-				terminalState();
+				//another possible characters for actual token state
+				switch (symbol) {
+					case '+':
+					case '-':
+					case '*':
+					case '/':
+					case ';':
+					case ',':
+					case ')': 
+					case ']': {
+						terminalState();
 
-				return false;
+						return false;
+					}
+					case 'e':
+					case 'E': {
+						setState(SOS_realE);
+
+						token->type = TT_real;
+						scanner->convertTo = TT_real;
+
+						append_symbol();
+
+						return true;
+					}
+					default: {
+						setState(SOS_error);
+						terminalState();
+
+						setError(ERR_Lexical);
+						fprintf(stderr, "Wrong decimal part of real number\n");
+
+						return false;
+					}
+				}
 			}
-
 		}
 		case SOS_greater: {
 			if (symbol == '=') {
@@ -722,22 +768,12 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 					return true;
 				}
-				else {
-					terminalState();
-
-					return false;
-				}
 			}
 			else if (scanner->base == 8) {
 				if (symbol >= '1' && symbol <= '7') {
 					append_symbol();
 
 					return true;
-				}
-				else {
-					terminalState();
-
-					return false;
 				}
 			}
 			else if (scanner->base == 16) {
@@ -746,8 +782,34 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 					return true;
 				}
-				else {
+			}
+			//next character is space -> end of token
+			if (isspace(symbol)) {
+				terminalState();
+
+				return false;
+			}
+			// possible characters behind token
+			switch (symbol) {
+				case '+':
+				case '-':
+				case '*':
+				case '/':
+				case ';':
+				case ',':
+				case ')': 
+				case ']': {
 					terminalState();
+
+					return false;
+				}
+				//wrong characters behind token
+				default: {
+					setState(SOS_error);
+					terminalState();
+
+					setError(ERR_Lexical);
+					fprintf(stderr, "Wrong constant\n");
 
 					return false;
 				}
@@ -762,7 +824,6 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 	}
 	return true;
 }
-
 // Macro for shorter statements
 #define keyword_cmp(src) streq(str->data, src)
 
