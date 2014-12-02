@@ -10,7 +10,6 @@
 
 #define EXPR_ERROR -1
 
-
 typedef enum { TERM, NONTERM } ExprTokenType;
 
 typedef struct
@@ -23,6 +22,7 @@ typedef struct
 	ExprTokenType type;    // TERM / NONTERM
 	VariableType var_type; // LOCAL / GLOBAL
 	Constness constness; // CONST / VAR
+	bool handle_start;
 
 } ExprToken;
 

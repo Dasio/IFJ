@@ -6,13 +6,16 @@ extern TokenVector *tokenVector;
 extern Context *mainContext;
 extern Context *funcContext;
 extern Context *activeContext;
+extern Symbol *funcSymbol;
 
 static ExprToken temp_expr_token;
 
-static inline void convert_to_ExprToken(Token *token);
+static inline void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vector);
 static inline int token_to_index(Token *token);
 static inline int precedence(ExprTokenVector *expr_token_vector);
 static inline ExprToken *findTopMostTerm(ExprTokenVector *expr_token_vector);
+static inline bool check_id_function(Symbol *identifier);
+static inline bool check_unary_minus(ExprTokenVector *expr_vector);
 
 
 typedef enum
@@ -26,26 +29,30 @@ enum { SHIFT = S, REDUCE = R, HANDLE = H, ERROR = E};
 
 static const char *actions[] = {"shift", "reduce", "handle", "error"};
 
-
 static int precedence_table[TT_assignment][TT_assignment] =
 {
-/*         +   -   *   /   <   >   <=  >=  =   <>  (   )   f   ,   $  var  */
-/*  +  */{ R , R , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
-/*  -  */{ R , R , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
-/*  *  */{ R , R , R , R , R , R , R , R , R , R , S , R , R , S , R , S },
-/*  /  */{ R , R , R , R , R , R , R , R , R , R , S , R , R , S , R , S },
-/*  <  */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
-/*  >  */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
-/*  <= */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
-/*  >= */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
-/*  =  */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
-/*  <> */{ S , S , S , S , R , R , R , R , R , R , S , R , R , S , R , S },
-/*  (  */{ S , S , S , S , S , S , S , S , S , S , S , H , E , S , H , S },
-/*  )  */{ R , R , R , R , R , R , R , R , R , R , E , R , R , E , R , E },
-/*  f  */{ E , E , E , E , E , E , E , E , E , E , H , E , E , E , E , E },
-/*  ,  */{ S , S , S , S , S , S , S , S , S , S , S , H , E , S , H , S },
-/*  $  */{ S , S , S , S , S , S , S , S , S , S , S , E , E , S , E , S },
-/* var */{ R , R , R , R , R , R , R , R , R , R , E , R , R , E , R , E }
+/*         U- not  *   /  and  +   -  or  xor  <   >   <=  >=  =   <>  (   )   f   ,   $  var  */
+/*  U- */{ H , R , R , R , R , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
+/* not */{ S , R , R , R , R , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
+/*  *  */{ S , S , R , R , R , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
+/*  /  */{ S , S , R , R , R , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
+/* and */{ S , S , R , R , R , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
+/*  +  */{ S , S , S , S , S , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
+/*  -  */{ S , S , S , S , S , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
+/*  or */{ S , S , S , S , S , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
+/* xor */{ S , S , S , S , S , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
+/*  <  */{ S , S , S , S , S , S , S , S , S , R , R , R , R , R , R , S , R , S , R , R , S },
+/*  >  */{ S , S , S , S , S , S , S , S , S , R , R , R , R , R , R , S , R , S , R , R , S },
+/*  <= */{ S , S , S , S , S , S , S , S , S , R , R , R , R , R , R , S , R , S , R , R , S },
+/*  >= */{ S , S , S , S , S , S , S , S , S , R , R , R , R , R , R , S , R , S , R , R , S },
+/*  =  */{ S , S , S , S , S , S , S , S , S , R , R , R , R , R , R , S , R , S , R , R , S },
+/*  <> */{ S , S , S , S , S , S , S , S , S , R , R , R , R , R , R , S , R , S , R , R , S },
+/*  (  */{ S , S , S , S , S , S , S , S , S , S , S , S , S , S , S , S , H , S , H , E , S },
+/*  )  */{ R , R , R , R , R , R , R , R , R , R , R , R , R , R , R , E , R , E , R , R , E },
+/*  f  */{ E , E , E , E , E , E , E , E , E , E , E , E , E , E , E , H , E , E , E , E , E },
+/*  ,  */{ S , S , S , S , S , S , S , S , S , S , S , S , S , S , S , S , H , S , H , E , S },
+/*  $  */{ S , S , S , S , S , S , S , S , S , S , S , S , S , S , S , S , E , S , E , E , S },
+/* var */{ R , R , R , R , R , R , R , R , R , R , R , R , R , R , R , E , R , E , R , R , E }
 };
 
 static int type_table[4][4] =
@@ -79,13 +86,13 @@ DataType expr()
 	ExprTokenVector *expr_token_vector = ExprTokenVectorInit(32);
 
 	assert(tokenVector);
-	convert_to_ExprToken(TokenVectorLast(tokenVector)); // add $ to expr. stack
+	convert_to_ExprToken(TokenVectorLast(tokenVector), expr_token_vector); // add $ to expr. stack
 	ExprTokenVectorAppend(expr_token_vector, temp_expr_token); // first token, (empty = $)
 	// [$, , , , , ]
 
 	while (token_to_index(token) != TT_empty)
 	{
-		convert_to_ExprToken(token);
+		convert_to_ExprToken(token, expr_token_vector);
 		action = precedence(expr_token_vector);
 		if (action == ERROR)
 		{
@@ -122,32 +129,48 @@ void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector)
 }
 
 
-static inline void convert_to_ExprToken(Token *token)
+static inline void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vector)
 {
 	Symbol *id = NULL;
 	assert(token); // just in case
 	temp_expr_token.type = TERM;
+	temp_expr_token.handle_start = false;
 
 	if (token->type == TT_identifier)
 	{
 		id = SymbolFind(funcContext, token->str.data);
-		if (id) // loc. var. or arg. or function
+		if (id) // <loc_var> or <arg> or <function>
 		{
-			temp_expr_token.var_type = LOCAL;
-		}
-		id = SymbolFind(mainContext, token->str.data);
-		if (id) // glob. variable or function
-		{
-			if (id->type == T_FunPointer) // function
-			{
-				temp_expr_token.type = TERM;
+			if (check_id_function(id))
 				token->type = TT_function;
-			}
 			else
 			{
-				temp_expr_token.var_type = GLOBAL;
+				temp_expr_token.var_type = LOCAL;
+				temp_expr_token.constness = VAR;
 			}
 		}
+		else
+		{
+			id = SymbolFind(mainContext, token->str.data);
+			if (id) // <glob_var> or <function>
+			{
+				if (id->type == T_FunPointer) // function
+				{
+					temp_expr_token.type = TERM;
+					token->type = TT_function;
+				}
+				else
+				{
+					temp_expr_token.var_type = GLOBAL;
+					temp_expr_token.constness = VAR;
+				}
+			}
+		}
+	}
+	if (token->type == TT_minus)
+	{
+		if (check_unary_minus(expr_vector))
+			token->type = TT_unaryMinus;
 	}
 
 	temp_expr_token.token = token;
@@ -179,7 +202,7 @@ static inline int precedence(ExprTokenVector *expr_token_vector)
 }
 
 
-static inline ExprToken *findTopMostTerm(ExprTokenVector *expr_token_vector)
+static inline ExprToken* findTopMostTerm(ExprTokenVector *expr_token_vector)
 {
 	assert(expr_token_vector);
 	ExprToken *top_most_term = ExprTokenVectorLast(expr_token_vector);
@@ -187,6 +210,36 @@ static inline ExprToken *findTopMostTerm(ExprTokenVector *expr_token_vector)
 		top_most_term--;
 
 	return top_most_term;
+}
+
+// check if identifier is used as actual return value or as calling function
+// factorial := factorial(a, b)
+static inline bool check_id_function(Symbol *identifier)
+{
+	if (identifier->name == funcSymbol->name)
+	{
+		if (token[1].type == TT_leftBrace)
+			return true;
+	}
+	return false;
+}
+
+static inline bool check_unary_minus(ExprTokenVector *expr_vector)
+{
+	assert(expr_vector);
+	ExprToken *last = ExprTokenVectorLast(expr_vector);
+	assert(last->token);
+	TokenType token_type = last->token->type;
+	//if (last->type == NONTERM)
+	//	return false;
+	// zrusene, neterminal by sa nemal nachadzať na vrchole zasobnika
+
+	if (token_type >= TT_identifier && token_type <= TT_bool)
+		return false;
+	else if (token_type == TT_rightBrace)
+		return false;
+
+	return true;
 }
 
 

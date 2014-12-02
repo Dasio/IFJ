@@ -14,16 +14,34 @@
 	 */
 	typedef enum {
 		/** Regular tokens, castable from scanner state */
-		TT_plus,	// must be first
-		TT_minus,
+
+		/********************************/
+		/*   DONT CHANGE THE ORDER  !!! */
+		/********************************/
+
+		/* priority 0 */
+		TT_unaryMinus,
+		TT_not,
+
+		/* priority 1 */
 		TT_multiply,
 		TT_division,
+		TT_and,
+
+		/* priority 2 */
+		TT_plus,
+		TT_minus,
+		TT_or,
+		TT_xor,
+
+		/* priority 3 */
 		TT_less,
 		TT_greater,
 		TT_lessOrEqual,
 		TT_greaterOrEqual,
 		TT_equality,
 		TT_inequality,
+
 		TT_leftBrace,
 		TT_rightBrace,
 		TT_function, // not used in scanner
@@ -33,9 +51,10 @@
 		TT_real,
 		TT_integer,
 		TT_string,
-		TT_bool,
+		TT_bool, // value in "n" (1 = true, 0 = false)
+		// TT_bool must stay here
 
-		TT_assignment, // must stay here !!! :D (size of precedence_table array)
+		TT_assignment, // must stay here !!! (size of precedence_table array)
 		TT_colon,
 		TT_dot,
 		TT_semicolon,
