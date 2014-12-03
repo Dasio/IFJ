@@ -6,6 +6,7 @@
 #include "error.h"
 #include "stack.h"
 #include "expr.h"
+#include "instruction.h"
 
 void parse(TokenVector *tokvect);
 void program();
