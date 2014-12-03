@@ -194,8 +194,17 @@ struct Vector{
 		*tmp = value;														\
 	}																		\
 	type *type##VectorAt(type##Vector *Vect, uint32_t index) {				\
-		if(index >= Vect->used) return NULL;								\
-		return (type*)Vect->array+ index;									\
+		if(index >= Vect->used) 											\
+			if(index >= Vect->capacity)										\
+				{															\
+					while(index >= Vect->capacity)							\
+						Vect->capacity *= 2;								\
+					realloc(Vect->array, Vect->capacity * sizeof(type));	\
+					Vect->used = index+1;									\
+				}															\
+			Vect->used = index+1;											\
+		}																	\
+		return (type*)Vect->array + index;									\
 	}																		\
 	type *type##VectorFirst(type##Vector *Vect){							\
 		if(Vect->used == 0) return NULL;									\
