@@ -189,6 +189,12 @@ struct Vector{
 		return (type*)Vect->array + Vect->used;											\
 	}																		\
 	void type##VectorAtSet(type##Vector *Vect, uint32_t ind, type value) {	\
+		if(index >= Vect->capacity)											\
+		{																	\
+			while(index >= Vect->capacity)									\
+				Vect->capacity *= 2;										\
+			realloc(Vect->array, Vect->capacity * sizeof(type));			\
+		}																	\
 		type *tmp;															\
 		tmp = (type*)Vect->array + ind;										\
 		*tmp = value;														\
@@ -196,12 +202,11 @@ struct Vector{
 	type *type##VectorAt(type##Vector *Vect, uint32_t index) {				\
 		if(index >= Vect->used) 											\
 			if(index >= Vect->capacity)										\
-				{															\
-					while(index >= Vect->capacity)							\
-						Vect->capacity *= 2;								\
-					realloc(Vect->array, Vect->capacity * sizeof(type));	\
-					Vect->used = index+1;									\
-				}															\
+			{																\
+				while(index >= Vect->capacity)								\
+					Vect->capacity *= 2;									\
+				realloc(Vect->array, Vect->capacity * sizeof(type));		\
+			}																\
 			Vect->used = index+1;											\
 		}																	\
 		return (type*)Vect->array + index;									\
