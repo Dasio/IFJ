@@ -59,9 +59,7 @@
 		TT_dot,
 		TT_semicolon,
 		TT_leftCurlyBrace,
-		TT_leftSquareBrace,
 		TT_rightCurlyBrace,
-		TT_rightSquareBrace,
 
 		TT_keyword
 	} TokenType;
@@ -70,6 +68,7 @@
 	 * Enum of keyword tokens
 	 */
 	typedef enum {
+		Key_and,
 		Key_begin,
 		Key_boolean,
 		Key_do,
@@ -81,6 +80,8 @@
 		Key_function,
 		Key_if,
 		Key_integer,
+		Key_not,
+		Key_or,
 		Key_readln,
 		Key_real,
 		Key_repeat,
@@ -92,6 +93,7 @@
 		Key_until,
 		Key_while,
 		Key_write,
+		Key_xor,
 
 		Key_none // Special keyword, used in identifierToToken(String)
 				 // Must be last

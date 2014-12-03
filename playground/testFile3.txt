@@ -1,0 +1,15 @@
+ ''#%1010101'';
+O := 2.0e3and c.
+{ koncici komentar }:)
+'Ahoj'$A2'' { 3 tokeny: Retezec "Ahoj" konstanta "162", prazdny retezec ""}
+'Ahoj'#$A2'' {1 token: Retezec "Ahojˇ"} 
+2op,10or:'';
+a+b-c not d*V/A:INTEGER;
+
+10e2.5E2.; {1000.000000 , . , 500.000000 }
+ahja8*/7;
+'tojo'#$fE''{'}
+e+8 
+
+.end.
+1e7,5.0and

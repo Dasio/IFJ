@@ -119,7 +119,8 @@ Token getToken(Scanner *scanner)
 					setError(ERR_LexicalConversion);
 					fprintf(stderr, "strtol() conversion failed\n");
 				}
-			} else {
+			} 
+			else {
 				setError(ERR_LexicalConversion);
 			}
 
@@ -154,6 +155,11 @@ Token getToken(Scanner *scanner)
 				break;
 			}
 		}
+	}
+
+	if (scanner->state == SOS_leftCurlyBrace) {
+		setError(ERR_Lexical);
+		fprintf(stderr, "Missing right curly brace to finish comment\n");
 	}
 
 	// Cleanup
@@ -249,11 +255,6 @@ static inline void processSingleCharToken(Scanner *scanner, Token *token, char s
 			token->type = TT_leftCurlyBrace;
 			return;
 		}
-		case '[': {
-			scanner->state =  SOS_leftSquareBrace;
-			token->type = TT_leftSquareBrace;
-			return;
-		}
 		case '-': {
 			scanner->state =  SOS_minus;
 			token->type = TT_minus;
@@ -277,11 +278,6 @@ static inline void processSingleCharToken(Scanner *scanner, Token *token, char s
 		case '}': {
 			scanner->state =  SOS_rightCurlyBrace;
 			token->type = TT_rightCurlyBrace;
-			return;
-		}
-		case ']': {
-			scanner->state =  SOS_rightSquareBrace;
-			token->type = TT_rightSquareBrace;
 			return;
 		}
 		case ';': {
@@ -317,6 +313,7 @@ static inline void processSingleCharToken(Scanner *scanner, Token *token, char s
 		}
 		default: {
 			scanner->state =  SOS_error;
+			fprintf(stderr, "Invalid character from input\n");
 		}
 		return;
 	}
@@ -384,6 +381,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				return false;
 			}
 		}
+		//integer values
 		case SOS_integer: {
 			if (isdigit(symbol)) {
 				// Prefix zeroes skipping
@@ -395,32 +393,12 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				}
 				return true;
 			}
-			//next character is space -> end of token
-			else if (isspace(symbol)) {
-				terminalState();
-
-				return false;
-			}
 			else {
 				//another possible characters for actual token state
 				switch (symbol) {
-					case '+':
-					case '-':
-					case '*':
-					case '/':
-					case ';':
-					case ',':
-					case ')': 
-					case ']': {
-						terminalState();
-
-						return false;
-					}
 					case '.': {
 						setState(SOS_realDot);
-
-						token->type = TT_real;
-						scanner->convertTo = TT_real;
+						convertTokenTo(TT_real);
 
 						append_symbol();
 
@@ -429,28 +407,22 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 					case 'e':
 					case 'E': {
 						setState(SOS_realE);
-
-						token->type = TT_real;
-						scanner->convertTo = TT_real;
+						convertTokenTo(TT_real);
 
 						append_symbol();
 
 						return true;
 					}
-					//wrong character behind token
+					//end of token
 					default: {
-						setState(SOS_error);
 						terminalState();
-
-						setError(ERR_Lexical);
-						fprintf(stderr, "Wrong constant value\n");
 
 						return false;
 					}
 				}
-				return true;
 			}
 		}
+		/* Real numbers */
 		//whole part followed by e/E, expects value of exponent, otherwise, an error occurs
 		case SOS_realE: {
 			if (isdigit(symbol)) {
@@ -465,15 +437,12 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 				return true;
 			}
+			//another characters are not possible
 			else {
 				setState(SOS_error);
-
-				terminalState();
-
-				setError(ERR_Lexical);
 				fprintf(stderr, "Missing exponent value\n");
 
-				return false;
+				return true;
 			}
 		}
 		//whole part of number followed by e/E and +/-, expects exponent value
@@ -484,57 +453,31 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 				return true;
 			}
+			//another characters are not possible
 			else {
 				setState(SOS_error);
-				terminalState();
-
-				setError(ERR_Lexical);
 				fprintf(stderr, "Missing exponent value of real number\n");
 
-				return false;
+				return true;
 			}
 		}
 		//whole part of number followed by e/E and exponent value
 		case SOS_realEValue: {
-			// TODO : Cover zeros in 20E+005
 			if (isdigit(symbol)) {
-				append_symbol();
-
+				// Cover zeros in 20E+005
+				if (symbol == '0' && (atString(&token->str, 0) == '0')) {
+						;//unnecessary to store 0 again
+				}
+				else {
+					append_symbol();
+				}
 				return true;
 			}
-			//next character is space -> end of token
-			else if (isspace(symbol)) {
+			// end of token
+			else {
 				terminalState();
 
 				return false;
-			}
-			else {
-				//another possible characters for actual token state
-				switch (symbol) {
-					case ' ':
-					case '+':
-					case '-':
-					case '*':
-					case '/':
-					case ';':
-					case ',':
-					case ')': 
-					case ']': {
-						terminalState();
-
-						return false;
-					}
-					//wrong character behind token
-					default: {
-						setState(SOS_error);
-						terminalState();
-
-						setError(ERR_Lexical);
-						fprintf(stderr, "Wrong exponent value of real number\n");
-
-						return false;
-					}
-				}
 			}
 		}
 		//whole part of number followed by dot, expects decimal part
@@ -547,14 +490,12 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 				return true;
 			}
+			//another characters are not possible
 			else {
 				setState(SOS_error);
-				terminalState();
-
-				setError(ERR_Lexical);
 				fprintf(stderr, "Missing decimal part of real number\n");
 
-				return false;
+				return true;
 			}
 		}
 		//whole part of number followed by dot with decimal part
@@ -564,50 +505,22 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				append_symbol();
 				return true;
 			}
-			//next character is space -> end of token
-			else if (isspace(symbol)) {
+			else if ( symbol == 'e' || symbol == 'E') {
+				setState(SOS_realE);
+
+				append_symbol();
+
+				return true;
+				}
+			//end of token
+			else {
 				terminalState();
 
 				return false;
 			}
-			else {
-				//another possible characters for actual token state
-				switch (symbol) {
-					case '+':
-					case '-':
-					case '*':
-					case '/':
-					case ';':
-					case ',':
-					case ')': 
-					case ']': {
-						terminalState();
-
-						return false;
-					}
-					case 'e':
-					case 'E': {
-						setState(SOS_realE);
-
-						token->type = TT_real;
-						scanner->convertTo = TT_real;
-
-						append_symbol();
-
-						return true;
-					}
-					default: {
-						setState(SOS_error);
-						terminalState();
-
-						setError(ERR_Lexical);
-						fprintf(stderr, "Wrong decimal part of real number\n");
-
-						return false;
-					}
-				}
-			}
 		}
+		/* End of real numbers */
+
 		case SOS_greater: {
 			if (symbol == '=') {
 				token->type = TT_greaterOrEqual;
@@ -615,13 +528,13 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 				return true;
 			}
+			//end of token
 			else {
 				terminalState();
 
 				return false;
 			}
 		}
-
 		case SOS_identifier: {
 			if (isalnum(symbol) || (symbol == '_')) {
 				symbol = tolower(symbol);
@@ -629,30 +542,21 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 				return true;
 			}
-			//cannot stay directly behind identifier (represents another than 10 base value)
-			else if ( symbol == '&' || symbol == '%' || symbol == '$') {
-				setState(SOS_error);
-
-				terminalState();
-
-				setError(ERR_Lexical);
-				fprintf(stderr, "Wrong identifier\n");
-
-				return false;
-			}
+			//end of token
 			else {
 				terminalState();
 
 				return false;
 			}
 		}
-
+		//comment
 		case SOS_leftCurlyBrace: {
 			if (symbol == '}') {
 				// Escaping out of comment
 				setState(SOS_start);
 			}
 			token->type = TT_empty;
+
 			return true;
 		}
 
@@ -671,6 +575,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 				return true;
 			}
+			//end of token
 			else {
 				terminalState();
 
@@ -679,64 +584,103 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 		}
 		/* Strings begin here */
 		case SOS_string: {
-			// Escape sequence of apostrophe may continue
+			// Escape sequence or apostrophe may occurs
 			if (symbol == '\'') {
 				setState(SOS_stringApostrophe);
+
 				return true;
 			}
 			// Regular symbol in string
 			else if (symbol > 31) {
 				append_symbol();
+
 				return true;
 			}
 			// Invalid character
 			else {
 				setState(SOS_error);
+				fprintf(stderr, "Invalid character in string literal\n");
+
 				return true;
 			}
 		}
+		//Last char is ' in string
 		case SOS_stringApostrophe: {
 			if (symbol == '#') {
 				setState(SOS_stringHashtag);
+
 				return true;
 			}
 			// Appends '
 			else if (symbol == '\'') {
 				setState(SOS_string);
 				append_symbol();
+
 				return true;
 			}
+			// String reached right pair of quote
 			else {
-				// String reached right pair of quote
 				terminalState();
 
 				return false;
 			}
 		}
+		//Last char # in string, expects escape seq.
 		case SOS_stringHashtag: {
+			//skipping first nulls
 			if (symbol == '0')
 				return true;
+
 			else if (symbol >= '1' && symbol <= '9') {
 				setState(SOS_stringASCII);
 				scanner->ascii_to_char_val = (scanner->ascii_to_char_val*10) + (symbol - '0');
 
 				return true;
 			}
-			else {
-				setState(SOS_error);
+			//Escape sequences in another than base 10
+			switch (symbol) {
+				case '%': {
+					scanner->state = SOS_baseInString;
+					scanner->base = 2;
 
-				return true;
+					return true;
+				}
+				case '&': {
+					scanner->state = SOS_baseInString;
+					scanner->base = 8;
+
+					return true;
+
+				}
+				case '$': {
+					scanner->state = SOS_baseInString;
+					scanner->base = 16;
+
+					return true;					
+				}
+				//another characters are not possible
+				default:
+					setState(SOS_error);
+					fprintf(stderr, "Wrong escape sequention behind # in string\n");
+
+					return true;
 			}
 		}
+		//Escape seq. in string between '# '
 		case SOS_stringASCII: {
 			if (symbol >= '0' && symbol <= '9') {
 				scanner->ascii_to_char_val = (scanner->ascii_to_char_val*10) + (symbol - '0');
-				if (scanner->ascii_to_char_val > 255) {
-					setState(SOS_error);
-					// TODO: Informative errors would be great
-				}
+
 				return true;
 			}
+			//test for valid escape sequention 
+			if (scanner->ascii_to_char_val < 1 || scanner->ascii_to_char_val > 255) {
+				setState(SOS_error);
+				fprintf(stderr, "Wrong value to specify escape sequention (1-255)\n");
+
+				return true;
+			}
+			//end of escape seq., go back to string literal
 			else if (symbol == '\'') {
 				setState(SOS_string);
 				appendCharToToken(token, (char)scanner->ascii_to_char_val);
@@ -744,17 +688,92 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 				return true;
 			}
-			else
+			//another characters are not possible
+			else {
 				setState(SOS_error);
+				fprintf(stderr, "Wrong escape sequention in string\n");
 
 				return true;
+			}
+		}
+		//Escape seq. in another than base 10 in string between '# '
+		case SOS_baseInString: {
+			//skipping first nulls
+			if (symbol == '0' && scanner->ascii_to_char_val == 0) {
+				
+				return true;
+			}
+			switch (scanner->base) {
+				case 2: {
+					if ( symbol == '0' || symbol == '1' ) {
+						scanner->ascii_to_char_val = (scanner->ascii_to_char_val*2) + (symbol - '0');
+
+						return true;
+					}
+					break;
+				}
+				case 8: {
+					if (symbol >= '0' && symbol <= '7') {
+						scanner->ascii_to_char_val = (scanner->ascii_to_char_val*8) + (symbol - '0');
+
+						return true;
+					}
+					break;
+				}
+				case 16: {
+					if (symbol >= '0' && symbol <= '9') {
+						scanner->ascii_to_char_val = (scanner->ascii_to_char_val*16) + (symbol - '0');
+
+						return true;
+					}
+					if (symbol >= 'A' && symbol <= 'F') {// used -'7' because for ex. 'A' has to be 10
+						scanner->ascii_to_char_val = (scanner->ascii_to_char_val*16) + (symbol - '7');
+
+						return true;
+					}
+					if (symbol >= 'a' && symbol <= 'f') {// used -'W' because for ex. 'a' repr. 97, but has to be 10
+						scanner->ascii_to_char_val = (scanner->ascii_to_char_val*16) + (symbol - 'W');
+
+						return true;
+					}
+					break;
+				}
+				default: {
+					setState(SOS_error);
+					fprintf(stderr, "Wrong base for escape sequention (2/8/16)\n");
+
+					return true;
+				}
+			}
+			if (scanner->ascii_to_char_val < 1 || scanner->ascii_to_char_val > 255) {
+					setState(SOS_error);
+					fprintf(stderr, "Wrong value to specify escape sequention (1-255)\n");
+
+					return true;
+			}
+			//end of escape seq., go back to string literal
+			else if (symbol == '\'') {
+				setState(SOS_string);
+				appendCharToToken(token, (char)scanner->ascii_to_char_val);
+				scanner->ascii_to_char_val = 0;
+
+				return true;
+			}
+			//another characters are not possible
+			else {
+				setState(SOS_error);
+				fprintf(stderr, "Wrong escape sequention in string\n");
+
+				return true;
+			}
 		}
 		/* Strings end here */
-		//values with bin/hex/oct base
+
+		//Constants with bin/hex/oct base
 		case SOS_baseExtract: {
 			if (symbol == '0') {
 				if(atString(&token->str, 0) == '0') {
-					setAtString(&token->str, 0, symbol);
+					;//unnecessary to store 0 again
 				}
 				else {
 					append_symbol();
@@ -777,42 +796,25 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				}
 			}
 			else if (scanner->base == 16) {
-				if ((symbol >= '1' && symbol <= '9') || (symbol >= 'A' && symbol <= 'E')) {
+				if ((symbol >= '1' && symbol <= '9') || (symbol >= 'A' && symbol <= 'F') ||
+					(symbol >= 'a' && symbol <= 'f')) {
 					append_symbol();
 
 					return true;
 				}
 			}
-			//next character is space -> end of token
-			if (isspace(symbol)) {
+			//Value is not specified
+			if (atString(&token->str,0) == '\0') {
+				setState(SOS_error);
+				fprintf(stderr, "Unspecified constant\n");
+
+				return true;
+			}
+			//end of token
+			else {
 				terminalState();
 
 				return false;
-			}
-			// possible characters behind token
-			switch (symbol) {
-				case '+':
-				case '-':
-				case '*':
-				case '/':
-				case ';':
-				case ',':
-				case ')': 
-				case ']': {
-					terminalState();
-
-					return false;
-				}
-				//wrong characters behind token
-				default: {
-					setState(SOS_error);
-					terminalState();
-
-					setError(ERR_Lexical);
-					fprintf(stderr, "Wrong constant\n");
-
-					return false;
-				}
 			}
 		}
 		// In case of state with one character long tokens
@@ -831,6 +833,12 @@ KeywordTokenType identifierToKeyword(String *str)
 {
 	// TODO: Use String macro to get letter
 	switch (str->data[0]) {
+		case 'a': {
+			if(keyword_cmp("and")) {
+				return Key_and;			
+			}
+			return Key_none;
+		}			
 		case 'b': {
 			if(keyword_cmp("begin")) {
 				return Key_begin;
@@ -876,6 +884,18 @@ KeywordTokenType identifierToKeyword(String *str)
 			}
 			if(keyword_cmp("integer")) {
 				return Key_integer;
+			}
+			return Key_none;
+		}
+		case 'n': {
+			if(keyword_cmp("not")) {
+				return Key_not;			
+			}
+			return Key_none;
+		}
+		case 'o': {
+			if(keyword_cmp("or")) {
+				return Key_or;			
 			}
 			return Key_none;
 		}
@@ -926,6 +946,12 @@ KeywordTokenType identifierToKeyword(String *str)
 			}
 			if(keyword_cmp("write")) {
 				return Key_write;
+			}
+			return Key_none;
+		}
+		case 'x': {
+			if(keyword_cmp("xor")) {
+				return Key_xor;			
 			}
 			return Key_none;
 		}

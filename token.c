@@ -90,8 +90,6 @@ char *stringifyToken(Token *token) {
 			return("(");
 		case TT_leftCurlyBrace:
 			return("{");
-		case TT_leftSquareBrace:
-			return("[");
 		case TT_minus:
 			return("-");
 		case TT_multiply:
@@ -102,8 +100,6 @@ char *stringifyToken(Token *token) {
 			return(")");
 		case TT_rightCurlyBrace:
 			return("}");
-		case TT_rightSquareBrace:
-			return("]");
 		case TT_semicolon:
 			return(";");
 		case TT_string:
@@ -111,6 +107,8 @@ char *stringifyToken(Token *token) {
 		case TT_keyword:
 			switch (token->keyword_token)
 			{
+				case Key_and:
+					return("and");
 				case Key_begin:
 					return("begin");
 				case Key_boolean:
@@ -133,6 +131,10 @@ char *stringifyToken(Token *token) {
 					return("if");
 				case Key_integer:
 					return("integer");
+				case Key_not:
+					return("not");
+				case Key_or:
+					return("or");
 				case Key_readln:
 					return("readln");
 				case Key_real:
@@ -155,6 +157,8 @@ char *stringifyToken(Token *token) {
 					return("while");
 				case Key_write:
 					return("write");
+				case Key_xor:
+					return("xor");
 				default: {
 					fprintf(stderr, "Kw type : %d\n", token->keyword_token);
 					assert(false && "Unknown keyword");

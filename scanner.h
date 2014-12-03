@@ -34,21 +34,21 @@ typedef enum
 	// Terminal states
 	SOS_assignment = 8,
 	SOS_baseExtract,	// 9
-	SOS_colon,			// 10
-	SOS_comma,			// 11
-	SOS_divide,			// 12
-	SOS_dot,			// 13 ADD
-	SOS_equality,		// 14
-	SOS_greater,		// 15
-	SOS_greaterOrEqual,	// 16
-	SOS_identifier,		// 17
-	SOS_inequality,		// 18
-	SOS_keyword,		// 19
-	SOS_less,			// 20
-	SOS_lessOrEqual,	// 21
-	SOS_leftBrace,		// 22
-	SOS_leftCurlyBrace,	// 23
-	SOS_leftSquareBrace,// 24
+	SOS_baseInString,	// 10
+	SOS_colon,			// 11
+	SOS_comma,			// 12
+	SOS_divide,			// 13
+	SOS_dot,			// 14 ADD
+	SOS_equality,		// 15
+	SOS_greater,		// 16
+	SOS_greaterOrEqual,	// 17
+	SOS_identifier,		// 18
+	SOS_inequality,		// 19
+	SOS_keyword,		// 20
+	SOS_less,			// 21
+	SOS_lessOrEqual,	// 22
+	SOS_leftBrace,		// 23
+	SOS_leftCurlyBrace,	// 24
 	SOS_minus,			// 25
 	SOS_multiply,		// 26
 	SOS_integer,		// 27
@@ -61,13 +61,12 @@ typedef enum
 	SOS_realEValue,		// 34
 	SOS_rightBrace,		// 35
 	SOS_rightCurlyBrace,// 36
-	SOS_rightSquareBrace,	// 37
-	SOS_semicolon,		// 38
-	SOS_string,			// 39 ADD
-	SOS_stringHashtag,	// 40 ADD
-	SOS_stringASCII,	// 41 ADD
-	SOS_stringApostrophe,// 42 ADD
-	SOS_whitespace		// 43
+	SOS_semicolon,		// 37
+	SOS_string,			// 38 ADD
+	SOS_stringHashtag,	// 39 ADD
+	SOS_stringASCII,	// 40 ADD
+	SOS_stringApostrophe,// 41 ADD
+	SOS_whitespace		// 42
 } stateOfScanner;
 
 typedef struct
