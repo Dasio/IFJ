@@ -33,6 +33,7 @@ typedef enum
 	ERR_PrecedenceTable,
 	ERR_Reduction,
 	ERR_TypeCompatibility,
+	ERR_UndefVarOrFunction,
 
 	// Interpreter
 	ERR_UnknownInstruction,
