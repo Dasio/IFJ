@@ -17,6 +17,7 @@ static inline ExprToken *findTopMostTerm(ExprTokenVector *expr_token_vector);
 static inline bool check_id_function(Symbol *identifier);
 static inline bool check_unary_minus(ExprTokenVector *expr_vector);
 static inline void print_type_table(int operator);
+static inline void reduce(ExprTokenVector *expr_vector);
 
 
 typedef enum
@@ -225,16 +226,25 @@ DataType expr()
 	{
 		convert_to_ExprToken(token, expr_token_vector);
 		action = precedence(expr_token_vector);
-		if (action == ERROR)
+		switch(action)
 		{
-			setError(ERR_SyntaxExpr);
-			printError();
-			return EXPR_ERROR;
+			case ERROR:
+				setError(ERR_SyntaxExpr);
+				printError();
+				return EXPR_ERROR;
+			case SHIFT:
+				temp_expr_token.handle_start = true;
+				ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
+				break;
+			case HANDLE:
+				ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
+				break;
+			case REDUCE:
+				reduce(expr_token_vector);
+				break;
 		}
 
 		printf(" %s\n", actions[action]);
-
-		ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
 		token++;
 	}
 	ExprTokenVectorPrint(expr_token_vector);
@@ -247,23 +257,19 @@ DataType expr()
 		print_type_table(i);
 	}*/
 
+	int lol = type_table[TT_plus][T_String][T_String];
+	lol = lol+1;
+
 
 	return expr_data_type;
 }
 
-
-void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector)
+static inline void reduce(ExprTokenVector *expr_vector)
 {
-	assert(expr_token_vector);
-	//printf("\n");
-	ExprToken *expr_token = NULL;
-
-	for (uint32_t i = 0; i < expr_token_vector->used; i++)
-	{
-		expr_token = ExprTokenVectorAt(expr_token_vector, i);
-		printf("%s ", stringifyToken(expr_token->token));
-	}
-	printf("\n");
+	ExprToken *last = ExprTokenVectorLast(expr_vector);
+	if (last->handle_start && last->type == TERM)
+		last->type = NONTERM;
+	return;
 }
 
 
@@ -273,46 +279,60 @@ static inline void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vect
 	assert(token); // just in case
 	temp_expr_token.type = TERM;
 	temp_expr_token.handle_start = false;
+	temp_expr_token.token = token;
 
-	if (token->type == TT_identifier)
+	switch(token->type)
 	{
-		id = SymbolFind(funcContext, token->str.data);
-		if (id) // <loc_var> or <arg> or <function>
-		{
-			if (check_id_function(id))
-				token->type = TT_function;
-			else
+		case TT_identifier:
+			id = SymbolFind(funcContext, token->str.data);
+			if (id) // <loc_var> or <arg> or <function>
 			{
-				temp_expr_token.var_type = LOCAL;
-			}
-		}
-		else
-		{
-			id = SymbolFind(mainContext, token->str.data);
-			if (id) // <glob_var> or <function>
-			{
-				if (id->type == T_FunPointer) // function
-				{
-					temp_expr_token.type = TERM;
+				if (check_id_function(id))
 					token->type = TT_function;
-				}
 				else
 				{
-					temp_expr_token.var_type = GLOBAL;
+					temp_expr_token.E.var_type = LOCAL;
+					temp_expr_token.E.offset = id->index;
 				}
 			}
-		}
+			else
+			{
+				id = SymbolFind(mainContext, token->str.data);
+				if (id) // <glob_var> or <function>
+				{
+					if (id->type == T_FunPointer) // function
+						token->type = TT_function;
+					else
+					{
+						temp_expr_token.E.var_type = GLOBAL;
+						temp_expr_token.E.offset = id->index;
+					}
+				}
+			}
+			break;
+		case TT_real:
+			temp_expr_token.E.var_type = CONST;
+			temp_expr_token.E.data_type = DOUBLE;
+			break;
+		case TT_integer:
+			temp_expr_token.E.var_type = CONST;
+			temp_expr_token.E.data_type = INT;
+			break;
+		case TT_string:
+			temp_expr_token.E.var_type = CONST;
+			temp_expr_token.E.data_type = STRING;
+			break;
+		case TT_bool:
+			temp_expr_token.E.var_type = CONST;
+			temp_expr_token.E.data_type = BOOL;
+			break;
+		case TT_minus:
+			if (check_unary_minus(expr_vector))
+				token->type = TT_unaryMinus;
+			break;
+		default: // :-)
+			break;
 	}
-	if (token->type == TT_minus)
-	{
-		if (check_unary_minus(expr_vector))
-			token->type = TT_unaryMinus;
-	}
-
-	temp_expr_token.token = token;
-	//
-	int lol = type_table[TT_plus][T_String][T_String];
-	lol = lol+1;
 }
 
 
@@ -389,6 +409,22 @@ static inline void print_type_table(int operator)
 		printf("\n");
 	}
 }
+
+
+void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector)
+{
+	assert(expr_token_vector);
+	//printf("\n");
+	ExprToken *expr_token = NULL;
+
+	for (uint32_t i = 0; i < expr_token_vector->used; i++)
+	{
+		expr_token = ExprTokenVectorAt(expr_token_vector, i);
+		printf("%s ", stringifyToken(expr_token->token));
+	}
+	printf("\n");
+}
+
 
 
 GenVectorFunctions(ExprToken)

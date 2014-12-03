@@ -11,21 +11,27 @@ static const int returnCodeTable[] = {
 	[ERR_Allocation]        = 99,
 	[ERR_CannotOpenFile]    = 9,
 
+	// Lexical analysis
 	[ERR_Lexical]           = 1,
 	[ERR_LexicalConversion] = 1,
 
+	// Parser
 	[ERR_Syntax]            = 2,
-	[ERR_SyntaxExpr]        = 2,
 	[ERR_RedefVar]          = 3,
 	[ERR_RedefFunc]         = 3,
 	[ERR_DeclrFunc]         = 3,
 	[ERR_BadDefArg]         = 3,
 	[ERR_NoDefFunc]         = 3,
 
+	// Expression
+	[ERR_SyntaxExpr]		= 2,
+	[ERR_TypeCompatibility]	= 4,
+
 	// Interpreter
 	[ERR_UnknownInstruction]= 99,
 	[ERR_UnitializedAccess] = 7,
 
+	// Other
 	[ERR_OutOfRange]        = 9,
 	[ERR_Unknown]           = 9
 

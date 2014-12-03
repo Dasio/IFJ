@@ -14,14 +14,11 @@ typedef enum { TERM, NONTERM } ExprTokenType;
 
 typedef struct
 {
-	union
-	{
-		Token *token;
-		uint64_t index;
-	};
-	ExprTokenType type;    // TERM / NONTERM
-	VariableType var_type; // LOCAL / GLOBAL / CONST
-	bool handle_start;
+	Token *token; // data of TERM
+	Operand E; // data of NONTERM
+
+	ExprTokenType type;	// TERM / NONTERM
+	bool handle_start; 	// handle is starting on this if this flag is true
 
 } ExprToken;
 
