@@ -355,6 +355,9 @@ static inline void reduce_handle_unary_minus(THandle handle)
 		printError();
 		return;
 	}
+	else
+		return_value_data_type = temp->E.data_type;
+
 	if (minus_counter % 2 == 0)
 	{
 		// reducing tokens
@@ -405,6 +408,9 @@ static inline void reduce_handle_not(THandle handle)
 		printError();
 		return;
 	}
+	else
+		return_value_data_type = BOOL;
+
 	if (not_counter % 2 == 0)
 	{
 		if (temp->E.var_type != CONST) // LOCAL / GLOBAL
@@ -443,6 +449,7 @@ static inline void reduce_handle_three_tokens(THandle handle)
 	{
 		ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, handle.first[1]);
 		ExprTokenVectorPopMore(handle.expr_vector, 2);
+		return_value_data_type = handle.first->E.data_type;
 	}
 	else if (handle.first[0].type == NONTERM &&
 			handle.first[1].token->type >= TT_multiply &&
