@@ -192,11 +192,11 @@ struct Vector{
 		if(index >= Vect->capacity)											\
 		{																	\
 			while(index >= Vect->capacity);									\
-				Vect->capacity *= 2;										\
-			realloc(Vect->array, Vect->capacity * sizeof(type));			\
-		}																	\
+				Vect->capacity *= 2;											\
+			Vect->array = realloc(Vect->array, Vect->capacity * sizeof(type));	\
+		}																		\
 		type *tmp;															\
-		tmp = (type*)Vect->array + index;										\
+		tmp = (type*)Vect->array + index;									\
 		*tmp = value;														\
 	}																		\
 	type *type##VectorAt(type##Vector *Vect, uint32_t index) {				\
