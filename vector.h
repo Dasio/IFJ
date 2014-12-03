@@ -188,27 +188,19 @@ struct Vector{
 		Vect->used -= number; /* Mark last X value as invalid and return last address*/ \
 		return (type*)Vect->array + Vect->used;											\
 	}																		\
-	void type##VectorAtSet(type##Vector *Vect, uint32_t ind, type value) {	\
+	void type##VectorAtSet(type##Vector *Vect, uint32_t index, type value) {	\
 		if(index >= Vect->capacity)											\
 		{																	\
-			while(index >= Vect->capacity)									\
+			while(index >= Vect->capacity);									\
 				Vect->capacity *= 2;										\
 			realloc(Vect->array, Vect->capacity * sizeof(type));			\
 		}																	\
 		type *tmp;															\
-		tmp = (type*)Vect->array + ind;										\
+		tmp = (type*)Vect->array + index;										\
 		*tmp = value;														\
 	}																		\
 	type *type##VectorAt(type##Vector *Vect, uint32_t index) {				\
-		if(index >= Vect->used) 											\
-			if(index >= Vect->capacity)										\
-			{																\
-				while(index >= Vect->capacity)								\
-					Vect->capacity *= 2;									\
-				realloc(Vect->array, Vect->capacity * sizeof(type));		\
-			}																\
-			Vect->used = index+1;											\
-		}																	\
+		if(index >= Vect->used) return NULL;								\
 		return (type*)Vect->array + index;									\
 	}																		\
 	type *type##VectorFirst(type##Vector *Vect){							\
