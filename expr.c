@@ -13,7 +13,8 @@ static ExprToken temp_expr_token;
 static inline void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vector);
 static inline int token_to_index(Token *token);
 static inline int precedence(ExprTokenVector *expr_token_vector);
-static inline ExprToken *findTopMostTerm(ExprTokenVector *expr_token_vector);
+static inline ExprToken *find_top_most_term(ExprTokenVector *expr_token_vector);
+static inline int index_handle_start(ExprTokenVector *expr_token_vector);
 static inline bool check_id_function(Symbol *identifier);
 static inline bool check_unary_minus(ExprTokenVector *expr_vector);
 static inline void print_type_table(int operator);
@@ -203,11 +204,12 @@ static const int type_table[OPERATORS_COUNT][num_of_data_types][num_of_data_type
 DataType expr()
 {
 	int action;
+	int instr_counter = 0;
 	DataType expr_data_type = EXPR_ERROR;
 
 	token++;
 
-	if(token->type != TT_leftBrace
+	if(token->type != TT_leftBrace && token->type != TT_not && token->type != TT_minus
 		&& !(token->type >= TT_identifier && token->type <= TT_bool))
 	{
 		setError(ERR_SyntaxExpr);
@@ -229,7 +231,7 @@ DataType expr()
 		switch(action)
 		{
 			case ERROR:
-				setError(ERR_SyntaxExpr);
+				setError(ERR_PrecedenceTable);
 				printError();
 				return EXPR_ERROR;
 			case SHIFT:
@@ -241,6 +243,7 @@ DataType expr()
 				break;
 			case REDUCE:
 				reduce(expr_token_vector);
+				if(getError()) return EXPR_ERROR;
 				break;
 		}
 
@@ -257,6 +260,11 @@ DataType expr()
 		print_type_table(i);
 	}*/
 
+	if (instr_counter == 0)
+	{
+		//append NONTERM to stack ( a := b )
+	}
+
 	int lol = type_table[TT_plus][T_String][T_String];
 	lol = lol+1;
 
@@ -266,9 +274,22 @@ DataType expr()
 
 static inline void reduce(ExprTokenVector *expr_vector)
 {
+	assert(expr_vector); // just in case
 	ExprToken *last = ExprTokenVectorLast(expr_vector);
-	if (last->handle_start && last->type == TERM)
+	if (last->handle_start && last->type == TERM) // reduce variable or constant
 		last->type = NONTERM;
+
+	int first_index = index_handle_start(expr_vector);
+	if(getError()) return;
+	int last_index = expr_vector->used - 1;
+
+	if (last_index - first_index == 2) // 3 tokens... E + E ... ( E )
+	{
+
+	}
+
+	printf("%d %d\n", first_index, last_index);
+
 	return;
 }
 
@@ -280,6 +301,9 @@ static inline void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vect
 	temp_expr_token.type = TERM;
 	temp_expr_token.handle_start = false;
 	temp_expr_token.token = token;
+
+	temp_expr_token.E.var_type = UNDEF_;
+	temp_expr_token.E.data_type = UNDEF;
 
 	switch(token->type)
 	{
@@ -293,6 +317,7 @@ static inline void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vect
 				{
 					temp_expr_token.E.var_type = LOCAL;
 					temp_expr_token.E.offset = id->index;
+					temp_expr_token.E.data_type = (DataType) id->type;
 				}
 			}
 			else
@@ -306,6 +331,7 @@ static inline void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vect
 					{
 						temp_expr_token.E.var_type = GLOBAL;
 						temp_expr_token.E.offset = id->index;
+						temp_expr_token.E.data_type = (DataType) id->type;
 					}
 				}
 			}
@@ -350,7 +376,7 @@ static inline int token_to_index(Token *token)
 static inline int precedence(ExprTokenVector *expr_token_vector)
 {
 	assert(expr_token_vector);
-	ExprToken *top_most_term = findTopMostTerm(expr_token_vector);
+	ExprToken *top_most_term = find_top_most_term(expr_token_vector);
 	int index_1 = token_to_index(top_most_term->token); // top most term on expr. stack
 	int index_2 = token_to_index(temp_expr_token.token); // input
 
@@ -358,7 +384,7 @@ static inline int precedence(ExprTokenVector *expr_token_vector)
 }
 
 
-static inline ExprToken* findTopMostTerm(ExprTokenVector *expr_token_vector)
+static inline ExprToken* find_top_most_term(ExprTokenVector *expr_token_vector)
 {
 	assert(expr_token_vector);
 	ExprToken *top_most_term = ExprTokenVectorLast(expr_token_vector);
@@ -366,6 +392,23 @@ static inline ExprToken* findTopMostTerm(ExprTokenVector *expr_token_vector)
 		top_most_term--;
 
 	return top_most_term;
+}
+
+static inline int index_handle_start(ExprTokenVector *expr_token_vector)
+{
+	assert(expr_token_vector);
+	ExprToken *last_handle_start = ExprTokenVectorLast(expr_token_vector);
+	while(last_handle_start->handle_start != true)
+	{
+		if (last_handle_start->token->type == TT_empty)
+		{
+			setError(ERR_Reduction);
+			printError();
+			return -1;
+		}
+		last_handle_start--;
+	}
+	return last_handle_start - ExprTokenVectorFirst(expr_token_vector);
 }
 
 // check if identifier is used as actual return value or as calling function

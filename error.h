@@ -30,6 +30,8 @@ typedef enum
 
 	// Expression
 	ERR_SyntaxExpr,
+	ERR_PrecedenceTable,
+	ERR_Reduction,
 	ERR_TypeCompatibility,
 
 	// Interpreter

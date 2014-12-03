@@ -25,6 +25,8 @@ static const int returnCodeTable[] = {
 
 	// Expression
 	[ERR_SyntaxExpr]		= 2,
+	[ERR_PrecedenceTable]	= 2,
+	[ERR_Reduction]			= 2,
 	[ERR_TypeCompatibility]	= 4,
 
 	// Interpreter
@@ -52,9 +54,6 @@ void printError()
 		case ERR_Syntax:
 			printErrorDetails("Syntax error");
 			break;
-		case ERR_SyntaxExpr:
-			printErrorDetails("Error in syntax of expression");
-			break;
 		case ERR_Unknown:
 			printErrorDetails("Unknown error");
 			break;
@@ -71,7 +70,19 @@ void printError()
 			printErrorDetails("Header of function definition don't match with declaration");
 			break;
 		case ERR_NoDefFunc:
-			printErrorDetails("Function was declared, but it afterward it wasn't defined");
+			printErrorDetails("Function was declared, but afterward it wasn't defined");
+			break;
+		case ERR_SyntaxExpr:
+			printErrorDetails("Error in syntax of expression");
+			break;
+		case ERR_PrecedenceTable:
+			printErrorDetails("Error in syntax detected by precedence table");
+			break;
+		case ERR_Reduction:
+			printErrorDetails("Error in syntax detected during reduction");
+			break;
+		case ERR_TypeCompatibility:
+			printErrorDetails("Error in data type of some operand");
 			break;
 		default:
 			printErrorDetails("Unrecognized error");

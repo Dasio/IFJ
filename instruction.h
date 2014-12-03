@@ -22,7 +22,8 @@
 	typedef enum {
 		LOCAL,
 		GLOBAL,
-		CONST
+		CONST,
+		UNDEF_
 	} VariableType;
 
 	typedef struct {
