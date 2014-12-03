@@ -116,7 +116,7 @@ void var_def(uint8_t next)
 		return;
 	}
 	// Add variable to symbol table
-	Symbol *x = SymbolAdd(activeContext, symbolType, name, NULL, NULL);
+	SymbolAdd(activeContext, symbolType, name, NULL, NULL);
 	if(getError())
 		return;
 	var_def(1);
@@ -469,6 +469,23 @@ uint8_t stmt(uint8_t empty)
 					if(getError())
 						return 0;
 					break;
+				case Key_repeat:
+					stmt(0);
+					if(getError())
+						return 0;
+					stmt_list();
+					if(getError())
+						return 0;
+					if(token->type != TT_keyword || token->keyword_token != Key_until)
+					{
+						setError(ERR_Syntax);
+						return 0;
+					}
+					expr();
+					if(getError())
+						return 0;
+					token--;
+					break;
 				case Key_begin:
 					compound_stmt(0);
 					if (getError())
@@ -637,7 +654,7 @@ void addArgToFunc(SymbolType type, char *name)
 	}
 	else
 	{
-		Symbol *x = AddArgToContext(funcContext, type, name, NULL);
+		AddArgToContext(funcContext, type, name, NULL);
 		if(getError())
 			return;
 	}
