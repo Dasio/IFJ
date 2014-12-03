@@ -9,16 +9,23 @@ extern Context *activeContext;
 extern Symbol *funcSymbol;
 
 static ExprToken temp_expr_token;
+static DataType return_value_data_type;
+static ExprToken *top_most_term;
 
-static inline void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vector);
+static void reduce(ExprTokenVector *expr_vector);
+static inline void reduce_handle_unary_minus(THandle handle);
+static inline void reduce_handle_not(THandle handle);
+static inline void reduce_handle_three_tokens(THandle handle);
+static void reduce_two_constants(THandle handle);
+static inline void reduce_handle_function(THandle handle);
+static void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vector);
 static inline int token_to_index(Token *token);
 static inline int precedence(ExprTokenVector *expr_token_vector);
-static inline ExprToken *find_top_most_term(ExprTokenVector *expr_token_vector);
+static inline void find_top_most_term(ExprTokenVector *expr_token_vector);
 static inline int index_handle_start(ExprTokenVector *expr_token_vector);
 static inline bool check_id_function(Symbol *identifier);
 static inline bool check_unary_minus(ExprTokenVector *expr_vector);
 static inline void print_type_table(int operator);
-static inline void reduce(ExprTokenVector *expr_vector);
 
 
 typedef enum
@@ -30,13 +37,13 @@ typedef enum
 } TokenPrecedence;
 enum { SHIFT = S, REDUCE = R, HANDLE = H, ERROR = E};
 
-static const char *actions[] = {"shift", "reduce", "handle", "error"};
+//static const char *actions[] = {"shift", "reduce", "handle", "error"};
 
 static const int precedence_table[TT_assignment][TT_assignment] =
 {
 /*         U- not  *   /  and  +   -  or  xor  <   >   <=  >=  =   <>  (   )   f   ,   $  var  */
 /*  U- */{ H , R , R , R , R , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
-/* not */{ S , R , R , R , R , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
+/* not */{ R , H , R , R , R , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
 /*  *  */{ S , S , R , R , R , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
 /*  /  */{ S , S , R , R , R , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
 /* and */{ S , S , R , R , R , R , R , R , R , R , R , R , R , R , R , S , R , S , R , R , S },
@@ -205,7 +212,7 @@ DataType expr()
 {
 	int action;
 	int instr_counter = 0;
-	DataType expr_data_type = EXPR_ERROR;
+	return_value_data_type = EXPR_ERROR;
 
 	token++;
 
@@ -227,7 +234,10 @@ DataType expr()
 	while (token_to_index(token) != TT_empty)
 	{
 		convert_to_ExprToken(token, expr_token_vector);
+		if(getError()) return EXPR_ERROR;
+AFTER_REDUCE:
 		action = precedence(expr_token_vector);
+		//fprintf(stderr, " %s\n", actions[action]);
 		switch(action)
 		{
 			case ERROR:
@@ -235,22 +245,23 @@ DataType expr()
 				printError();
 				return EXPR_ERROR;
 			case SHIFT:
-				temp_expr_token.handle_start = true;
 				ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
+				if (top_most_term != ExprTokenVectorLast(expr_token_vector))
+					top_most_term[1].handle_start = true;
 				break;
 			case HANDLE:
+				//handle(expr_token_vector)
 				ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
 				break;
 			case REDUCE:
 				reduce(expr_token_vector);
 				if(getError()) return EXPR_ERROR;
+				goto AFTER_REDUCE;
 				break;
 		}
-
-		printf(" %s\n", actions[action]);
 		token++;
 	}
-	ExprTokenVectorPrint(expr_token_vector);
+	//ExprTokenVectorPrint(expr_token_vector);
 
 	ExprTokenVectorFree(expr_token_vector);
 
@@ -265,36 +276,485 @@ DataType expr()
 		//append NONTERM to stack ( a := b )
 	}
 
-	int lol = type_table[TT_plus][T_String][T_String];
-	lol = lol+1;
-
-
-	return expr_data_type;
+	return return_value_data_type;
 }
 
-static inline void reduce(ExprTokenVector *expr_vector)
+static void reduce(ExprTokenVector *expr_vector)
 {
 	assert(expr_vector); // just in case
-	ExprToken *last = ExprTokenVectorLast(expr_vector);
-	if (last->handle_start && last->type == TERM) // reduce variable or constant
-		last->type = NONTERM;
-
-	int first_index = index_handle_start(expr_vector);
-	if(getError()) return;
-	int last_index = expr_vector->used - 1;
-
-	if (last_index - first_index == 2) // 3 tokens... E + E ... ( E )
+	THandle handle = {.expr_vector = expr_vector};
+	handle.last = ExprTokenVectorLast(expr_vector);
+	if (handle.last->handle_start) ////////  1 token
 	{
-
+		if (handle.last->type == TERM) // E -> var
+		{
+			handle.last->handle_start = false;
+			handle.last->type = NONTERM;
+		}
+		else
+		{
+			setError(ERR_Reduction);
+			printError();
+			return;
+		}
 	}
+	else
+	{
+		handle.first_index = index_handle_start(expr_vector);
+		if(getError()) return;
+		handle.last_index = expr_vector->used - 1;
+		handle.tokens_count = handle.last_index - handle.first_index + 1;
+		handle.first = ExprTokenVectorAt(expr_vector, handle.first_index);
 
-	printf("%d %d\n", first_index, last_index);
-
+		if (handle.first->token->type == TT_unaryMinus && handle.last->type == NONTERM) // 2+ tokens
+		{ // TT_not or TT_unaryMinux (maybe multiple times)
+			reduce_handle_unary_minus(handle);
+		}
+		else if (handle.first->token->type == TT_not && handle.last->type == NONTERM)	// 2+ tokens
+		{
+			reduce_handle_not(handle);
+		}
+		else if (handle.tokens_count == 3) //// 3 tokens... E + E ... ( E )
+		{
+			reduce_handle_three_tokens(handle);
+		}
+		else if (handle.first->token->type == TT_function) // 4, 6, 8 .. tokens
+		{
+			reduce_handle_function(handle);
+		}
+		else
+		{
+			setError(ERR_Reduction);
+			printError();
+			return;
+		}
+		if(getError()) return;
+	}
 	return;
 }
 
+// 2+ tokens
+static inline void reduce_handle_unary_minus(THandle handle)
+{
+	int minus_counter = 0;
+	ExprToken *temp = handle.first;
+	while (temp->token->type == TT_unaryMinus)
+	{
+		minus_counter++;
+		temp++;
+	}
+	if (temp != handle.last)
+	{
+		setError(ERR_Reduction);
+		printError();
+		return;
+	}
+	if (temp->E.data_type != INT && temp->E.data_type != DOUBLE) // check data_type
+	{
+		setError(ERR_TypeCompatibility);
+		printError();
+		return;
+	}
+	if (minus_counter % 2 == 0)
+	{
+		// reducing tokens
+		ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+		ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
+	}
+	else // if (minus_counter % 2 == 1)
+	{
+		if (temp->E.var_type == CONST)
+		{
+			if (temp->E.data_type == INT)
+				temp->E.int_ = - temp->E.int_;
+			else if (temp->E.data_type == DOUBLE)
+				temp->E.double_ = - temp->E.double_;
+		}
+		else // LOCAL / GLOBAL
+		{
+			// generating instruction
 
-static inline void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vector)
+		}
+
+		// reducing tokens
+		ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+		ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
+	}
+}
+
+
+// 2+ tokens
+static inline void reduce_handle_not(THandle handle)
+{
+	int not_counter = 0;
+	ExprToken *temp = handle.first;
+	while (temp->token->type == TT_not)
+	{
+		not_counter++;
+		temp++;
+	}
+	if (temp != handle.last)
+	{
+		setError(ERR_Reduction);
+		printError();
+		return;
+	}
+	if (temp->E.data_type != BOOL) // check data_type
+	{
+		setError(ERR_TypeCompatibility);
+		printError();
+		return;
+	}
+	if (not_counter % 2 == 0)
+	{
+		if (temp->E.var_type != CONST) // LOCAL / GLOBAL
+		{
+			// reducing tokens
+			ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+			ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
+		}
+	}
+	else // if (not_counter % 2 == 1)
+	{
+		if (temp->E.var_type == CONST)
+		{
+			if (temp->E.data_type == BOOL)
+				temp->E.bool_ = ! temp->E.bool_;
+		}
+		else // LOCAL / GLOBAL
+		{
+			// generating instruction
+
+
+			// reducing tokens
+			ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+			ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
+		}
+	}
+}
+
+// 3 tokens... E + E ... ( E )
+static inline void reduce_handle_three_tokens(THandle handle)
+{
+	/***   (  E  ) ->   E     ***/
+	if (handle.first[0].token->type == TT_leftBrace &&
+		handle.first[1].type == NONTERM &&
+		handle.first[2].token->type == TT_rightBrace)
+	{
+		ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, handle.first[1]);
+		ExprTokenVectorPopMore(handle.expr_vector, 2);
+	}
+	else if (handle.first[0].type == NONTERM &&
+			handle.first[1].token->type >= TT_multiply &&
+			handle.first[1].token->type <= TT_inequality &&
+			handle.first[2].type == NONTERM)
+	{
+		// semantic analysis
+		DataType value_type = type_table[handle.first[1].token->type]
+							[handle.first[0].E.data_type]
+							[handle.first[2].E.data_type];
+		if (value_type == UNDEF)
+		{
+			setError(ERR_TypeCompatibility);
+			printError();
+			return;
+		}
+		else
+			return_value_data_type = value_type;
+
+		// check if both operands are constants and do operation without generating instruction
+		if (handle.first[0].E.var_type == CONST &&
+			handle.first[2].E.var_type == CONST)
+		{
+			reduce_two_constants(handle);
+			if(getError()) return;
+		}
+		else	// generating instruction
+		{
+
+		}
+
+		// reducing tokens
+		handle.first->handle_start = false;
+		handle.first->E.data_type = value_type;
+		ExprTokenVectorPopMore(handle.expr_vector, 2);
+	}
+	else
+	{
+		setError(ERR_Reduction);
+		printError();
+		return;
+	}
+}
+
+
+static void reduce_two_constants(THandle handle)
+{
+	if (handle.first[0].E.data_type == INT &&
+		handle.first[2].E.data_type == INT)
+	{
+		switch (handle.first[1].token->type)
+		{
+			case TT_multiply:
+				handle.first[0].E.int_ = handle.first[0].E.int_ * handle.first[2].E.int_;
+				break;
+			case TT_division:
+				if (handle.first[2].E.int_ == 0)
+				{
+					setError(ERR_TypeCompatibility);
+					printError();
+					return;
+				}
+				handle.first[0].E.double_ = handle.first[0].E.int_ / handle.first[2].E.int_;
+				break;
+			case TT_plus:
+				handle.first[0].E.int_ = handle.first[0].E.int_ + handle.first[2].E.int_;
+				break;
+			case TT_minus:
+				handle.first[0].E.int_ = handle.first[0].E.int_ - handle.first[2].E.int_;
+				break;
+			case TT_less:
+				handle.first[0].E.bool_ = handle.first[0].E.int_ < handle.first[2].E.int_;
+				break;
+			case TT_greater:
+				handle.first[0].E.bool_ = handle.first[0].E.int_ > handle.first[2].E.int_;
+				break;
+			case TT_lessOrEqual:
+				handle.first[0].E.bool_ = handle.first[0].E.int_ <= handle.first[2].E.int_;
+				break;
+			case TT_greaterOrEqual:
+				handle.first[0].E.bool_ = handle.first[0].E.int_ >= handle.first[2].E.int_;
+				break;
+			case TT_equality:
+				handle.first[0].E.bool_ = handle.first[0].E.int_ == handle.first[2].E.int_;
+				break;
+			case TT_inequality:
+				handle.first[0].E.bool_ = handle.first[0].E.int_ != handle.first[2].E.int_;
+				break;
+			default:
+				break;
+		}
+	}
+	else if (handle.first[0].E.data_type == INT &&
+			handle.first[2].E.data_type == DOUBLE)
+	{
+		switch (handle.first[1].token->type)
+		{
+			case TT_multiply:
+				handle.first[0].E.double_ = handle.first[0].E.int_ * handle.first[2].E.double_;
+				break;
+			case TT_division:
+				if (handle.first[2].E.double_ == 0)
+				{
+					setError(ERR_TypeCompatibility);
+					printError();
+					return;
+				}
+				handle.first[0].E.double_ = handle.first[0].E.int_ / handle.first[2].E.double_;
+				break;
+			case TT_plus:
+				handle.first[0].E.double_ = handle.first[0].E.int_ + handle.first[2].E.double_;
+				break;
+			case TT_minus:
+				handle.first[0].E.double_ = handle.first[0].E.int_ - handle.first[2].E.double_;
+				break;
+			case TT_less:
+				handle.first[0].E.bool_ = handle.first[0].E.int_ < handle.first[2].E.double_;
+				break;
+			case TT_greater:
+				handle.first[0].E.bool_ = handle.first[0].E.int_ > handle.first[2].E.double_;
+				break;
+			case TT_lessOrEqual:
+				handle.first[0].E.bool_ = handle.first[0].E.int_ <= handle.first[2].E.double_;
+				break;
+			case TT_greaterOrEqual:
+				handle.first[0].E.bool_ = handle.first[0].E.int_ >= handle.first[2].E.double_;
+				break;
+			case TT_equality:
+				handle.first[0].E.bool_ = handle.first[0].E.int_ == handle.first[2].E.double_;
+				break;
+			case TT_inequality:
+				handle.first[0].E.bool_ = handle.first[0].E.int_ != handle.first[2].E.double_;
+				break;
+			default:
+				break;
+		}
+	}
+	else if (handle.first[0].E.data_type == DOUBLE &&
+		handle.first[2].E.data_type == INT)
+	{
+		switch (handle.first[1].token->type)
+		{
+			case TT_multiply:
+				handle.first[0].E.double_ = handle.first[0].E.double_ * handle.first[2].E.int_;
+				break;
+			case TT_division:
+				if (handle.first[2].E.int_ == 0)
+				{
+					setError(ERR_TypeCompatibility);
+					printError();
+					return;
+				}
+				handle.first[0].E.double_ = handle.first[0].E.double_ / handle.first[2].E.int_;
+				break;
+			case TT_plus:
+				handle.first[0].E.double_ = handle.first[0].E.double_ + handle.first[2].E.int_;
+				break;
+			case TT_minus:
+				handle.first[0].E.double_ = handle.first[0].E.double_ - handle.first[2].E.int_;
+				break;
+			case TT_less:
+				handle.first[0].E.bool_ = handle.first[0].E.double_ < handle.first[2].E.int_;
+				break;
+			case TT_greater:
+				handle.first[0].E.bool_ = handle.first[0].E.double_ > handle.first[2].E.int_;
+				break;
+			case TT_lessOrEqual:
+				handle.first[0].E.bool_ = handle.first[0].E.double_ <= handle.first[2].E.int_;
+				break;
+			case TT_greaterOrEqual:
+				handle.first[0].E.bool_ = handle.first[0].E.double_ >= handle.first[2].E.int_;
+				break;
+			case TT_equality:
+				handle.first[0].E.bool_ = handle.first[0].E.double_ == handle.first[2].E.int_;
+				break;
+			case TT_inequality:
+				handle.first[0].E.bool_ = handle.first[0].E.double_ != handle.first[2].E.int_;
+				break;
+			default:
+				break;
+		}
+	}
+	else if (handle.first[0].E.data_type == DOUBLE &&
+		handle.first[2].E.data_type == DOUBLE)
+	{
+		switch (handle.first[1].token->type)
+		{
+			case TT_multiply:
+				handle.first[0].E.double_ = handle.first[0].E.double_ * handle.first[2].E.double_;
+				break;
+			case TT_division:
+				if (handle.first[2].E.double_ == 0)
+				{
+					setError(ERR_TypeCompatibility);
+					printError();
+					return;
+				}
+				handle.first[0].E.double_ = handle.first[0].E.double_ / handle.first[2].E.double_;
+				break;
+			case TT_plus:
+				handle.first[0].E.double_ = handle.first[0].E.double_ + handle.first[2].E.double_;
+				break;
+			case TT_minus:
+				handle.first[0].E.double_ = handle.first[0].E.double_ - handle.first[2].E.double_;
+				break;
+			case TT_less:
+				handle.first[0].E.bool_ = handle.first[0].E.double_ < handle.first[2].E.double_;
+				break;
+			case TT_greater:
+				handle.first[0].E.bool_ = handle.first[0].E.double_ > handle.first[2].E.double_;
+				break;
+			case TT_lessOrEqual:
+				handle.first[0].E.bool_ = handle.first[0].E.double_ <= handle.first[2].E.double_;
+				break;
+			case TT_greaterOrEqual:
+				handle.first[0].E.bool_ = handle.first[0].E.double_ >= handle.first[2].E.double_;
+				break;
+			case TT_equality:
+				handle.first[0].E.bool_ = handle.first[0].E.double_ == handle.first[2].E.double_;
+				break;
+			case TT_inequality:
+				handle.first[0].E.bool_ = handle.first[0].E.double_ != handle.first[2].E.double_;
+				break;
+			default:
+				break;
+		}
+	}
+	else if (handle.first[0].E.data_type == BOOL &&
+		handle.first[2].E.data_type == BOOL)
+	{
+		switch (handle.first[1].token->type)
+		{
+			case TT_and:
+				handle.first[0].E.bool_ = handle.first[0].E.bool_ && handle.first[2].E.bool_;
+				break;
+			case TT_or:
+				handle.first[0].E.bool_ = handle.first[0].E.bool_ || handle.first[2].E.bool_;
+				break;
+			case TT_xor:
+				handle.first[0].E.bool_ = handle.first[0].E.bool_ ^ handle.first[2].E.bool_;
+				break;
+			case TT_less:
+				handle.first[0].E.bool_ = handle.first[0].E.bool_ < handle.first[2].E.bool_;
+				break;
+			case TT_greater:
+				handle.first[0].E.bool_ = handle.first[0].E.bool_ > handle.first[2].E.bool_;
+				break;
+			case TT_lessOrEqual:
+				handle.first[0].E.bool_ = handle.first[0].E.bool_ >= handle.first[2].E.bool_;
+				break;
+			case TT_greaterOrEqual:
+				handle.first[0].E.bool_ = handle.first[0].E.bool_ >= handle.first[2].E.bool_;
+				break;
+			case TT_equality:
+				handle.first[0].E.bool_ = handle.first[0].E.bool_ == handle.first[2].E.bool_;
+				break;
+			case TT_inequality:
+				handle.first[0].E.bool_ = handle.first[0].E.bool_ != handle.first[2].E.bool_;
+				break;
+			default:
+				break;
+		}
+	}
+	else if (handle.first[0].E.data_type == STRING &&
+		handle.first[2].E.data_type == STRING)
+	{
+		if (handle.first[1].token->type == TT_plus)
+		{
+			appendCharsToString(handle.first[0].E.str, handle.first[2].E.str->data);
+			return;
+		}
+		int compare_result = strcmp(handle.first[0].E.str->data, handle.first[2].E.str->data);
+		switch (handle.first[1].token->type)
+		{
+			case TT_less:
+				handle.first[0].E.bool_ = compare_result < 0;
+				break;
+			case TT_greater:
+				handle.first[0].E.bool_ = compare_result > 0;
+				break;
+			case TT_lessOrEqual:
+				handle.first[0].E.bool_ = compare_result <= 0;
+				break;
+			case TT_greaterOrEqual:
+				handle.first[0].E.bool_ = compare_result >= 0;
+				break;
+			case TT_equality:
+				handle.first[0].E.bool_ = compare_result == 0;
+				break;
+			case TT_inequality:
+				handle.first[0].E.bool_ = compare_result != 0;
+				break;
+			default:
+				break;
+		}
+	}
+}
+
+
+// 4, 6, 8 .. tokens
+static inline void reduce_handle_function(THandle handle)
+{
+	if (handle.tokens_count < 4 || handle.tokens_count % 2 == 1)
+	{
+		setError(ERR_Reduction);
+		printError();
+		return;
+	}
+}
+
+
+static void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vector)
 {
 	Symbol *id = NULL;
 	assert(token); // just in case
@@ -335,22 +795,33 @@ static inline void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vect
 					}
 				}
 			}
+			if (id == NULL)
+			{
+				setError(ERR_UndefVarOrFunction);
+				printError();
+				return;
+			}
 			break;
 		case TT_real:
 			temp_expr_token.E.var_type = CONST;
 			temp_expr_token.E.data_type = DOUBLE;
+			temp_expr_token.E.double_ = token->r;
 			break;
 		case TT_integer:
 			temp_expr_token.E.var_type = CONST;
 			temp_expr_token.E.data_type = INT;
+			temp_expr_token.E.int_ = token->n;
 			break;
 		case TT_string:
 			temp_expr_token.E.var_type = CONST;
 			temp_expr_token.E.data_type = STRING;
+			temp_expr_token.E.str = &(token->str);
 			break;
 		case TT_bool:
 			temp_expr_token.E.var_type = CONST;
 			temp_expr_token.E.data_type = BOOL;
+			temp_expr_token.E.bool_ = (bool)token->n;
+
 			break;
 		case TT_minus:
 			if (check_unary_minus(expr_vector))
@@ -376,7 +847,7 @@ static inline int token_to_index(Token *token)
 static inline int precedence(ExprTokenVector *expr_token_vector)
 {
 	assert(expr_token_vector);
-	ExprToken *top_most_term = find_top_most_term(expr_token_vector);
+	find_top_most_term(expr_token_vector);
 	int index_1 = token_to_index(top_most_term->token); // top most term on expr. stack
 	int index_2 = token_to_index(temp_expr_token.token); // input
 
@@ -384,14 +855,12 @@ static inline int precedence(ExprTokenVector *expr_token_vector)
 }
 
 
-static inline ExprToken* find_top_most_term(ExprTokenVector *expr_token_vector)
+static inline void find_top_most_term(ExprTokenVector *expr_token_vector)
 {
 	assert(expr_token_vector);
-	ExprToken *top_most_term = ExprTokenVectorLast(expr_token_vector);
+	top_most_term = ExprTokenVectorLast(expr_token_vector);
 	while(top_most_term->type != TERM)
 		top_most_term--;
-
-	return top_most_term;
 }
 
 static inline int index_handle_start(ExprTokenVector *expr_token_vector)
@@ -463,9 +932,9 @@ void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector)
 	for (uint32_t i = 0; i < expr_token_vector->used; i++)
 	{
 		expr_token = ExprTokenVectorAt(expr_token_vector, i);
-		printf("%s ", stringifyToken(expr_token->token));
+		fprintf(stderr, "%s ", stringifyToken(expr_token->token));
 	}
-	printf("\n");
+	fprintf(stderr, "\n");
 }
 
 

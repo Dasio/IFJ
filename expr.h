@@ -22,10 +22,22 @@ typedef struct
 
 } ExprToken;
 
+GenVectorPrototypes(ExprToken)
+
+typedef struct
+{
+	ExprTokenVector *expr_vector;
+	ExprToken *first; // first token of handle
+	ExprToken *last; // last token of handle (last token in vector)
+	int first_index; // index to first token in handle
+	int last_index; // index to last token in handle
+	int tokens_count; // number of tokens in handle
+} THandle;
+
 /**
  * Vector generation of type ExprToken
  */
-GenVectorPrototypes(ExprToken)
+
 
 // after a call of expr(), value of the expression is stored on the top of stack
 DataType expr();

@@ -38,6 +38,7 @@ typedef enum
 	// Interpreter
 	ERR_UnknownInstruction,
 	ERR_UnitializedAccess,
+	ERR_DivisionByZero,
 
 	// Other
 	ERR_OutOfRange,

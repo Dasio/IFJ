@@ -33,6 +33,7 @@ static const int returnCodeTable[] = {
 	// Interpreter
 	[ERR_UnknownInstruction]= 99,
 	[ERR_UnitializedAccess] = 7,
+	[ERR_DivisionByZero]	= 8,
 
 	// Other
 	[ERR_OutOfRange]        = 9,
@@ -87,6 +88,9 @@ void printError()
 			break;
 		case ERR_UndefVarOrFunction:
 			printErrorDetails("Undefined variable or function");
+			break;
+		case ERR_DivisionByZero:
+			printErrorDetails("You can't divide by zero !");
 			break;
 		default:
 			printErrorDetails("Unrecognized error");
