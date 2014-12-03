@@ -288,6 +288,7 @@ static void reduce(ExprTokenVector *expr_vector)
 	{
 		if (handle.last->type == TERM) // E -> var
 		{
+			return_value_data_type = handle.last->E.data_type;
 			handle.last->handle_start = false;
 			handle.last->type = NONTERM;
 		}
