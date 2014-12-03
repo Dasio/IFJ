@@ -11,21 +11,30 @@ static const int returnCodeTable[] = {
 	[ERR_Allocation]        = 99,
 	[ERR_CannotOpenFile]    = 9,
 
+	// Lexical analysis
 	[ERR_Lexical]           = 1,
 	[ERR_LexicalConversion] = 1,
 
+	// Parser
 	[ERR_Syntax]            = 2,
-	[ERR_SyntaxExpr]        = 2,
 	[ERR_RedefVar]          = 3,
 	[ERR_RedefFunc]         = 3,
 	[ERR_DeclrFunc]         = 3,
 	[ERR_BadDefArg]         = 3,
 	[ERR_NoDefFunc]         = 3,
 
+	// Expression
+	[ERR_SyntaxExpr]		= 2,
+	[ERR_PrecedenceTable]	= 2,
+	[ERR_Reduction]			= 2,
+	[ERR_TypeCompatibility]	= 4,
+	[ERR_UndefVarOrFunction]= 3,
+
 	// Interpreter
 	[ERR_UnknownInstruction]= 99,
 	[ERR_UnitializedAccess] = 7,
 
+	// Other
 	[ERR_OutOfRange]        = 9,
 	[ERR_Unknown]           = 9
 
@@ -46,9 +55,6 @@ void printError()
 		case ERR_Syntax:
 			printErrorDetails("Syntax error");
 			break;
-		case ERR_SyntaxExpr:
-			printErrorDetails("Error in syntax of expression");
-			break;
 		case ERR_Unknown:
 			printErrorDetails("Unknown error");
 			break;
@@ -65,7 +71,22 @@ void printError()
 			printErrorDetails("Header of function definition don't match with declaration");
 			break;
 		case ERR_NoDefFunc:
-			printErrorDetails("Function was declared, but it afterward it wasn't defined");
+			printErrorDetails("Function was declared, but afterward it wasn't defined");
+			break;
+		case ERR_SyntaxExpr:
+			printErrorDetails("Error in syntax of expression");
+			break;
+		case ERR_PrecedenceTable:
+			printErrorDetails("Error in syntax detected by precedence table");
+			break;
+		case ERR_Reduction:
+			printErrorDetails("Error in syntax detected during reduction");
+			break;
+		case ERR_TypeCompatibility:
+			printErrorDetails("Error in data type of some operand");
+			break;
+		case ERR_UndefVarOrFunction:
+			printErrorDetails("Undefined variable or function");
 			break;
 		default:
 			printErrorDetails("Unrecognized error");

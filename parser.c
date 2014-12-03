@@ -116,10 +116,9 @@ void var_def(uint8_t next)
 		return;
 	}
 	// Add variable to symbol table
-	Symbol *x = SymbolAdd(activeContext, symbolType, name, NULL, NULL);
+	SymbolAdd(activeContext, symbolType, name, NULL, NULL);
 	if(getError())
 		return;
-	fprintf(stderr,"Symbol added name = %s type = %d, index = %lu\n",x->name,x->type,x->index);
 	var_def(1);
 	if(getError())
 		return;
@@ -412,32 +411,56 @@ void stmt_empty()
 uint8_t stmt(uint8_t empty)
 {
 	uint8_t epsilon = 0;
+	Symbol *id = NULL;
+	DataType exprType;
 	// IF wasnt called from stmt_empty(), need to load next token
 	if(!empty) token++;
 	switch(token->type)
 	{
 		// 1. rule = Assignemnt
 		case TT_identifier:
+			// Check if was declared
+			id = SymbolFind(activeContext,token->str.data);
+			if(id == NULL)
+			{
+				// Search also in GST
+				if(activeContext != mainContext)
+					id = SymbolFind(mainContext,token->str.data);
+				if(id == NULL)
+				{
+					setError(ERR_UndefVarOrFunction);
+					return 0;
+				}
+			}
 			token++;
 			if(token->type != TT_assignment)
 			{
 				setError(ERR_Syntax);
 				return 0;
 			}
-			expr();
-			token--;
+			exprType = expr();
 			if(getError())
 				return 0;
+			if((DataType)id->type != exprType)
+			{
+				setError(ERR_TypeCompatibility);
+				return 0;
+			}
+			token--;
 			break;
 		case TT_keyword:
 			switch(token->keyword_token)
 			{
 				// 2. rule = IF Statement
 				case Key_if:
-					expr();
+					exprType = expr();
 					if(getError())
 						return 0;
-
+					if(exprType != BOOL)
+					{
+						setError(ERR_TypeCompatibility);
+						return 0;
+					}
 					if(token->type != TT_keyword || token->keyword_token != Key_then)
 					{
 						setError(ERR_Syntax);
@@ -455,9 +478,14 @@ uint8_t stmt(uint8_t empty)
 					break;
 				// 3. rule = While cycle
 				case Key_while:
-					expr();
+					exprType = expr();
 					if(getError())
 						return 0;
+					if(exprType != BOOL)
+					{
+						setError(ERR_TypeCompatibility);
+						return 0;
+					}
 
 					if(token->type != TT_keyword || token->keyword_token != Key_do)
 					{
@@ -469,6 +497,28 @@ uint8_t stmt(uint8_t empty)
 					compound_stmt(0);
 					if(getError())
 						return 0;
+					break;
+				case Key_repeat:
+					stmt(0);
+					if(getError())
+						return 0;
+					stmt_list();
+					if(getError())
+						return 0;
+					if(token->type != TT_keyword || token->keyword_token != Key_until)
+					{
+						setError(ERR_Syntax);
+						return 0;
+					}
+					exprType = expr();
+					if(getError())
+						return 0;
+					if(exprType != BOOL)
+					{
+						setError(ERR_TypeCompatibility);
+						return 0;
+					}
+					token--;
 					break;
 				case Key_begin:
 					compound_stmt(0);
@@ -617,6 +667,7 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 	returnSymbol->type = returnType;
 	funcContext->returnType = returnType;
 	funcSymbol->stateFunc = funcState;
+	funcSymbol->index = -funcContext->argCount - 1;
 }
 void addArgToFunc(SymbolType type, char *name)
 {
@@ -667,6 +718,7 @@ void addBuiltInFunctions()
 	// length(s : string) : integer
 	funcContext = InitContext();
 	symbol = SymbolAdd(mainContext, T_FunPointer, "length", funcContext, NULL);
+	symbol->index = -1;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_int;
 	AddArgToContext(funcContext, T_String, "s", NULL);
@@ -674,6 +726,7 @@ void addBuiltInFunctions()
 	// copy(s : string; i : integer; n : integer) : string
 	funcContext = InitContext();
 	symbol = SymbolAdd(mainContext, T_FunPointer, "copy", funcContext, NULL);
+	symbol->index = -2;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_String;
 	AddArgToContext(funcContext, T_String, "s", NULL);
@@ -682,6 +735,7 @@ void addBuiltInFunctions()
 
 	// find(s : string; search : string) : integer
 	funcContext = InitContext();
+	symbol->index = -3;
 	symbol = SymbolAdd(mainContext, T_FunPointer, "find", funcContext, NULL);
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_int;
@@ -691,6 +745,7 @@ void addBuiltInFunctions()
 	// sort(s : string) : string
 	funcContext = InitContext();
 	symbol = SymbolAdd(mainContext, T_FunPointer, "sort", funcContext, NULL);
+	symbol->index = -4;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_String;
 	AddArgToContext(funcContext, T_String, "s", NULL);

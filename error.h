@@ -12,28 +12,36 @@
  */
 typedef enum
 {
-	ERR_None = 0, /**< ERR_None */
-	ERR_Allocation, /**<ERR_Allocation */
+	ERR_None = 0,
+	ERR_Allocation,
 	ERR_CannotOpenFile,    /**< Occurs when IStream cannot open file */
 
 	// Lexical analysis
 	ERR_Lexical,           /**< Generic lexical analysis error */
 	ERR_LexicalConversion, /**< String -> Real/Integer conversion failure */
+
 	// Parser
-	ERR_Syntax,            /**< ERR_Syntax */
-	ERR_SyntaxExpr,        /**< ERR_SyntaxExpr */
-	ERR_RedefVar,          /**< ERR_RedefVar */
-	ERR_RedefFunc,         /**< ERR_RedefFunc */
-	ERR_DeclrFunc,         /**< ERR_DeclrFunc */
-	ERR_BadDefArg,         /**< ERR_BadDefArg */
+	ERR_Syntax,
+	ERR_RedefVar,
+	ERR_RedefFunc,
+	ERR_DeclrFunc,
+	ERR_BadDefArg,
 	ERR_NoDefFunc,         /**< Function was declared and no defintion was found */
+
+	// Expression
+	ERR_SyntaxExpr,
+	ERR_PrecedenceTable,
+	ERR_Reduction,
+	ERR_TypeCompatibility,
+	ERR_UndefVarOrFunction,
+
 	// Interpreter
 	ERR_UnknownInstruction,
 	ERR_UnitializedAccess,
 
 	// Other
-	ERR_OutOfRange,        /**< ERR_OutOfRange */
-	ERR_Unknown,           /**< ERR_Unknown */
+	ERR_OutOfRange,
+	ERR_Unknown,
 } EErrorStates;
 
 /** Structure that holds information about error */

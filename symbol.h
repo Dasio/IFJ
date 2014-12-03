@@ -38,6 +38,7 @@ typedef struct SymbolStruct Symbol;
 typedef struct
 {
 	Symbol **arg; /**< array of arguments, points to symbol in Hash */
+	Symbol *ret_value; /**< pointer to symbol with return value of function */
 	uint32_t argCount;
 	uint32_t argMax;
 
@@ -51,12 +52,12 @@ typedef struct
 struct SymbolStruct
 {
 	SymbolType type;	/**< Enum what kind of data are stored */
-	uint64_t index;		/**< for variable index to stack
+	int64_t index;		/**< for variable index/offset(global/local) to stack
 							 for function index to instruction tape */
 	char *name;		/**< Name of variable/function */
 	FuncState stateFunc; /**< 0- initial state 1-declared 2-defined */
 	Context *funCont;   /**< Pointer to Context of function */
-	intVector *adressVector; 	/**< for adding addresses to instruction tape
+	uint64_tVector *adressVector; 	/**< for adding addresses to instruction tape
 								if function was called before definition */
 }; // Symbol
 

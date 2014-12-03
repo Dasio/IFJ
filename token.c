@@ -51,6 +51,17 @@ char *stringifyToken(Token *token) {
 			return("REAL");
 		case TT_integer:
 			return("INT");
+		case TT_unaryMinus:
+			return("-");
+		case TT_not:
+			return("not");
+		case TT_and:
+			return("and");
+		case TT_or:
+			return("or");
+		case TT_xor:
+			return("xor");
+
 		case TT_assignment:
 			return(":=");
 		case TT_colon:
@@ -126,6 +137,8 @@ char *stringifyToken(Token *token) {
 					return("readln");
 				case Key_real:
 					return("real");
+				case Key_repeat:
+					return("repeat");
 				case Key_sort:
 					return("sort");
 				case Key_string:
@@ -136,6 +149,8 @@ char *stringifyToken(Token *token) {
 					return("true");
 				case Key_var:
 					return("var");
+				case Key_until:
+					return("until");
 				case Key_while:
 					return("while");
 				case Key_write:
