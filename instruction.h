@@ -49,21 +49,21 @@
 	 *
 	 */
 	typedef enum {
-		NEG, // 8  {L,G}{*,L,G}{*,*,*}{I*,D*}
-		NOT, // 4  {L,G}{*,L,G}{*,*,*}{B*}
-		MUL, // 64 {L,G}{C,L,G}{C,L,G}{II,DI,ID,DD}
-		DIV, // 64 {L,G}{C,L,G}{C,L,G}{II,DI,ID,DD}
-		AND, // 16 {L,G}{C,L,G}{C,L,G}{BB}
-		ADD, // 80 {L,G}{C,L,G}{C,L,G}{II,DI,ID,DD,SS}
-		SUB, // 64 {L,G}{C,L,G}{C,L,G}{II,DI,ID,DD}
-		OR , // 16 {L,G}{C,L,G}{C,L,G}{BB}
-		XOR, // 16 {L,G}{C,L,G}{C,L,G}{BB}
-		L  , // 64 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}    ????
-		G  , // 64 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}    ????
-		LE , // 64 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}    ????
-		GE , // 64 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}    ????
-		EQ , // 64 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}    ????
-		NE   // 64 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}    ????
+		NEG, // 8  {*,L,G}{*,*,*}{I*,D*}
+		NOT, // 4  {*,L,G}{*,*,*}{B*}
+		MUL, // 64 {C,L,G}{C,L,G}{II,DI,ID,DD}
+		DIV, // 64 {C,L,G}{C,L,G}{II,DI,ID,DD}
+		AND, // 16 {C,L,G}{C,L,G}{BB}
+		ADD, // 80 {C,L,G}{C,L,G}{II,DI,ID,DD,SS}
+		SUB, // 64 {C,L,G}{C,L,G}{II,DI,ID,DD}
+		OR , // 16 {C,L,G}{C,L,G}{BB}
+		XOR, // 16 {C,L,G}{C,L,G}{BB}
+		L  , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
+		G  , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
+		LE , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
+		GE , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
+		EQ , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
+		NE   // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
 	} InstructionOp;
 
 	struct instruction;

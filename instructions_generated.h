@@ -2,8 +2,8 @@
 #include "instruction.h"
 #include "stack.h"
 
-#ifndef _INSTRUCTIONS_H
-#define _INSTRUCTIONS_H
+#ifndef _INSTRUCTIONS_GENERATED_H
+#define _INSTRUCTIONS_GENERATED_H
 void Instr_NEG_LLxIx(Instruction *i);
 void Instr_NEG_LLxDx(Instruction *i);
 void Instr_NEG_LGxIx(Instruction *i);

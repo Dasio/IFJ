@@ -16,43 +16,56 @@ comb = [["L", "G"],      # VarType DST
 comb = comb.first.product(*comb[1..-1]).map(&:join).reject {|s| s =~ /CC/}
 
 instructions = {
-	neg: /[LG][xLG][x][ID]x/,
-	not: /[LG][xLG][x][B]x/,
+	neg: /[xLG][x][ID]x/,
+	not: /[xLG][x][B]x/,
 
-	mul: /[LG][CLG][CLG][ID][ID]/,
-	div: /[LG][CLG][CLG][ID][ID]/,
-	and: /[LG][CLG][CLG]BB/,
-	add: /[LG][CLG][CLG]([ID][ID]|SS)/,
-	sub: /[LG][CLG][CLG][ID][ID]/,
-	or:  /[LG][CLG][CLG]BB/,
-	xor: /[LG][CLG][CLG]BB/,
-	l:   /[LG][CLG][CLG](II|DD|BB|SS)/,
-	g:   /[LG][CLG][CLG](II|DD|BB|SS)/,
-	le:  /[LG][CLG][CLG](II|DD|BB|SS)/,
-	ge:  /[LG][CLG][CLG](II|DD|BB|SS)/,
-	eq:  /[LG][CLG][CLG](II|DD|BB|SS)/,
-	ne:  /[LG][CLG][CLG](II|DD|BB|SS)/
+	mul: /[CLG][CLG][ID][ID]/,
+	div: /[CLG][CLG][ID][ID]/,
+	and: /[CLG][CLG]BB/,
+	add: /[CLG][CLG]([ID][ID]|SS)/,
+	sub: /[CLG][CLG][ID][ID]/,
+	or:  /[CLG][CLG]BB/,
+	xor: /[CLG][CLG]BB/,
+	l:   /[CLG][CLG](II|DD|BB|SS)/,
+	g:   /[CLG][CLG](II|DD|BB|SS)/,
+	le:  /[CLG][CLG](II|DD|BB|SS)/,
+	ge:  /[CLG][CLG](II|DD|BB|SS)/,
+	eq:  /[CLG][CLG](II|DD|BB|SS)/,
+	ne:  /[CLG][CLG](II|DD|BB|SS)/
 }
 
-	c = File.open("instructions.c", "w")
-	h = File.open("instructions.h", "w")
+	c = File.open("../../instructions_generated.c", "w")
+	h = File.open("../../instructions_generated.h", "w")
 
 	h.puts '#include "system.h"'
 	h.puts '#include "instruction.h"'
 	h.puts '#include "stack.h"'
 	h.puts
-	h.puts '#ifndef _INSTRUCTIONS_H'
-	h.puts '#define _INSTRUCTIONS_H'
+	h.puts '#ifndef _INSTRUCTIONS_GENERATED_H'
+	h.puts '#define _INSTRUCTIONS_GENERATED_H'
 
-	c.puts '#include "instructions.h"'
+	c.puts '#include "instructions_generated.h"'
 	c.puts 'extern Stack stack;'
 	c.puts '#define vectorAt(v, i) (StackData*)((StackData*)(v->array) + (i))'
 	c.puts
-	c.puts '#pragma clang diagnostic push
+	c.puts '
+#if defined(__clang__)
+
+#pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
 
+#elif defined(__GNUC__) || defined(__GNUG__)
+
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"'
+#pragma GCC diagnostic ignored "-Wunused-variable"
+
+#endif
+'
+operations = {:add => "+", :mul => "*"}
+
+def operation(name, src1, src2)
+	"#{src1} #{operations[op]} #{src2}"
+end
 
 prototypes = {}
 
@@ -76,17 +89,20 @@ instructions.each do |name, regex|
 		c.puts "	// Pointers to global data"
 		c.puts "	StackData *global_src1 = vectorAt(stack.vect, i->src_1.offset);"
 		c.puts "	StackData *global_src2 = vectorAt(stack.vect, i->src_1.offset);"
-		c.puts "	StackData *global_dst  = vectorAt(stack.vect, i->dst.offset);"
 		c.puts ""
-		c.puts "	global_dst->int_ = local_src1->int_ + local_src2->int_;"
+		c.puts "	local_dst->int_ = local_src1->int_ + local_src2->int_;"
 		c.puts "}"
 		c.puts
 	end
 
 end
 
-c.puts "#pragma clang diagnostic pop"
-c.puts "#pragma GCC diagnostic pop"
+c.puts '
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#elif defined(__GNUC__) || defined(__GNUG__)
+#pragma GCC diagnostic pop
+#endif'
 
 
 	h.puts '#endif'
