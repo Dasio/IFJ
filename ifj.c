@@ -28,7 +28,8 @@ int main(int argc, char *argv[]) {
 	parse(tokenVector);
 
 	// Cleanup
-	destroyTokenVector(tokenVector);
+	if(!getError())
+		destroyTokenVector(tokenVector);
 	destroyScanner(&scanner);
 
 	// Error handling
@@ -36,6 +37,7 @@ err:
 
 	if(getError()) {
 		printError();
+		destroyTokenVector(tokenVector);
 		ecode = getReturnError();
 	}
 
