@@ -20,8 +20,6 @@ void parse(TokenVector *tokvect)
 	addBuiltInFunctions();
 
 	program();
-	if(getError())
-		return;
 	// Cleanup
 
 	FreeContext(mainContext);

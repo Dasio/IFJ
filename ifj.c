@@ -27,9 +27,6 @@ int main(int argc, char *argv[]) {
 	// Recursive descent
 	parse(tokenVector);
 
-	if(getError())
-		goto err;
-
 	// Cleanup
 	destroyTokenVector(tokenVector);
 	destroyScanner(&scanner);
