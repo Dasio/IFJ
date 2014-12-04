@@ -20,17 +20,18 @@
 	} DataType;
 
 	typedef enum {
-		LOCAL,
+		LOCAL = 0,
 		GLOBAL,
 		CONST,
 		UNDEF_
 	} VariableType;
 
 	typedef struct {
+		uint8_t var_type : 2; // GLOBAL / LOCAL / CONST
+		uint8_t data_type: 3; // STRING / DOUBLE / INT / BOOL
+
 		bool initialized : 1;
 		bool sp_inc : 1;
-		DataType data_type : 3; // STRING / DOUBLE / INT / BOOL
-		VariableType var_type : 2; // GLOBAL / LOCAL / CONST
 
 		union {
 			int64_t offset;
@@ -41,8 +42,6 @@
 		};
 	} Operand;
 
-	//typedef Operand StackData;
-
 	/**
 	 * Instruction is three address code
 	 *
@@ -50,31 +49,36 @@
 	 *
 	 */
 	typedef enum {
-		NEG, // 8  {L,G}{L,G}{I,D}
-		NOT, // 4  {L,G}{L,G}{B}
-		MUL, // 72 {L,G}{C,L,G}{C,L,G}{II,DI,ID,II}
-		DIV, // 72 {L,G}{C,L,G}{C,L,G}{II,DI,ID,II}
-		AND, // 18 {L,G}{C,L,G}{C,L,G}{BB}
-		ADD, // 90 {L,G}{C,L,G}{C,L,G}{II,DI,ID,II,SS}
-		SUB, // 72 {L,G}{C,L,G}{C,L,G}{II,DI,ID,II}
-		OR , // 18 {L,G}{C,L,G}{C,L,G}{BB}
-		XOR, // 18 {L,G}{C,L,G}{C,L,G}{BB}
-		L  , // 72 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}     ????
-		G  , // 72 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}     ????
-		LE , // 72 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}     ????
-		GE , // 72 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}     ????
-		EQ , // 72 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}     ????
-		NE   // 72 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}     ????
+		NEG, // 8  {L,G}{*,L,G}{*,*,*}{I*,D*}
+		NOT, // 4  {L,G}{*,L,G}{*,*,*}{B*}
+		MUL, // 64 {L,G}{C,L,G}{C,L,G}{II,DI,ID,DD}
+		DIV, // 64 {L,G}{C,L,G}{C,L,G}{II,DI,ID,DD}
+		AND, // 16 {L,G}{C,L,G}{C,L,G}{BB}
+		ADD, // 80 {L,G}{C,L,G}{C,L,G}{II,DI,ID,DD,SS}
+		SUB, // 64 {L,G}{C,L,G}{C,L,G}{II,DI,ID,DD}
+		OR , // 16 {L,G}{C,L,G}{C,L,G}{BB}
+		XOR, // 16 {L,G}{C,L,G}{C,L,G}{BB}
+		L  , // 64 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}    ????
+		G  , // 64 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}    ????
+		LE , // 64 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}    ????
+		GE , // 64 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}    ????
+		EQ , // 64 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}    ????
+		NE   // 64 {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}    ????
 	} InstructionOp;
 
-	typedef struct {
-		InstructionOp opcode;
+	struct instruction;
+	typedef struct instruction Instruction;
+	typedef void (*InstrFuncPtr)(Instruction*);
+
+	struct instruction {
+		InstrFuncPtr instr;
+		Operand dst;
 		Operand src_1;
 		Operand src_2;
-		Operand dst;
-	} Instruction;
+	};
 
-	typedef void (*instrFunc)(Operand*, Operand*, Operand*);
+	typedef struct instruction Instruction;
+	//typedef void (*InstrFuncPtr)(Instruction*);
 
 	// Pri kazdom priradeni do premennej treba flag empty nastavit
 

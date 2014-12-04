@@ -2,28 +2,14 @@
 #include "error.h"
 #include "string.h"
 #include "vector.h"
+#include "instruction.h"
 
 #ifndef _STACK_H
 #define _STACK_H
 
 #define DEFAULT_STACK_SIZE 8192
-#define StackInit(stack)			\
-			stack.SP = 0;		\
-			stack.Vec = StackDataVectorInit(DEFAULT_STACK_SIZE)
-#define StackFree(stack) StackDataVectorFree(stack.Vec)
 
-	// stack structure
-
-	typedef struct
-	{
-		bool initialized : 1;
-
-		union {
-			int Sint;
-			double Sdouble;
-			String Sstring;
-		};
-	} StackData;
+	typedef Operand StackData;
 
 	/**
 	 * Vector generation of StackData
@@ -34,8 +20,8 @@
 	{
 		uint64_t SP;
 		uint64_t BP;
-		StackDataVector *Vec;
-	} STACK;
+		StackDataVector *vect;
+	} Stack;
 
 /**
  * prepare it for global symbols
@@ -43,7 +29,7 @@
  * @param  num   number of Global symbols
  * @return       true if all OK
  */
-bool ReserveGlobalSymbol(STACK *stack, int num);
+//bool ReserveGlobalSymbol(STACK *stack, int num);
 
 /**
  * Prepare stack for new function
@@ -52,7 +38,7 @@ bool ReserveGlobalSymbol(STACK *stack, int num);
  * @param  inst  current index in instruction tape
  * @return       true if all OK
  */
-bool CallFunction(STACK *stack, uint32_t var, uint32_t inst);
+//bool CallFunction(STACK *stack, uint32_t var, uint32_t inst);
 
 // param: number of argument, local variables,
 // pointer to index in inst tape and return StackData value
@@ -65,7 +51,7 @@ bool CallFunction(STACK *stack, uint32_t var, uint32_t inst);
  * @param  data  Return data
  * @return       true if all OK
  */
-bool ReturnFunction(STACK *stack, uint32_t arg, uint32_t var, uint32_t* inst);
+//bool ReturnFunction(STACK *stack, uint32_t arg, uint32_t var, uint32_t* inst);
 
 // StackData to write, int index - negativ represents argument
 /**
@@ -74,7 +60,7 @@ bool ReturnFunction(STACK *stack, uint32_t arg, uint32_t var, uint32_t* inst);
  * @param data  new data
  * @param index index where variable is(negativ-arg, positive-locVar)
  */
-void StackSetValue(STACK *stack, StackData data, int index);
+//void StackSetValue(STACK *stack, StackData data, int index);
 
 /**
  * Read value from stack
@@ -82,6 +68,6 @@ void StackSetValue(STACK *stack, StackData data, int index);
  * @param  index index where variable is(negativ-arg, positive-locVar)
  * @return       value of variable
  */
-StackData *StackReadValue(STACK *stack, int index);
+StackData *StackReadValue(Stack *stack, int index);
 
 #endif

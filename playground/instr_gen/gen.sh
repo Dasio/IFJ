@@ -1,0 +1,15 @@
+echo {L,G}{L,G}{I,D} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{L,G}{B} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{C,L,G}{C,L,G}{II,DI,ID,II} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{C,L,G}{C,L,G}{II,DI,ID,II} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{C,L,G}{C,L,G}{BB} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{C,L,G}{C,L,G}{II,DI,ID,II,SS} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{C,L,G}{C,L,G}{II,DI,ID,II} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{C,L,G}{C,L,G}{BB} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{C,L,G}{C,L,G}{BB} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS} | tr ' ' '\n' | grep -v 'CC' | wc -l
+echo {L,G}{C,L,G}{C,L,G}{II,DD,BB,SS} | tr ' ' '\n' | grep -v 'CC' | wc -l

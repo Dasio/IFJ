@@ -4,6 +4,7 @@
 
 #include "system.h"
 #include "instruction.h"
+#include "instructions.h"
 #include "vector.h"
 #include "stack.h"
 
