@@ -17,12 +17,10 @@ int main()
 	activeContext = mainContext;
 	token = TokenVectorFirst(tokenVector);
 
-	//printf("%s\n", stringifyToken(TokenVectorLast(tokenVector)));
-
+	//printf("%d\n", expr());
 	expr();
-	//token++;
+	//printf("%d\n", expr());
 	expr();
-
 	if(!getError()) printf("EXPRESSION OK\n");
 	return 0;
 }

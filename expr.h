@@ -41,7 +41,6 @@ typedef struct
 
 // after a call of expr(), value of the expression is stored on the top of stack
 DataType expr();
-void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector);
 
 
 

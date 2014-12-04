@@ -26,7 +26,8 @@ static inline int index_handle_start(ExprTokenVector *expr_token_vector);
 static inline bool check_id_function(Symbol *identifier);
 static inline bool check_unary_minus(ExprTokenVector *expr_vector);
 static inline void print_type_table(int operator);
-
+void ExprTokenVectorPrint(ExprTokenVector *expr_token);
+void ExprTokenPrint(ExprToken *expr_token);
 
 typedef enum
 {
@@ -212,6 +213,7 @@ DataType expr()
 {
 	int action;
 	int instr_counter = 0;
+	bool end_of_eval = true;
 	return_value_data_type = EXPR_ERROR;
 
 	token++;
@@ -231,7 +233,7 @@ DataType expr()
 	ExprTokenVectorAppend(expr_token_vector, temp_expr_token); // first token, (empty = $)
 	// [$, , , , , ]
 
-	while (token_to_index(token) != TT_empty)
+	while (end_of_eval)
 	{
 		convert_to_ExprToken(token, expr_token_vector);
 		if(getError()) return EXPR_ERROR;
@@ -241,6 +243,11 @@ AFTER_REDUCE:
 		switch(action)
 		{
 			case ERROR:
+				if (top_most_term->token->type == TT_empty && token_to_index(temp_expr_token.token) == TT_empty)
+				{
+					end_of_eval = false;
+					break;
+				}
 				setError(ERR_PrecedenceTable);
 				printError();
 				return EXPR_ERROR;
@@ -250,7 +257,6 @@ AFTER_REDUCE:
 					top_most_term[1].handle_start = true;
 				break;
 			case HANDLE:
-				//handle(expr_token_vector)
 				ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
 				break;
 			case REDUCE:
@@ -259,11 +265,11 @@ AFTER_REDUCE:
 				goto AFTER_REDUCE;
 				break;
 		}
-		token++;
+		if (token_to_index(token) != TT_empty)
+			token++;
 	}
 	//ExprTokenVectorPrint(expr_token_vector);
 
-	ExprTokenVectorFree(expr_token_vector);
 
 	/*for (int i = TT_unaryMinus; i <= TT_inequality; i++)
 	{
@@ -273,8 +279,11 @@ AFTER_REDUCE:
 
 	if (instr_counter == 0)
 	{
+		//ExprTokenPrint(ExprTokenVectorLast(expr_token_vector));
 		//append NONTERM to stack ( a := b )
 	}
+
+	ExprTokenVectorFree(expr_token_vector);
 
 	return return_value_data_type;
 }
@@ -944,6 +953,30 @@ void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector)
 	}
 	fprintf(stderr, "\n");
 }
+
+void ExprTokenPrint(ExprToken *expr_token)
+{
+	assert(expr_token);
+	switch (expr_token->E.data_type)
+	{
+		case INT:
+			fprintf(stderr, "hodnota int %d\n", expr_token->E.int_);
+			break;
+		case DOUBLE:
+			fprintf(stderr, "hodnota double %f\n", expr_token->E.double_);
+			break;
+		case STRING:
+			fprintf(stderr, "string %s\n", expr_token->E.str->data);
+			break;
+		case BOOL:
+			fprintf(stderr, "hodnota bool %d\n", expr_token->E.bool_);
+			break;
+		case UNDEF:
+			fprintf(stderr, "UNDEF\n");
+			break;
+	}
+}
+
 
 
 
