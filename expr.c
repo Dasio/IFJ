@@ -38,7 +38,7 @@ typedef enum
 } TokenPrecedence;
 enum { SHIFT = S, REDUCE = R, HANDLE = H, ERROR = E};
 
-//static const char *actions[] = {"shift", "reduce", "handle", "error"};
+
 
 static const int precedence_table[TT_assignment][TT_assignment] =
 {
@@ -239,11 +239,18 @@ DataType expr()
 		if(getError()) return EXPR_ERROR;
 AFTER_REDUCE:
 		action = precedence(expr_token_vector);
+
+		/* vypisy */
+		//static const char *actions[] = {"shift", "reduce", "handle", "error"};
 		//fprintf(stderr, " %s\n", actions[action]);
+		//ExprTokenVectorPrint(expr_token_vector);
+
 		switch(action)
 		{
 			case ERROR:
-				if (top_most_term->token->type == TT_empty && token_to_index(temp_expr_token.token) == TT_empty)
+				if (top_most_term->token->type == TT_empty &&
+					token_to_index(temp_expr_token.token) == TT_empty &&
+					expr_token_vector->used != 3)
 				{
 					end_of_eval = false;
 					break;
@@ -960,19 +967,19 @@ void ExprTokenPrint(ExprToken *expr_token)
 	switch (expr_token->E.data_type)
 	{
 		case INT:
-			fprintf(stderr, "hodnota int %d\n", expr_token->E.int_);
+			fprintf(stderr, "%d\n", expr_token->E.int_);
 			break;
 		case DOUBLE:
-			fprintf(stderr, "hodnota double %f\n", expr_token->E.double_);
+			fprintf(stderr, "%f\n", expr_token->E.double_);
 			break;
 		case STRING:
-			fprintf(stderr, "string %s\n", expr_token->E.str->data);
+			fprintf(stderr, "%s", expr_token->E.str->data);
 			break;
 		case BOOL:
-			fprintf(stderr, "hodnota bool %d\n", expr_token->E.bool_);
+			fprintf(stderr, "%d", expr_token->E.bool_);
 			break;
 		case UNDEF:
-			fprintf(stderr, "UNDEF\n");
+			fprintf(stderr, "UNDEF");
 			break;
 	}
 }
