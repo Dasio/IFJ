@@ -956,7 +956,10 @@ void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector)
 	for (uint32_t i = 0; i < expr_token_vector->used; i++)
 	{
 		expr_token = ExprTokenVectorAt(expr_token_vector, i);
-		fprintf(stderr, "%s ", stringifyToken(expr_token->token));
+		if (expr_token->type == NONTERM)
+			ExprTokenPrint(expr_token);
+		else
+			fprintf(stderr, "%s ", stringifyToken(expr_token->token));
 	}
 	fprintf(stderr, "\n");
 }
@@ -967,19 +970,19 @@ void ExprTokenPrint(ExprToken *expr_token)
 	switch (expr_token->E.data_type)
 	{
 		case INT:
-			fprintf(stderr, "%d\n", expr_token->E.int_);
+			fprintf(stderr, "%d ", expr_token->E.int_);
 			break;
 		case DOUBLE:
-			fprintf(stderr, "%f\n", expr_token->E.double_);
+			fprintf(stderr, "%f ", expr_token->E.double_);
 			break;
 		case STRING:
-			fprintf(stderr, "%s", expr_token->E.str->data);
+			fprintf(stderr, "%s ", expr_token->E.str->data);
 			break;
 		case BOOL:
-			fprintf(stderr, "%d", expr_token->E.bool_);
+			fprintf(stderr, "%d ", expr_token->E.bool_);
 			break;
 		case UNDEF:
-			fprintf(stderr, "UNDEF");
+			fprintf(stderr, "UNDEF ");
 			break;
 	}
 }
