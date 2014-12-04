@@ -21,6 +21,7 @@ int main()
 
 	parse(tokenVector);
 	if(!getError()) printf("Parsing OK\n");
+		else printError();
 
 cleanup:
 	// Cleanup

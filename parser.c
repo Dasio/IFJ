@@ -17,18 +17,17 @@ void parse(TokenVector *tokvect)
 	mainContext = InitContext();
 	activeContext = mainContext;
 	token = TokenVectorFirst(tokenVector);
+	addBuiltInFunctions();
 
 	program();
 	if(getError())
-		printError();
+		return;
 	// Cleanup
 
 	FreeContext(mainContext);
 }
 void program()
 {
-	addBuiltInFunctions();
-
 	var_declr();
 	if(getError())
 		return;
@@ -206,7 +205,6 @@ void forward(SymbolType returnType)
 	updateFunc(returnType,FS_Declared);
 	if(getError())
 		return;
-	fprintf(stderr,"Function(Declaration) name = %s type = %d, index = %lu, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
 	}
 	// 2. rule = Function Definition
 	else
@@ -215,8 +213,6 @@ void forward(SymbolType returnType)
 		updateFunc(returnType,FS_Defined);
 		if(getError())
 			return;
-		fprintf(stderr,"Function(Definition) name = %s type = %d, index = %lu, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
-
 		// Switch to function context
 		activeContext = funcContext;
 		var_declr();
@@ -342,6 +338,12 @@ void terms(uint8_t next)
 		setError(ERR_Syntax);
 		return;
 	}
+	if(token->type == TT_identifier)
+	{
+		findVarOrFunc(token->str.data);
+		if(getError())
+			return;
+	}
 
 	terms(1);
 	if(getError())
@@ -420,18 +422,9 @@ uint8_t stmt(uint8_t empty)
 		// 1. rule = Assignemnt
 		case TT_identifier:
 			// Check if was declared
-			id = SymbolFind(activeContext,token->str.data);
-			if(id == NULL)
-			{
-				// Search also in GST
-				if(activeContext != mainContext)
-					id = SymbolFind(mainContext,token->str.data);
-				if(id == NULL)
-				{
-					setError(ERR_UndefVarOrFunction);
-					return 0;
-				}
-			}
+			id = findVarOrFunc(token->str.data);
+			if(getError())
+				return 0;
 			token++;
 			if(token->type != TT_assignment)
 			{
@@ -589,6 +582,9 @@ void readln()
 		setError(ERR_Syntax);
 		return;
 	}
+	findVarOrFunc(token->str.data);
+	if(getError())
+		return;
 
 	token++;
 	if(token->type != TT_rightBrace)
@@ -610,7 +606,6 @@ void addFunc(char *name)
 	funcSymbol = SymbolFind(mainContext, name);
 	if(funcSymbol == NULL)
 	{
-		fprintf(stderr,"Added to GST -> ");
 		funcContext = InitContext();
 		if(getError())
 			return;
@@ -651,7 +646,6 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 			else
 			{
 				//@todo Adresss Vector
-				fprintf(stderr,"Defined -> ");
 				funcSymbol->stateFunc = FS_Defined;
 			}
 		}
@@ -751,4 +745,20 @@ void addBuiltInFunctions()
 	AddArgToContext(funcContext, T_String, "s", NULL);
 
 	funcContext = NULL;
+}
+Symbol *findVarOrFunc(char *name)
+{
+	Symbol *id = SymbolFind(activeContext,name);
+	if(id == NULL)
+	{
+	// Search also in GST
+	if(activeContext != mainContext)
+		id = SymbolFind(mainContext,name);
+		if(id == NULL)
+		{
+			setError(ERR_UndefVarOrFunction);
+			return NULL;
+		}
+	}
+	return id;
 }
