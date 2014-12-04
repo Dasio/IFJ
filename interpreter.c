@@ -69,20 +69,20 @@ void generateInstruction(InstructionOp op, Operand* a, Operand* b, Operand* c) {
 		case ADD:{
 			// Invalid pointers yet
 			if(b->data_type == INT && c->data_type == INT) {
-				appendInstruction(op, Inst_ADD_DD, a, b, c);
+				appendInstruction(op, Instr_ADD_CLII, a, b, c);
 			} else if (b->data_type == INT && c->data_type == DOUBLE) {
-				appendInstruction(op, Inst_ADD_DD, a, b, c);
+				appendInstruction(op, Instr_ADD_CLII, a, b, c);
 			} else if (b->data_type == DOUBLE && c->data_type == INT) {
-				appendInstruction(op, Inst_ADD_DD, a, b, c);
+				appendInstruction(op, Instr_ADD_CLII, a, b, c);
 			} else if(b->data_type == DOUBLE && c->data_type == DOUBLE) {
-				appendInstruction(op, Inst_ADD_DD, a, b, c);
+				appendInstruction(op, Instr_ADD_CLII, a, b, c);
 			} else {
-				appendInstruction(op, Inst_ADD_DD, a, b, c);
+				appendInstruction(op, Instr_ADD_CLII, a, b, c);
 			}
 			break;
 		}
 		default: {
-			appendInstruction(op, Inst_ADD_DD, a, b, c);
+			appendInstruction(op, Instr_ADD_CLII, a, b, c);
 		}
 	}
 }
@@ -92,7 +92,7 @@ static bool interpretationStep() {
 	assert(IP_ptr);
 
 	//(IP_ptr->instr)(IP_ptr);
-	Instr_NEG_LGxDx(IP_ptr);
+	Instr_ADD_CLII(IP_ptr);
 
 	return false;
 }

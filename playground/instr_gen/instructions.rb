@@ -5,8 +5,7 @@ require "yaml"
 all_variable_types = [:local, :global, :const]
 all_data_types = [:string, :double, :int, :bool]
 
-comb = [["L", "G"],      # VarType DST
-		["C", "L", "G","x"], # VarType SRC1
+comb = [["C", "L", "G","x"], # VarType SRC1
 		["C", "L", "G","x"], # VarType SRC2
 							  # DST Implicit
 		["I", "D", "B", "S", "x"], # SRC1
@@ -16,22 +15,22 @@ comb = [["L", "G"],      # VarType DST
 comb = comb.first.product(*comb[1..-1]).map(&:join).reject {|s| s =~ /CC/}
 
 instructions = {
-	neg: /[xLG][x][ID]x/,
-	not: /[xLG][x][B]x/,
+	#neg: /[xLG][x][ID]x/,
+	#not: /[xLG][x][B]x/,
 
-	mul: /[CLG][CLG][ID][ID]/,
-	div: /[CLG][CLG][ID][ID]/,
-	and: /[CLG][CLG]BB/,
+	# mul: /[CLG][CLG][ID][ID]/,
+	# div: /[CLG][CLG][ID][ID]/,
+	# and: /[CLG][CLG]BB/,
 	add: /[CLG][CLG]([ID][ID]|SS)/,
-	sub: /[CLG][CLG][ID][ID]/,
-	or:  /[CLG][CLG]BB/,
-	xor: /[CLG][CLG]BB/,
-	l:   /[CLG][CLG](II|DD|BB|SS)/,
-	g:   /[CLG][CLG](II|DD|BB|SS)/,
-	le:  /[CLG][CLG](II|DD|BB|SS)/,
-	ge:  /[CLG][CLG](II|DD|BB|SS)/,
-	eq:  /[CLG][CLG](II|DD|BB|SS)/,
-	ne:  /[CLG][CLG](II|DD|BB|SS)/
+	# sub: /[CLG][CLG][ID][ID]/,
+	# or:  /[CLG][CLG]BB/,
+	# xor: /[CLG][CLG]BB/,
+	# l:   /[CLG][CLG](II|DD|BB|SS)/,
+	# g:   /[CLG][CLG](II|DD|BB|SS)/,
+	# le:  /[CLG][CLG](II|DD|BB|SS)/,
+	# ge:  /[CLG][CLG](II|DD|BB|SS)/,
+	# eq:  /[CLG][CLG](II|DD|BB|SS)/,
+	# ne:  /[CLG][CLG](II|DD|BB|SS)/
 }
 
 	c = File.open("../../instructions_generated.c", "w")
@@ -60,14 +59,16 @@ instructions = {
 #pragma GCC diagnostic ignored "-Wunused-variable"
 
 #endif
+
 '
-operations = {:add => "+", :mul => "*"}
+operators = {:add => "+", :mul => "*"}
 
 def operation(name, src1, src2)
 	"#{src1} #{operations[op]} #{src2}"
 end
 
 prototypes = {}
+types = {"I" => "int_", "D" => "double_", "B" => "bool_", "S" => "str"}
 
 instructions.each do |name, regex|
 	puts name
@@ -75,6 +76,7 @@ instructions.each do |name, regex|
 
 	prototypes[name].each do |proto|
 		function_name = "Instr_#{name.upcase}_#{proto}"
+		implemented = false
 
 		# Prototype
 		h.puts "void #{function_name}(Instruction *i);"
@@ -86,11 +88,53 @@ instructions.each do |name, regex|
 		c.puts "	StackData *local_src2 = vectorAt(stack.vect, stack.BP + i->src_1.offset);"
 		c.puts "	StackData *local_dst  = vectorAt(stack.vect, stack.BP + i->dst.offset);"
 		c.puts ""
+		c.puts "	// Pointers to constants"
+		c.puts "	int     *constant_src_1_I = &i->src_2.int_;"
+		c.puts "	bool    *constant_src_1_B = &i->src_2.bool_;"
+		c.puts "	double  *constant_src_1_D = &i->src_2.double_;"
+		c.puts "	String  *constant_src_1_S =  i->src_2.str;"
+		c.puts ""
+		c.puts "	int     *constant_src_2_I = &i->src_2.int_;"
+		c.puts "	bool    *constant_src_2_B = &i->src_2.bool_;"
+		c.puts "	double  *constant_src_2_D = &i->src_2.double_;"
+		c.puts "	String  *constant_src_2_S =  i->src_2.str;"
+
 		c.puts "	// Pointers to global data"
 		c.puts "	StackData *global_src1 = vectorAt(stack.vect, i->src_1.offset);"
 		c.puts "	StackData *global_src2 = vectorAt(stack.vect, i->src_1.offset);"
 		c.puts ""
-		c.puts "	local_dst->int_ = local_src1->int_ + local_src2->int_;"
+		#c.puts "	local_dst->int_ = local_src1->int_ + local_src2->int_;"
+		c.puts "	//#{proto}"
+
+		if proto[0] == "L"
+			src1 = "local_src1->"+types[proto[2]].to_s
+		elsif proto[0] == "G"
+			src1 = "global_src1->"+types[proto[2]].to_s
+		elsif proto[0] == "C"
+			src1 = "*constant_src_1_"+proto[2]
+		end
+
+		if proto[1] == "L"
+			src2 = "local_src2->"+types[proto[3]].to_s
+		elsif proto[1] == "G"
+			src2 = "global_src2->"+types[proto[3]].to_s
+		elsif proto[1] == "C"
+			src2 = "*constant_src_2_"+proto[3]
+		end
+
+		# if proto[2] == "I"
+		# 	if proto[2] == "I"
+		# 		c.puts "local_dst->#{types['I']} = #{src1}  #{src2};"
+		# 	end
+		# end
+		if proto[3] != "S" && proto[2] != "S"
+			c.puts "	local_dst->#{types[proto[2]]} = #{src1} #{operators[name]} #{src2};"
+			implemented = true
+		end
+
+		if not implemented
+			c.puts "	assert(false && \"Instruction not implemented!\");"
+		end
 		c.puts "}"
 		c.puts
 	end
