@@ -300,52 +300,56 @@ void params_def(uint8_t next)
 		return;
 
 }
-void term_list()
+uint32_t term_list()
 {
+	uint32_t count = 0;
 	token++;
 	if(token->type != TT_leftBrace)
 	{
 		setError(ERR_Syntax);
-		return;
+		return 0;
 	}
 
-	terms(0);
+	count += terms(0);
 	if(getError())
-		return;
+		return 0;
 
 	// Token loaded from terms
 	if(token->type != TT_rightBrace)
 	{
 		setError(ERR_Syntax);
-		return;
+		return 0;
 	}
+	return count;
 }
-void terms(uint8_t next)
+uint8_t terms(uint8_t next)
 {
 	if(next)
 	{
 		token++;
 		// Epsilon rule
 		if(token->type != TT_comma)
-			return;
+			return 0;
 	}
+	uint32_t count = 0;
 	token++;
 	// If token is not term(bool,int,double,string) or id
 	if(token->type < TT_identifier || token->type > TT_bool)
 	{
 		setError(ERR_Syntax);
-		return;
+		return 0;
 	}
 	if(token->type == TT_identifier)
 	{
-		findVarOrFunc(token->str.data);
+		findVarOrFunc(token->str.data,NULL);
 		if(getError())
-			return;
+			return 0;
 	}
 
-	terms(1);
+	count = terms(1);
 	if(getError())
-		return;
+		return 0;
+	return count+1;
 }
 void compound_stmt(uint8_t semicolon)
 {
@@ -411,6 +415,7 @@ void stmt_empty()
 uint8_t stmt(uint8_t empty)
 {
 	uint8_t epsilon = 0;
+	uint8_t scope;
 	Symbol *id = NULL;
 	DataType exprType;
 	// IF wasnt called from stmt_empty(), need to load next token
@@ -420,7 +425,7 @@ uint8_t stmt(uint8_t empty)
 		// 1. rule = Assignemnt
 		case TT_identifier:
 			// Check if was declared
-			id = findVarOrFunc(token->str.data);
+			id = findVarOrFunc(token->str.data,&scope);
 			if(getError())
 				return 0;
 			token++;
@@ -437,6 +442,7 @@ uint8_t stmt(uint8_t empty)
 				setError(ERR_TypeCompatibility);
 				return 0;
 			}
+			// INST global=mov, local=prepisovat predchadzajucu instrukciou
 			token--;
 			break;
 		case TT_keyword:
@@ -457,9 +463,11 @@ uint8_t stmt(uint8_t empty)
 						setError(ERR_Syntax);
 						return 0;
 					}
+					// gen instruction if1 JMP_FALSE without adress
 					// compound_stmt expect already loaded token
 					token++;
 					compound_stmt(0);
+					//gen empty instruction if2 JMP without adress
 					if(getError())
 						return 0;
 
@@ -477,7 +485,7 @@ uint8_t stmt(uint8_t empty)
 						setError(ERR_TypeCompatibility);
 						return 0;
 					}
-
+					// gen instruction JMP_FALSE while1
 					if(token->type != TT_keyword || token->keyword_token != Key_do)
 					{
 						setError(ERR_Syntax);
@@ -486,10 +494,13 @@ uint8_t stmt(uint8_t empty)
 					// compound_stmt expect already loaded token
 					token++;
 					compound_stmt(0);
+					// gen instruction JMP to while1
+					// update inst while1 with vectorsize+1
 					if(getError())
 						return 0;
 					break;
 				case Key_repeat:
+					// save vectorsize = repeat1
 					stmt(0);
 					if(getError())
 						return 0;
@@ -509,6 +520,7 @@ uint8_t stmt(uint8_t empty)
 						setError(ERR_TypeCompatibility);
 						return 0;
 					}
+					// gen instruction JMP_TRUE to repeat1
 					token--;
 					break;
 				case Key_begin:
@@ -552,13 +564,16 @@ uint8_t if_n()
 {
 	token++;
 	// Epsilon rule
+	// update instruction if1 with vectorsize+1
+	// change if2 to NOP
 	if(token->type != TT_keyword || token->keyword_token != Key_else)
 		return 1;
 	// keyword 'else' loaded
 	token++;
+	// update instruction if1 with vectorsize+1
 	// Compound_stmt expect loaded next token
 	compound_stmt(0);
-
+	// update instruction if2 with vectorsize+1
 	if(getError())
 		return 0;
 	return 0;
@@ -580,7 +595,7 @@ void readln()
 		setError(ERR_Syntax);
 		return;
 	}
-	findVarOrFunc(token->str.data);
+	findVarOrFunc(token->str.data,NULL);
 	if(getError())
 		return;
 
@@ -744,7 +759,7 @@ void addBuiltInFunctions()
 
 	funcContext = NULL;
 }
-Symbol *findVarOrFunc(char *name)
+Symbol *findVarOrFunc(char *name, uint8_t *scope)
 {
 	Symbol *id = SymbolFind(activeContext,name);
 	if(id == NULL)
@@ -757,6 +772,11 @@ Symbol *findVarOrFunc(char *name)
 			setError(ERR_UndefVarOrFunction);
 			return NULL;
 		}
+		if(scope)
+			*scope = 0;
+		return id;
 	}
+	if(scope)
+			*scope = 1;
 	return id;
 }

@@ -19,8 +19,19 @@ void params_def(uint8_t next);
 void compound_stmt(uint8_t semicolon);
 void stmt_list();
 void stmt_empty();
-void term_list();
-void terms(uint8_t next);
+
+/**
+ * Process terms with brackets
+ * @return Count of parameters for write
+ */
+uint32_t term_list();
+
+/**
+ * Process terms
+ * @param  next If 1 TERMS_N else TERMS
+ * @return 1-if term was loaded
+ */
+uint8_t terms(uint8_t next);
 
 /**
  * @param1: 1 if stmt() was called from stmt_empty()
@@ -69,9 +80,10 @@ void addBuiltInFunctions();
 /**
  * Find symbol in active context, if not found and active context was not function text, then it search in main context(GST)
  * @param  name Name of variable or function
+ * @param  scope 0-global, 1-local
  * @return      Pointer to symbol or NULL if not found
  */
-Symbol *findVarOrFunc(char *name);
+Symbol *findVarOrFunc(char *name,uint8_t *scope);
 
 static inline SymbolType keywordToSymbol (KeywordTokenType key)
 {
