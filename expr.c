@@ -220,7 +220,7 @@ DataType expr()
 	bool end_of_eval = true;
 	return_value_data_type = EXPR_ERROR;
 	//assert(funcContext);
-	MY_OFFSET = funcContext->locCount + 2;
+	MY_OFFSET = activeContext->locCount + 2;
 
 	token++;
 
