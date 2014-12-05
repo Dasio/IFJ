@@ -155,7 +155,7 @@ instructions.each do |name, regex|
 				c.puts "	};"
 				c.puts "	return;"
 				# TODO: Pretypovat src1 alebo nehat celociselne delenie?
-				c.puts "	local_dst->double_ = #{src1} / #{src2};"; implemented = true
+				c.puts "	local_dst->double_ = (double)#{src1} / #{src2};"; implemented = true
 			when :add
 				c.puts "	local_dst->int_ = #{src1} + #{src2};"; implemented = true
 			when :sub
@@ -227,7 +227,7 @@ instructions.each do |name, regex|
 				implemented = true
 			end
 			c.puts ""
-			c.puts "int compare_result = strcmp(#{proto[0] == "C" && src1_raw || src1}->data, #{proto[1] == "C" && src2_raw || src2}->data);"
+			c.puts "	int compare_result = strcmp(#{proto[0] == "C" && src1_raw || src1}->data, #{proto[1] == "C" && src2_raw || src2}->data);"
 			case name # Instruction switch
 			when :l
 				c.puts "	local_dst->bool_ = compare_result < 0;"; implemented = true

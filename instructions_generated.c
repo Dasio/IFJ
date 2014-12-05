@@ -288,7 +288,7 @@ void Instr_DIV_CLII(Instruction *i) {
 		setError(ERR_DivisionByZero);
 	};
 	return;
-	local_dst->double_ = *constant_src_1_I / local_src2->int_;
+	local_dst->double_ = (double)*constant_src_1_I / local_src2->int_;
 }
 
 void Instr_DIV_CLID(Instruction *i) {
@@ -328,7 +328,7 @@ void Instr_DIV_CGII(Instruction *i) {
 		setError(ERR_DivisionByZero);
 	};
 	return;
-	local_dst->double_ = *constant_src_1_I / global_src2->int_;
+	local_dst->double_ = (double)*constant_src_1_I / global_src2->int_;
 }
 
 void Instr_DIV_CGID(Instruction *i) {
@@ -368,7 +368,7 @@ void Instr_DIV_LCII(Instruction *i) {
 		setError(ERR_DivisionByZero);
 	};
 	return;
-	local_dst->double_ = local_src1->int_ / *constant_src_2_I;
+	local_dst->double_ = (double)local_src1->int_ / *constant_src_2_I;
 }
 
 void Instr_DIV_LCID(Instruction *i) {
@@ -408,7 +408,7 @@ void Instr_DIV_LLII(Instruction *i) {
 		setError(ERR_DivisionByZero);
 	};
 	return;
-	local_dst->double_ = local_src1->int_ / local_src2->int_;
+	local_dst->double_ = (double)local_src1->int_ / local_src2->int_;
 }
 
 void Instr_DIV_LLID(Instruction *i) {
@@ -448,7 +448,7 @@ void Instr_DIV_LGII(Instruction *i) {
 		setError(ERR_DivisionByZero);
 	};
 	return;
-	local_dst->double_ = local_src1->int_ / global_src2->int_;
+	local_dst->double_ = (double)local_src1->int_ / global_src2->int_;
 }
 
 void Instr_DIV_LGID(Instruction *i) {
@@ -488,7 +488,7 @@ void Instr_DIV_GCII(Instruction *i) {
 		setError(ERR_DivisionByZero);
 	};
 	return;
-	local_dst->double_ = global_src1->int_ / *constant_src_2_I;
+	local_dst->double_ = (double)global_src1->int_ / *constant_src_2_I;
 }
 
 void Instr_DIV_GCID(Instruction *i) {
@@ -528,7 +528,7 @@ void Instr_DIV_GLII(Instruction *i) {
 		setError(ERR_DivisionByZero);
 	};
 	return;
-	local_dst->double_ = global_src1->int_ / local_src2->int_;
+	local_dst->double_ = (double)global_src1->int_ / local_src2->int_;
 }
 
 void Instr_DIV_GLID(Instruction *i) {
@@ -568,7 +568,7 @@ void Instr_DIV_GGII(Instruction *i) {
 		setError(ERR_DivisionByZero);
 	};
 	return;
-	local_dst->double_ = global_src1->int_ / global_src2->int_;
+	local_dst->double_ = (double)global_src1->int_ / global_src2->int_;
 }
 
 void Instr_DIV_GGID(Instruction *i) {
@@ -678,7 +678,7 @@ void Instr_ADD_CLSS(Instruction *i) {
 	//CLSS
 appendCharsToString(constant_src_1_S, local_src2->str->data);
 
-int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
 }
 
 void Instr_ADD_CGII(Instruction *i) {
@@ -710,7 +710,7 @@ void Instr_ADD_CGSS(Instruction *i) {
 	//CGSS
 appendCharsToString(constant_src_1_S, global_src2->str->data);
 
-int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
 }
 
 void Instr_ADD_LCII(Instruction *i) {
@@ -742,7 +742,7 @@ void Instr_ADD_LCSS(Instruction *i) {
 	//LCSS
 appendCharsToString(local_src1->str, constant_src_2_S->data);
 
-int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
 }
 
 void Instr_ADD_LLII(Instruction *i) {
@@ -774,7 +774,7 @@ void Instr_ADD_LLSS(Instruction *i) {
 	//LLSS
 appendCharsToString(local_src1->str, local_src2->str->data);
 
-int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
 }
 
 void Instr_ADD_LGII(Instruction *i) {
@@ -806,7 +806,7 @@ void Instr_ADD_LGSS(Instruction *i) {
 	//LGSS
 appendCharsToString(local_src1->str, global_src2->str->data);
 
-int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
 }
 
 void Instr_ADD_GCII(Instruction *i) {
@@ -838,7 +838,7 @@ void Instr_ADD_GCSS(Instruction *i) {
 	//GCSS
 appendCharsToString(global_src1->str, constant_src_2_S->data);
 
-int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
 }
 
 void Instr_ADD_GLII(Instruction *i) {
@@ -870,7 +870,7 @@ void Instr_ADD_GLSS(Instruction *i) {
 	//GLSS
 appendCharsToString(global_src1->str, local_src2->str->data);
 
-int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
 }
 
 void Instr_ADD_GGII(Instruction *i) {
@@ -902,7 +902,7 @@ void Instr_ADD_GGSS(Instruction *i) {
 	//GGSS
 appendCharsToString(global_src1->str, global_src2->str->data);
 
-int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
 }
 
 void Instr_SUB_CLII(Instruction *i) {
@@ -1215,7 +1215,7 @@ void Instr_L_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
 
-int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
 	local_dst->bool_ = compare_result < 0;
 }
 
@@ -1241,7 +1241,7 @@ void Instr_L_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
 
-int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
 	local_dst->bool_ = compare_result < 0;
 }
 
@@ -1267,7 +1267,7 @@ void Instr_L_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
 
-int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
 	local_dst->bool_ = compare_result < 0;
 }
 
@@ -1293,7 +1293,7 @@ void Instr_L_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
 
-int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
 	local_dst->bool_ = compare_result < 0;
 }
 
@@ -1319,7 +1319,7 @@ void Instr_L_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
 
-int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
 	local_dst->bool_ = compare_result < 0;
 }
 
@@ -1345,7 +1345,7 @@ void Instr_L_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
 
-int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
 	local_dst->bool_ = compare_result < 0;
 }
 
@@ -1371,7 +1371,7 @@ void Instr_L_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
 
-int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
 	local_dst->bool_ = compare_result < 0;
 }
 
@@ -1397,7 +1397,7 @@ void Instr_L_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
 
-int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
 	local_dst->bool_ = compare_result < 0;
 }
 
@@ -1423,7 +1423,7 @@ void Instr_G_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
 
-int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
 	local_dst->bool_ = compare_result > 0;
 }
 
@@ -1449,7 +1449,7 @@ void Instr_G_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
 
-int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
 	local_dst->bool_ = compare_result > 0;
 }
 
@@ -1475,7 +1475,7 @@ void Instr_G_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
 
-int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
 	local_dst->bool_ = compare_result > 0;
 }
 
@@ -1501,7 +1501,7 @@ void Instr_G_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
 
-int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
 	local_dst->bool_ = compare_result > 0;
 }
 
@@ -1527,7 +1527,7 @@ void Instr_G_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
 
-int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
 	local_dst->bool_ = compare_result > 0;
 }
 
@@ -1553,7 +1553,7 @@ void Instr_G_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
 
-int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
 	local_dst->bool_ = compare_result > 0;
 }
 
@@ -1579,7 +1579,7 @@ void Instr_G_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
 
-int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
 	local_dst->bool_ = compare_result > 0;
 }
 
@@ -1605,7 +1605,7 @@ void Instr_G_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
 
-int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
 	local_dst->bool_ = compare_result > 0;
 }
 
@@ -1631,7 +1631,7 @@ void Instr_LE_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
 
-int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
 	local_dst->bool_ = compare_result <= 0;
 }
 
@@ -1657,7 +1657,7 @@ void Instr_LE_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
 
-int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
 	local_dst->bool_ = compare_result <= 0;
 }
 
@@ -1683,7 +1683,7 @@ void Instr_LE_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
 
-int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
 	local_dst->bool_ = compare_result <= 0;
 }
 
@@ -1709,7 +1709,7 @@ void Instr_LE_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
 
-int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
 	local_dst->bool_ = compare_result <= 0;
 }
 
@@ -1735,7 +1735,7 @@ void Instr_LE_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
 
-int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
 	local_dst->bool_ = compare_result <= 0;
 }
 
@@ -1761,7 +1761,7 @@ void Instr_LE_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
 
-int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
 	local_dst->bool_ = compare_result <= 0;
 }
 
@@ -1787,7 +1787,7 @@ void Instr_LE_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
 
-int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
 	local_dst->bool_ = compare_result <= 0;
 }
 
@@ -1813,7 +1813,7 @@ void Instr_LE_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
 
-int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
 	local_dst->bool_ = compare_result <= 0;
 }
 
@@ -1839,7 +1839,7 @@ void Instr_GE_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
 
-int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
 	local_dst->bool_ = compare_result >= 0;
 }
 
@@ -1865,7 +1865,7 @@ void Instr_GE_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
 
-int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
 	local_dst->bool_ = compare_result >= 0;
 }
 
@@ -1891,7 +1891,7 @@ void Instr_GE_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
 
-int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
 	local_dst->bool_ = compare_result >= 0;
 }
 
@@ -1917,7 +1917,7 @@ void Instr_GE_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
 
-int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
 	local_dst->bool_ = compare_result >= 0;
 }
 
@@ -1943,7 +1943,7 @@ void Instr_GE_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
 
-int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
 	local_dst->bool_ = compare_result >= 0;
 }
 
@@ -1969,7 +1969,7 @@ void Instr_GE_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
 
-int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
 	local_dst->bool_ = compare_result >= 0;
 }
 
@@ -1995,7 +1995,7 @@ void Instr_GE_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
 
-int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
 	local_dst->bool_ = compare_result >= 0;
 }
 
@@ -2021,7 +2021,7 @@ void Instr_GE_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
 
-int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
 	local_dst->bool_ = compare_result >= 0;
 }
 
@@ -2047,7 +2047,7 @@ void Instr_EQ_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
 
-int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
 	local_dst->bool_ = compare_result == 0;
 }
 
@@ -2073,7 +2073,7 @@ void Instr_EQ_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
 
-int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
 	local_dst->bool_ = compare_result == 0;
 }
 
@@ -2099,7 +2099,7 @@ void Instr_EQ_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
 
-int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
 	local_dst->bool_ = compare_result == 0;
 }
 
@@ -2125,7 +2125,7 @@ void Instr_EQ_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
 
-int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
 	local_dst->bool_ = compare_result == 0;
 }
 
@@ -2151,7 +2151,7 @@ void Instr_EQ_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
 
-int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
 	local_dst->bool_ = compare_result == 0;
 }
 
@@ -2177,7 +2177,7 @@ void Instr_EQ_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
 
-int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
 	local_dst->bool_ = compare_result == 0;
 }
 
@@ -2203,7 +2203,7 @@ void Instr_EQ_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
 
-int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
 	local_dst->bool_ = compare_result == 0;
 }
 
@@ -2229,7 +2229,7 @@ void Instr_EQ_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
 
-int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
 	local_dst->bool_ = compare_result == 0;
 }
 
@@ -2255,7 +2255,7 @@ void Instr_NE_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
 
-int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, local_src2->str->data);
 	local_dst->bool_ = compare_result != 0;
 }
 
@@ -2281,7 +2281,7 @@ void Instr_NE_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
 
-int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
+	int compare_result = strcmp(constant_src_1_S->data, global_src2->str->data);
 	local_dst->bool_ = compare_result != 0;
 }
 
@@ -2307,7 +2307,7 @@ void Instr_NE_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
 
-int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(local_src1->str->data, constant_src_2_S->data);
 	local_dst->bool_ = compare_result != 0;
 }
 
@@ -2333,7 +2333,7 @@ void Instr_NE_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
 
-int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, local_src2->str->data);
 	local_dst->bool_ = compare_result != 0;
 }
 
@@ -2359,7 +2359,7 @@ void Instr_NE_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
 
-int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(local_src1->str->data, global_src2->str->data);
 	local_dst->bool_ = compare_result != 0;
 }
 
@@ -2385,7 +2385,7 @@ void Instr_NE_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
 
-int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
+	int compare_result = strcmp(global_src1->str->data, constant_src_2_S->data);
 	local_dst->bool_ = compare_result != 0;
 }
 
@@ -2411,7 +2411,7 @@ void Instr_NE_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
 
-int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, local_src2->str->data);
 	local_dst->bool_ = compare_result != 0;
 }
 
@@ -2437,7 +2437,7 @@ void Instr_NE_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
 
-int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
+	int compare_result = strcmp(global_src1->str->data, global_src2->str->data);
 	local_dst->bool_ = compare_result != 0;
 }
 
