@@ -111,6 +111,34 @@ String *concatStringToString(String *src1, String *src2) {
 	return tmp;
 }
 
+void appendStringToString(String *dst, String *src) {
+	assert(src);
+	assert(dst);
+
+	assert(dst->allocated_size > 0 &&
+								"Performed operation on uninitialized String");
+	if (src->length > 0)
+	{
+		assert(src->allocated_size > 0 &&
+								"Performed operation on uninitialized String");
+
+		uint32_t resulting_length = src->length + dst->length;
+		uint32_t allocated_size = resulting_length + 1;
+
+		if (allocated_size > dst->allocated_size)
+		{
+			dst->data = realloc(dst->data, allocated_size);
+			dst->allocated_size = allocated_size;
+		}
+
+		memcpy(dst->data + dst->length, src->data, src->length);
+		dst->length = resulting_length;
+
+		dst->data[resulting_length] = '\0';
+	}
+
+}
+
 void truncateString(String *dst) {
 	assert(dst);
 	if(dst->allocated_size > 0) {

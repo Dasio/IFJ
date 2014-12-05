@@ -529,7 +529,7 @@ static void reduce_two_constants(THandle handle)
 					printError();
 					return;
 				}
-				handle.first[0].E.double_ = handle.first[0].E.int_ / handle.first[2].E.int_;
+				handle.first[0].E.double_ = (double)handle.first[0].E.int_ / handle.first[2].E.int_;
 				break;
 			case TT_plus:
 				handle.first[0].E.int_ = handle.first[0].E.int_ + handle.first[2].E.int_;
@@ -735,7 +735,7 @@ static void reduce_two_constants(THandle handle)
 	{
 		if (handle.first[1].token->type == TT_plus)
 		{
-			appendCharsToString(handle.first[0].E.str, handle.first[2].E.str->data);
+			appendStringToString(handle.first[0].E.str, handle.first[2].E.str);
 			return;
 		}
 		int compare_result = strcmp(handle.first[0].E.str->data, handle.first[2].E.str->data);
@@ -775,6 +775,7 @@ static inline void reduce_handle_function(THandle handle)
 		printError();
 		return;
 	}
+	Symbol *id = SymbolFind(mainContext, token->str.data);
 }
 
 

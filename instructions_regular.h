@@ -9,11 +9,9 @@
 	void Instr_READLN_LS(Instruction *i);
 	void Instr_READLN_LD(Instruction *i);
 	void Instr_READLN_LI(Instruction *i);
-	void Instr_READLN_LB(Instruction *i);
 	void Instr_READLN_GS(Instruction *i);
 	void Instr_READLN_GD(Instruction *i);
 	void Instr_READLN_GI(Instruction *i);
-	void Instr_READLN_GB(Instruction *i);
 
 	// WRITELN 1      src1->int_ pocet argumentov
 	void Instr_WRITELN(Instruction *i);

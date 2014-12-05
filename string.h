@@ -22,6 +22,7 @@
 	void aboutString(String *dst);
 	void appendCharToString(String *dst, char c);
 	void appendCharsToString(String *dst, char *c);
+	void appendStringToString(String *dst, String *src);
 
 	/**
 	 * Takes two strings, returns new one combining both.
@@ -31,10 +32,7 @@
 	 * @return      Concatenation of both strings.
 	 */
 	String *concatStringToString(String *src1, String *src2);
-/* #define appendToString(dst, src) _Generic((src),					\
-									String *: appendStringToString, \
-									default:  appendCharsToString)(dst, src)
-*/
+
 #define StringEquals(dst, src) _Generic((src),                \
 						String *: equalsStringString,  \
 						default:  equalsStringChars)(dst, src)
