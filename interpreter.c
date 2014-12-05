@@ -40,22 +40,36 @@ void generateExprInstruction(InstructionOp op, Operand* a, Operand* b, Operand* 
 void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
 
 	instr_counter++;
-	// switch(op) {
-	// 	case(CALL):
-	// }
+	InstrFuncPtr i_ptr = NULL;
 
-	//Instruction i = (Instruction) {.instr = NULL, .dst = *a, .src_1 = *b, .src_2 = *c};
-	//InstructionVectorAppend(tape, i);
+	fprintf(stderr, "OP : %d\n", op);
+
+	switch(op) {
+		case PUSH: {
+			// FIXME
+			i_ptr = Instr_PUSH_CS;
+			break;
+		}
+		case CALL: {
+			i_ptr = Instr_CALL;
+			break;
+		}
+		default:
+			i_ptr = Instr_CALL;
+	}
+
+	Instruction i = (Instruction) {.instr = i_ptr, .dst = *a, .src_1 = *b, .src_2 = (StackData){.data_type = UNDEF}};
+	InstructionVectorAppend(tape, i);
 }
 
 static bool interpretationStep() {
 	Instruction *IP_ptr = InstructionVectorAt(tape, IP);
-	assert(IP_ptr);
+	if(!IP_ptr)
+		return false;
 
-	//(IP_ptr->instr)(IP_ptr);
-	Instr_ADD_CLII(IP_ptr);
+	(IP_ptr->instr)(IP_ptr);
 
-	return false;
+	return true;
 }
 
 void runInterpretation() {

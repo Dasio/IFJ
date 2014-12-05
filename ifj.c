@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 		goto err;
 
 	// Interpretation
-	runInterpretation();
+	//runInterpretation();
 
 	// Error handling
 err:

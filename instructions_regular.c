@@ -254,80 +254,103 @@ void Instr_COPY_LS(Instruction *i) {
 }
 
 
-// WRITELN 1      src1->int_ pocet argumentov
-void Instr_WRITELN(Instruction *i) {
+// // WRITELN 1      src1->int_ pocet argumentov
+// void Instr_WRITELN(Instruction *i) {
 
-}
+// }
 
 
-// MOV 4      [G][SDIB]   len DST
-void Instr_MOV_GS(Instruction *i) {
-	// Zobere ->offset z prveho operandu (index), skopiruje z vrchu zasobiku
-	// na ten index
-}
+// // MOV 4      [G][SDIB]   len DST
+// void Instr_MOV_GS(Instruction *i) {
+// 	// Zobere ->offset z prveho operandu (index), skopiruje z vrchu zasobiku
+// 	// na ten index
+// }
 
-void Instr_MOV_GD(Instruction *i) {
+// void Instr_MOV_GD(Instruction *i) {
 
-}
+// }
 
-void Instr_MOV_GI(Instruction *i) {
+// void Instr_MOV_GI(Instruction *i) {
 
-}
+// }
 
-void Instr_MOV_GB(Instruction *i) {
+// void Instr_MOV_GB(Instruction *i) {
 
-}
+// }
 
 
 // PUSH 12    [CLG][SDIB] len SRC
 void Instr_PUSH_CS(Instruction *i) {
-	// Zobere z operandu SRC a setAt ++SP + 1
-	// Nastavi initialized = true
+	//assert(i->src_1.data_type == STRING);
+
+	stack.SP++;
+	StackDataVectorAtSet(stack.vect, stack.SP, i->src_1);
+	StackDataVectorAt(stack.vect, stack.SP)->initialized = true;
 }
 
-void Instr_PUSH_CD(Instruction *i) {
+// void Instr_PUSH_CD(Instruction *i) {
+// 	assert(i->src_1.data_type == DOUBLE);
 
-}
+// 	stack.SP++;
+// 	StackDataVectorAtSet(stack.vect, stack.SP, i->src_1);
+// 	StackDataVectorAt(stack.vect, stack.SP)->initialized = true;
+// }
 
-void Instr_PUSH_CI(Instruction *i) {
+// void Instr_PUSH_CI(Instruction *i) {
+// 	assert(i->src_1.data_type == INT);
 
-}
+// 	stack.SP++;
+// 	StackDataVectorAtSet(stack.vect, stack.SP, i->src_1);
+// 	StackDataVectorAt(stack.vect, stack.SP)->initialized = true;
+// }
 
-void Instr_PUSH_CB(Instruction *i) {
+// void Instr_PUSH_CB(Instruction *i) {
+// 	assert(i->src_1.data_type == BOOL);
 
-}
+// 	stack.SP++;
+// 	StackDataVectorAtSet(stack.vect, stack.SP, i->src_1);
+// 	StackDataVectorAt(stack.vect, stack.SP)->initialized = true;
+// }
 
 void Instr_PUSH_LS(Instruction *i) {
+	//assert(i->src_1.data_type == STRING);
 
+	int32_t pos = stack.BP + i->src_1.offset;
+
+	stack.SP++;
+	StackDataVectorAtSet(stack.vect, pos, i->src_1);
+	StackDataVectorAt(stack.vect, pos)->initialized = true;
 }
 
-void Instr_PUSH_LD(Instruction *i) {
+// void Instr_PUSH_LD(Instruction *i) {
 
-}
+// }
 
-void Instr_PUSH_LI(Instruction *i) {
+// void Instr_PUSH_LI(Instruction *i) {
 
-}
+// }
 
-void Instr_PUSH_LB(Instruction *i) {
+// void Instr_PUSH_LB(Instruction *i) {
 
-}
+// }
 
 void Instr_PUSH_GS(Instruction *i) {
-
+	//stack.SP++;
+	StackDataVectorAtSet(stack.vect, i->src_1.offset, i->src_1);
+	StackDataVectorAt(stack.vect, i->src_1.offset)->initialized = true;
 }
 
-void Instr_PUSH_GD(Instruction *i) {
+// void Instr_PUSH_GD(Instruction *i) {
 
-}
+// }
 
-void Instr_PUSH_GI(Instruction *i) {
+// void Instr_PUSH_GI(Instruction *i) {
 
-}
+// }
 
-void Instr_PUSH_GB(Instruction *i) {
+// void Instr_PUSH_GB(Instruction *i) {
 
-}
+// }
 
 
 // CALL
@@ -357,6 +380,6 @@ void Instr_CALL(Instruction *i) {
 
 
 // RET
-void Instr_RET(Instruction *i) {
+// void Instr_RET(Instruction *i) {
 
-}
+// }
