@@ -11,6 +11,10 @@ extern Symbol *funcSymbol;
 static ExprToken temp_expr_token;
 static DataType return_value_data_type;
 static ExprToken *top_most_term;
+static Operand a;
+static Operand b;
+static Operand c;
+static uint64_t MY_OFFSET;
 
 static void reduce(ExprTokenVector *expr_vector);
 static inline void reduce_handle_unary_minus(THandle handle);
@@ -215,6 +219,8 @@ DataType expr()
 	int instr_counter = 0;
 	bool end_of_eval = true;
 	return_value_data_type = EXPR_ERROR;
+	//assert(funcContext);
+	MY_OFFSET = funcContext->locCount + 2;
 
 	token++;
 
@@ -222,7 +228,6 @@ DataType expr()
 		&& !(token->type >= TT_identifier && token->type <= TT_bool))
 	{
 		setError(ERR_SyntaxExpr);
-		printError();
 		return EXPR_ERROR;
 	}
 
@@ -256,7 +261,6 @@ AFTER_REDUCE:
 					break;
 				}
 				setError(ERR_PrecedenceTable);
-				printError();
 				return EXPR_ERROR;
 			case SHIFT:
 				ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
@@ -311,7 +315,6 @@ static void reduce(ExprTokenVector *expr_vector)
 		else
 		{
 			setError(ERR_Reduction);
-			printError();
 			return;
 		}
 	}
@@ -331,18 +334,17 @@ static void reduce(ExprTokenVector *expr_vector)
 		{
 			reduce_handle_not(handle);
 		}
-		else if (handle.tokens_count == 3) //// 3 tokens... E + E ... ( E )
-		{
-			reduce_handle_three_tokens(handle);
-		}
-		else if (handle.first->token->type == TT_function) // 4, 6, 8 .. tokens
+		else if (handle.first->token->type == TT_function) // 3, 4, 6, 8 .. tokens
 		{
 			reduce_handle_function(handle);
+		}
+		else if (handle.tokens_count == 3 && handle.first->type == NONTERM) //// 3 tokens... E + E ... ( E )
+		{
+			reduce_handle_three_tokens(handle);
 		}
 		else
 		{
 			setError(ERR_Reduction);
-			printError();
 			return;
 		}
 		if(getError()) return;
@@ -363,13 +365,11 @@ static inline void reduce_handle_unary_minus(THandle handle)
 	if (temp != handle.last)
 	{
 		setError(ERR_Reduction);
-		printError();
 		return;
 	}
 	if (temp->E.data_type != INT && temp->E.data_type != DOUBLE) // check data_type
 	{
 		setError(ERR_TypeCompatibility);
-		printError();
 		return;
 	}
 	else
@@ -416,13 +416,11 @@ static inline void reduce_handle_not(THandle handle)
 	if (temp != handle.last)
 	{
 		setError(ERR_Reduction);
-		printError();
 		return;
 	}
 	if (temp->E.data_type != BOOL) // check data_type
 	{
 		setError(ERR_TypeCompatibility);
-		printError();
 		return;
 	}
 	else
@@ -480,7 +478,6 @@ static inline void reduce_handle_three_tokens(THandle handle)
 		if (value_type == UNDEF)
 		{
 			setError(ERR_TypeCompatibility);
-			printError();
 			return;
 		}
 		else
@@ -506,7 +503,6 @@ static inline void reduce_handle_three_tokens(THandle handle)
 	else
 	{
 		setError(ERR_Reduction);
-		printError();
 		return;
 	}
 }
@@ -526,7 +522,6 @@ static void reduce_two_constants(THandle handle)
 				if (handle.first[2].E.int_ == 0)
 				{
 					setError(ERR_TypeCompatibility);
-					printError();
 					return;
 				}
 				handle.first[0].E.double_ = (double)handle.first[0].E.int_ / handle.first[2].E.int_;
@@ -571,7 +566,6 @@ static void reduce_two_constants(THandle handle)
 				if (handle.first[2].E.double_ == 0)
 				{
 					setError(ERR_TypeCompatibility);
-					printError();
 					return;
 				}
 				handle.first[0].E.double_ = handle.first[0].E.int_ / handle.first[2].E.double_;
@@ -616,7 +610,6 @@ static void reduce_two_constants(THandle handle)
 				if (handle.first[2].E.int_ == 0)
 				{
 					setError(ERR_TypeCompatibility);
-					printError();
 					return;
 				}
 				handle.first[0].E.double_ = handle.first[0].E.double_ / handle.first[2].E.int_;
@@ -661,7 +654,6 @@ static void reduce_two_constants(THandle handle)
 				if (handle.first[2].E.double_ == 0)
 				{
 					setError(ERR_TypeCompatibility);
-					printError();
 					return;
 				}
 				handle.first[0].E.double_ = handle.first[0].E.double_ / handle.first[2].E.double_;
@@ -763,19 +755,87 @@ static void reduce_two_constants(THandle handle)
 				break;
 		}
 	}
+	else
+	{
+		setError(ERR_Reduction);
+		return;
+	}
 }
 
 
-// 4, 6, 8 .. tokens
+// 3, 4, 6, 8 .. tokens
 static inline void reduce_handle_function(THandle handle)
 {
-	if (handle.tokens_count < 4 || handle.tokens_count % 2 == 1)
+	int num_of_commas = 0;
+	ExprToken *temp = handle.first;
+	if ((++temp)->token->type != TT_leftBrace)
 	{
 		setError(ERR_Reduction);
-		printError();
 		return;
 	}
-	Symbol *id = SymbolFind(mainContext, token->str.data);
+	temp++;
+
+	Symbol *id = SymbolFind(mainContext, handle.first->token->str.data);
+	Context *context = id->funCont;
+	return_value_data_type = (DataType) context->returnType;
+
+	for (uint32_t i = 0; i < context->argCount; i++) // check arguments
+	{
+		if (temp->E.data_type != context->arg[i]->type)
+		{
+			setError(ERR_TypeCompatibilityArg);
+			return;
+		}
+		if (context->argCount > 1 && (++temp)->token->type != TT_comma)
+		{
+			setError(ERR_Reduction);
+			return;
+		}
+		temp++;
+	}
+	// check the end of handle
+	if ((temp)->token->type != TT_rightBrace || temp != handle.last)
+	{
+		setError(ERR_Reduction);
+		return;
+	}
+
+	// reserve place for return value
+	//b.data_type = context->returnType; // type doesnt matter
+	b.initialized = false;
+	a.sp_inc = 1;
+	a.offset = MY_OFFSET++;
+
+	generateInstruction(PUSH, &a, &b); // b = pushed operand
+
+	for (uint32_t i = 0; i < context->argCount; i++) // push arguments in reversed order
+	{
+		temp--;
+
+		b = temp->E;
+		b.initialized = true;
+		a.sp_inc = 1;
+		a.offset = MY_OFFSET++;
+		generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
+
+		temp--;
+	}
+
+	a.offset = id->index;
+	b.int_ = context->argCount;
+	// generate CALL instruction
+	generateInstruction(CALL, &a, &b); // b = pushed operand
+
+	// reducing tokenvector
+	MY_OFFSET -= context->argCount;
+	handle.first->handle_start = false;
+	handle.first->type = NONTERM;
+	handle.first->E.data_type = return_value_data_type;
+	handle.first->E.var_type = LOCAL;
+	handle.first->E.offset = MY_OFFSET - 1;
+	if (context->argCount > 1)
+		num_of_commas = context->argCount - 1;
+	ExprTokenVectorPopMore(handle.expr_vector, context->argCount + 2 + num_of_commas);
 }
 
 
@@ -823,7 +883,6 @@ static void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vector)
 			if (id == NULL)
 			{
 				setError(ERR_UndefVarOrFunction);
-				printError();
 				return;
 			}
 			break;
@@ -897,7 +956,6 @@ static inline int index_handle_start(ExprTokenVector *expr_token_vector)
 		if (last_handle_start->token->type == TT_empty)
 		{
 			setError(ERR_Reduction);
-			printError();
 			return -1;
 		}
 		last_handle_start--;

@@ -4,6 +4,8 @@
 #include "token.h"
 #include "system.h"
 #include "instruction.h"
+#include "instructions_regular.h"
+#include "interpreter.h"
 
 #ifndef EXPR_H
 #define EXPR_H

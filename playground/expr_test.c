@@ -17,11 +17,12 @@ int main()
 	activeContext = mainContext;
 	token = TokenVectorFirst(tokenVector);
 
-	//printf("%d\n", expr());
-	expr();
-	//printf("%d\n", expr());
-	expr();
-	if(!getError()) printf("EXPRESSION OK\n");
+	parse(tokenVector);
+
+	if(getError())
+		printError();
+	else
+		printf("EXPRESSION OK\n");
 	return 0;
 }
 

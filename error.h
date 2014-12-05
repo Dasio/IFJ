@@ -34,6 +34,7 @@ typedef enum
 	ERR_PrecedenceTable,
 	ERR_Reduction,
 	ERR_TypeCompatibility,
+	ERR_TypeCompatibilityArg,
 	ERR_UndefVarOrFunction,
 
 	// Interpreter

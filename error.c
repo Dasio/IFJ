@@ -28,6 +28,7 @@ static const int returnCodeTable[] = {
 	[ERR_PrecedenceTable]	= 2,
 	[ERR_Reduction]			= 2,
 	[ERR_TypeCompatibility]	= 4,
+	[ERR_TypeCompatibilityArg]	= 4,
 	[ERR_UndefVarOrFunction]= 3,
 
 	// Interpreter
@@ -86,6 +87,9 @@ void printError()
 			break;
 		case ERR_TypeCompatibility:
 			printErrorDetails("Error in data type of some operand");
+			break;
+		case ERR_TypeCompatibilityArg:
+			printErrorDetails("Error in data type of some argument");
 			break;
 		case ERR_UndefVarOrFunction:
 			printErrorDetails("Undefined variable or function");

@@ -51,6 +51,8 @@ char *stringifyToken(Token *token) {
 			return("REAL");
 		case TT_integer:
 			return("INT");
+		case TT_function:
+			return("func");
 		case TT_unaryMinus:
 			return("-");
 		case TT_not:
