@@ -225,7 +225,7 @@ instructions.each do |name, regex|
 			end
 		elsif src_types == "SS"
 			if name == :add
-				c.puts "appendCharsToString(#{proto[0] == "C" && src1_raw || src1}, #{proto[1] == "C" && src2_raw || src2}->data);"
+				c.puts "	local_dst->str = concatStringToString(#{proto[0] == "C" && src1_raw || src1}, #{proto[1] == "C" && src2_raw || src2});"
 				implemented = true
 			else
 				c.puts ""

@@ -963,7 +963,7 @@ void Instr_ADD_CLDD(Instruction *i) {
 void Instr_ADD_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
-appendCharsToString(constant_src_1_S, local_src2->str->data);
+	local_dst->str = concatStringToString(constant_src_1_S, local_src2->str);
 	local_dst->initialized = true;
 	stack.SP = stack.SP + local_dst->sp_inc;
 
@@ -1008,7 +1008,7 @@ void Instr_ADD_CGDD(Instruction *i) {
 void Instr_ADD_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
-appendCharsToString(constant_src_1_S, global_src2->str->data);
+	local_dst->str = concatStringToString(constant_src_1_S, global_src2->str);
 	local_dst->initialized = true;
 	stack.SP = stack.SP + local_dst->sp_inc;
 
@@ -1053,7 +1053,7 @@ void Instr_ADD_LCDD(Instruction *i) {
 void Instr_ADD_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
-appendCharsToString(local_src1->str, constant_src_2_S->data);
+	local_dst->str = concatStringToString(local_src1->str, constant_src_2_S);
 	local_dst->initialized = true;
 	stack.SP = stack.SP + local_dst->sp_inc;
 
@@ -1098,7 +1098,7 @@ void Instr_ADD_LLDD(Instruction *i) {
 void Instr_ADD_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
-appendCharsToString(local_src1->str, local_src2->str->data);
+	local_dst->str = concatStringToString(local_src1->str, local_src2->str);
 	local_dst->initialized = true;
 	stack.SP = stack.SP + local_dst->sp_inc;
 
@@ -1143,7 +1143,7 @@ void Instr_ADD_LGDD(Instruction *i) {
 void Instr_ADD_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
-appendCharsToString(local_src1->str, global_src2->str->data);
+	local_dst->str = concatStringToString(local_src1->str, global_src2->str);
 	local_dst->initialized = true;
 	stack.SP = stack.SP + local_dst->sp_inc;
 
@@ -1188,7 +1188,7 @@ void Instr_ADD_GCDD(Instruction *i) {
 void Instr_ADD_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
-appendCharsToString(global_src1->str, constant_src_2_S->data);
+	local_dst->str = concatStringToString(global_src1->str, constant_src_2_S);
 	local_dst->initialized = true;
 	stack.SP = stack.SP + local_dst->sp_inc;
 
@@ -1233,7 +1233,7 @@ void Instr_ADD_GLDD(Instruction *i) {
 void Instr_ADD_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
-appendCharsToString(global_src1->str, local_src2->str->data);
+	local_dst->str = concatStringToString(global_src1->str, local_src2->str);
 	local_dst->initialized = true;
 	stack.SP = stack.SP + local_dst->sp_inc;
 
@@ -1278,7 +1278,7 @@ void Instr_ADD_GGDD(Instruction *i) {
 void Instr_ADD_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
-appendCharsToString(global_src1->str, global_src2->str->data);
+	local_dst->str = concatStringToString(global_src1->str, global_src2->str);
 	local_dst->initialized = true;
 	stack.SP = stack.SP + local_dst->sp_inc;
 
