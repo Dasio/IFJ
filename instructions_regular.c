@@ -335,6 +335,23 @@ void Instr_CALL(Instruction *i) {
 	//
 	// V cykle pushovanie premennych, kazdej nastavit flag ze je
 	// neinicializovana.
+
+	StackData *top_of_stack = vectorAt(stack.vect, ++stack.SP);
+
+	top_of_stack->offset = stack.BP;
+	top_of_stack++;
+	stack.SP++;
+	top_of_stack->offset = ++IP; // push adress
+
+	for (int i = 0; i < i->src_1->int_; i++
+	{
+		top_of_stack++;
+		stack.SP++;
+		top_of_stack->initialized = false;
+	}
+
+	IP = i->dst->offset;
+
 }
 
 

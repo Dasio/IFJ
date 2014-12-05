@@ -6,15 +6,20 @@ function factorial(n : integer) : integer;
 var
 temp_result : integer;
 decremented_n : integer;
+	begin
+	if n < 2 then
+		begin
+		factorial := 1
+		end
+	else
+		begin
+		decremented_n := n - 1;
+		temp_result := factorial(decremented_n);
+		factorial := n * temp_result
+		end
+	end;
+
 begin
-if n < 2 then
-begin
-factorial := 1
-end
-else
-begin
-decremented_n := n - 1;
-temp_result := factorial(decremented_n);
-factorial := n * temp_result
-end
-end;
+a := factorial(5);
+write(a)
+end.

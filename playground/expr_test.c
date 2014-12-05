@@ -22,7 +22,7 @@ int main()
 	if(getError())
 		printError();
 	else
-		printf("EXPRESSION OK\n");
+		printf("SYNTAX OK\n");
 	return 0;
 }
 
