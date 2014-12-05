@@ -5,7 +5,7 @@
 #define _INSTRUCTIONS_REGULAR_H
 	// InstructionOp defines in instruction.h
 
-	// READLN 8   [LG][SDIB]  len DST
+	// READLN 6   [LG][SDI]  len DST
 	void Instr_READLN_LS(Instruction *i);
 	void Instr_READLN_LD(Instruction *i);
 	void Instr_READLN_LI(Instruction *i);

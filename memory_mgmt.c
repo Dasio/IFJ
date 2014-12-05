@@ -32,6 +32,10 @@ void *mem_alloc(size_t len) {
 	return mem_ptr;
 }
 
+void mem_ptradd(void *ptr) {
+	initMemItemAndAppend(ptr, 1);
+}
+
 /**
  * DEALLOCATION
  */

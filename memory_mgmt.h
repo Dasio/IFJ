@@ -29,6 +29,12 @@ GenVectorPrototypes(MemItem)
  */
 void *mem_alloc(size_t len);
 
+/**
+ * Appends pointer to memitem Vector.
+ * @param ptr Any pointer
+ */
+void mem_ptradd(void *ptr);
+
 /*
  * Free's all allocated memory blocks
  */

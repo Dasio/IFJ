@@ -30,7 +30,7 @@ void Instr_READLN_LS(Instruction *i) {
 		}
 	}
 
-	// priradeni str->data do pamate ukazatelov garbage collectoru
+	mem_ptradd(str->data);
 
 	local_dst->str = str;
 	local_dst->initialized = true;
@@ -62,7 +62,7 @@ void Instr_READLN_LD(Instruction *i) {
 
 	d = strtod(str->data,&error);
 
-	// priradeni str->data do pamate ukazatelov garbage collectoru
+	mem_ptradd(str->data);
 
 	local_dst->double_ = d;
 	local_dst->initialized = true;
@@ -94,7 +94,7 @@ void Instr_READLN_LI(Instruction *i) {
 
 	n = strtol(str->data,&error,10);
 
-	// priradeni str->data do pamate ukazatelov garbage collectoru
+	mem_ptradd(str->data);
 
 	local_dst->int_ = n;
 	local_dst->initialized = true;
@@ -123,7 +123,7 @@ void Instr_READLN_GS(Instruction *i) {
 		}
 	}
 
-	// priradeni str->data do pamate ukazatelov garbage collectoru
+	mem_ptradd(str->data);
 
 	global_dst->str = str;
 	global_dst->initialized = true;
@@ -155,7 +155,7 @@ void Instr_READLN_GD(Instruction *i) {
 
 	d = strtod(str->data,&error);
 
-	// priradeni str->data do pamate ukazatelov garbage collectoru
+	mem_ptradd(str->data);
 
 	global_dst->double_ = d;
 	global_dst->initialized = true;
@@ -187,7 +187,7 @@ void Instr_READLN_GI(Instruction *i) {
 
 	n = strtol(str->data,&error,10);
 
-	// priradeni str->data do pamate ukazatelov garbage collectoru
+	mem_ptradd(str->data);
 
 	global_dst->int_ = n;
 	global_dst->initialized = true;
