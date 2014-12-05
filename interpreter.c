@@ -3,7 +3,7 @@
 /**
  * "Global" tape containing instructions
  */
-static InstructionVector *tape;
+InstructionVector *tape;
 
 /**
  * Pointer to instruction tape at beginning
