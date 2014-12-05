@@ -22,7 +22,7 @@ int FindString(String *input, String *find)
 	if(Mask == NULL)
 	{
 		setError(ERR_Allocation);
-		return input->length; // did not find value + ERROR
+		return 0; // did not find value + ERROR
 	}
 	uint32_t inInd=1, fiInd=1;
 	while(inInd<=input->length && fiInd<=find->length)
@@ -45,9 +45,9 @@ int FindString(String *input, String *find)
 	free(Mask);
 	Mask = NULL;
 	if(fiInd>find->length)
-		return inInd - find->length-1; // index where strings match
+		return inInd - find->length; // index where strings match
 
-	return input->length; // did not find value
+	return 0; // did not find value
 }
 
 
@@ -113,50 +113,6 @@ void QuickSortRecursive(char *arr, int n)
 	QuickSortRecursive(arr, r-arr+1);
 	QuickSortRecursive(l, arr+n-l);
 }
-
-
-/*
-	Imput is unordered array of char ended with character == 0
-	sort that array based on ASCII number.
-
-	used nonrecursive Quick Sort
- */
-void QuickSortNonRecursive(char arr[])
-{
-	intVector *vec = intVectorInit(8);
-	int r,l,i,j;
-	intVectorAppend(vec, 0); //left border of sorting
-	intVectorAppend(vec, strlen(arr)-1); //rights border of sorting
-
-	while (vec->used != 0)
-	{
-		r = *intVectorPop(vec); //get right border
-		l = *intVectorPop(vec); //get left border
-		while(l<r) //while left gruping did not finished
-		{
-			i=l; j=r; //prepare index on border of group
-			int p = (i+j)/2; //set pivot (center value)
-			do
-			{
-				// find higher value of pivot on left side
-				while ((arr[i] <= arr[p]) & (i!=p)) i++;
-				//find lower value of pivot on right side
-				while ((arr[j] >= arr[p]) & (j!=p)) j--;
-				if (i<j) //if the values are not same replace them
-				{
-					arr[i] += arr[j];
-					arr[j] = arr[i] - arr[j];
-					arr[i] -= arr[j];
-				}
-			}while (i>j); //while group is not finished (indexes are the same)
-			intVectorAppend(vec, i+1); //save left border of right group
-			intVectorAppend(vec, r);  //save right border of right group
-			r=j; //go to left group and set right border
-		}
-	}
-	intVectorFree(vec);
-}
-
 
 // Calculate index for HashFunction
 uint32_t GetHash(const char *str, uint32_t htab_size)
