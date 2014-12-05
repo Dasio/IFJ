@@ -214,12 +214,43 @@ void Instr_READLN_GI(Instruction *i) {
 	global_dst->initialized = true;
 }
 
+void Instr_COPY_LS(Instruction *i) {
 
+	StackData *local_dst  = vectorAt(stack.vect, stack.BP + i->dst.offset);
+	StackData *op;
+	op = vectorAt(stack.vect, stack.BP - 1);
+	String *s = op->str;
+	//op-- ?
+	op = vectorAt(stack.vect, stack.BP - 2);
+	uint32_t pos = op->int_;
+	op = vectorAt(stack.vect, stack.BP - 3);
+	uint32_t n = op->int_;
+	String *str = malloc(sizeof(String));
+	*str = initStringSize(n+1);
 
+	uint32_t length = s->length;
+	if(n > length)
+		n=length;
+	// If Index is larger than the length of the string S or index is negative,
+	// then an empty string is returned.
+	if(pos > length)
+	{
+		str->length = 0;
+		str->data[0] = '\0';
+	}
+	else
+	{
+		memcpy(str->data,s->data+pos-1,n);
+		str->data[n] = '\0';
+		str->length = n;
+	}
 
+	mem_ptradd(str->data);
 
+	local_dst->str = str;
+	local_dst->initialized = true;
 
-
+}
 
 
 // WRITELN 1      src1->int_ pocet argumentov
