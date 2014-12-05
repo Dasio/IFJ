@@ -22,7 +22,7 @@ static const int returnCodeTable[] = {
 	[ERR_DeclrFunc]         = 3,
 	[ERR_BadDefArg]         = 3,
 	[ERR_NoDefFunc]         = 3,
-
+	[ERR_ReadBool]			= 4,
 	// Expression
 	[ERR_SyntaxExpr]		= 2,
 	[ERR_PrecedenceTable]	= 2,
@@ -34,6 +34,7 @@ static const int returnCodeTable[] = {
 	[ERR_UnknownInstruction]= 99,
 	[ERR_UnitializedAccess] = 7,
 	[ERR_DivisionByZero]	= 8,
+	[ERR_ReadInput]			= 6,
 
 	// Other
 	[ERR_OutOfRange]        = 9,
@@ -91,6 +92,12 @@ void printError()
 			break;
 		case ERR_DivisionByZero:
 			printErrorDetails("You can't divide by zero !");
+			break;
+		case ERR_ReadBool:
+			printErrorDetails("Cant't read input into bool variable");
+			break;
+		case ERR_ReadInput:
+			printErrorDetails("Wrong input");
 			break;
 		default:
 			printErrorDetails("Unrecognized error");

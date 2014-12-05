@@ -6,26 +6,25 @@ extern Stack stack;
 
 #define vectorAt(v, i) (StackData*)((StackData*)(v->array) + (i))
 
-// READLN 8   [LG][SDIB]  len DST
+// READLN 6   [LG][SDI]  len DST
 void Instr_READLN_LS(Instruction *i) {
 	StackData *local_dst  = vectorAt(stack.vect, stack.BP + i->dst.offset);
 
-	bool start=false;
-	char *error;
+	bool begin=true;
 	int c;
 
 	String *str = mem_alloc(sizeof(String));
 	*str = initEmptyString();
-	while((c=getchar()) != EOF)
+	while((c=getchar()) != EOF && c != '\n')
 	{
-		if(isspace(c) && start)
+		if(isspace(c) && begin)
 		{
 			while((c=getchar()) != '\n' && c != EOF);
 			break;
 		}
-		else if(!isspace(c))
+		else
 		{
-			start=true;
+			begin=false;
 			appendCharToString(str,c);
 		}
 	}
@@ -64,6 +63,12 @@ void Instr_READLN_LD(Instruction *i) {
 
 	mem_ptradd(str->data);
 
+	if(*error != 0)
+	{
+		setError(ERR_ReadInput);
+		return;
+	}
+
 	local_dst->double_ = d;
 	local_dst->initialized = true;
 }
@@ -96,6 +101,12 @@ void Instr_READLN_LI(Instruction *i) {
 
 	mem_ptradd(str->data);
 
+	if(*error != 0)
+	{
+		setError(ERR_ReadInput);
+		return;
+	}
+
 	local_dst->int_ = n;
 	local_dst->initialized = true;
 }
@@ -103,22 +114,21 @@ void Instr_READLN_LI(Instruction *i) {
 void Instr_READLN_GS(Instruction *i) {
 	StackData *global_dst  = vectorAt(stack.vect, i->dst.offset);
 
-	bool start=false;
-	char *error;
+	bool begin=true;
 	int c;
 
 	String *str = mem_alloc(sizeof(String));
 	*str = initEmptyString();
-	while((c=getchar()) != EOF)
+	while((c=getchar()) != EOF && c != '\n')
 	{
-		if(isspace(c) && start)
+		if(isspace(c) && begin)
 		{
 			while((c=getchar()) != '\n' && c != EOF);
 			break;
 		}
-		else if(!isspace(c))
+		else
 		{
-			start=true;
+			begin=false;
 			appendCharToString(str,c);
 		}
 	}
@@ -156,6 +166,11 @@ void Instr_READLN_GD(Instruction *i) {
 	d = strtod(str->data,&error);
 
 	mem_ptradd(str->data);
+	if(*error != 0)
+	{
+		setError(ERR_ReadInput);
+		return;
+	}
 
 	global_dst->double_ = d;
 	global_dst->initialized = true;
@@ -188,6 +203,12 @@ void Instr_READLN_GI(Instruction *i) {
 	n = strtol(str->data,&error,10);
 
 	mem_ptradd(str->data);
+
+	if(*error != 0)
+	{
+		setError(ERR_ReadInput);
+		return;
+	}
 
 	global_dst->int_ = n;
 	global_dst->initialized = true;

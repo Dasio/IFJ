@@ -27,6 +27,7 @@ typedef enum
 	ERR_DeclrFunc,
 	ERR_BadDefArg,
 	ERR_NoDefFunc,         /**< Function was declared and no defintion was found */
+	ERR_ReadBool,
 
 	// Expression
 	ERR_SyntaxExpr,
@@ -39,6 +40,7 @@ typedef enum
 	ERR_UnknownInstruction,
 	ERR_UnitializedAccess,
 	ERR_DivisionByZero,
+	ERR_ReadInput,
 
 	// Other
 	ERR_OutOfRange,

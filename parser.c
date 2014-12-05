@@ -595,9 +595,14 @@ void readln()
 		setError(ERR_Syntax);
 		return;
 	}
-	findVarOrFunc(token->str.data,NULL);
+	Symbol *symbol = findVarOrFunc(token->str.data,NULL);
 	if(getError())
 		return;
+	if(symbol->type == T_bool)
+	{
+		setError(ERR_ReadBool);
+		return;
+	}
 
 	token++;
 	if(token->type != TT_rightBrace)
