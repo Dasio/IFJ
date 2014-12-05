@@ -678,6 +678,7 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 		return;
 	returnSymbol->type = returnType;
 	funcContext->returnType = returnType;
+	funcContext->locCount--;
 	funcSymbol->stateFunc = funcState;
 	funcSymbol->index = -funcContext->argCount - 1;
 }

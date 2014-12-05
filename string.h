@@ -13,6 +13,7 @@
 	} String;
 
 	String initEmptyString();
+	String initStringSize(uint32_t size);
 	String initString(char *src);
 
 	char atString(String *dst, uint32_t pos);

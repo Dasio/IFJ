@@ -12,6 +12,18 @@ String initEmptyString()
 	return str;
 }
 
+String initStringSize(uint32_t size)
+{
+	String str = {
+		.length  = 0,
+		.allocated_size = size,
+		.data    = malloc(size * sizeof(char))
+	};
+	MALLOC_TEST(str.data);
+
+	return str;
+}
+
 void destroyString(String *dst) {
 	if(dst->allocated_size > 0)
 	{
