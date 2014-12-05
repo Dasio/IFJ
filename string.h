@@ -23,6 +23,14 @@
 	void appendCharToString(String *dst, char c);
 	void appendCharsToString(String *dst, char *c);
 
+	/**
+	 * Takes two strings, returns new one combining both.
+	 * Strings from arguments remain untouched (nondestructive).
+	 * @param  src1 First string
+	 * @param  src2 Second string
+	 * @return      Concatenation of both strings.
+	 */
+	String *concatStringToString(String *src1, String *src2);
 /* #define appendToString(dst, src) _Generic((src),					\
 									String *: appendStringToString, \
 									default:  appendCharsToString)(dst, src)

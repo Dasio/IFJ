@@ -93,6 +93,24 @@ void appendCharsToString(String *dst, char *c) {
 	}
 }
 
+String *concatStringToString(String *src1, String *src2) {
+	String *tmp = malloc(sizeof(String));
+	MALLOC_TEST(tmp);
+	uint32_t resulting_length = src1->length + src2->length;
+
+	tmp->length = resulting_length;
+	tmp->allocated_size = resulting_length + 1;
+
+	tmp->data = malloc(tmp->allocated_size * sizeof(char));
+	MALLOC_TEST(tmp->data);
+
+	memcpy(tmp->data,                src1->data, src1->length);
+	memcpy(tmp->data + src1->length, src2->data, src2->length);
+	tmp->data[resulting_length] = (char) 0;
+
+	return tmp;
+}
+
 void truncateString(String *dst) {
 	assert(dst);
 	if(dst->allocated_size > 0) {

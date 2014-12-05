@@ -14,6 +14,9 @@ int main() {
 		appendCharToString(&str2, i);
 	}
 
+	String *tmp = concatStringToString(&str1, &str2);
+	printString(tmp); printf("\n");
+
 	printString(&str1);  printf("\n");
 	printString(&str2);  printf("\n");
 	assert(StringEquals(&str1, &str2) == true);
@@ -24,6 +27,9 @@ int main() {
 
 	appendCharToString(&str1, 'x');
 	assert(StringEquals(&str1, &str2) == false);
+
+	destroyString(tmp);
+	free(tmp);
 
 	destroyString(&str1);
 	destroyString(&str2);
