@@ -68,6 +68,16 @@ void implodeMemory() {
 	destroyMemoryManagement();
 }
 
+void die() {
+	implodeMemory();
+	int exit_code = 9;
+	if(getError()) {
+		exit_code = getReturnError();
+	}
+
+	exit(exit_code);
+}
+
 /**
  * OTHER
  */

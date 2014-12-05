@@ -67,6 +67,7 @@
 
 		READLN, // 8  [LG][SDIB]  len DST
 		WRITELN,// 1  src1->int_ pocet argumentov
+		COPY,   // 3  [CLG][S] src1->*String
 		MOV,    // 4  [G][SDIB]   len DST
 		PUSH,   // 12 [CLG][SDIB] len SRC
 		CALL,   //

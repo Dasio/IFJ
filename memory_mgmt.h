@@ -47,6 +47,11 @@ void cleanAllMemory();
  */
 void implodeMemory();
 
+/**
+ * Implodes memory and exit according to return code.
+ */
+void die();
+
 /*
  * Prints pointers to all allocated blocks
  */
