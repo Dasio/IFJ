@@ -8,7 +8,7 @@ InstructionVector *tape;
 /**
  * Pointer to instruction tape at beginning
  */
-static uint64_t IP = 0;
+uint64_t IP = 0;
 
 Stack stack;
 
@@ -59,8 +59,8 @@ void generateExprInstruction(InstructionOp op, Operand* a, Operand* b, Operand* 
 
 	printf("%d\n", instruction_offset);
 
-	//Instruction i = (Instruction) {.instr = NULL, .dst = *a, .src_1 = *b, .src_2 = *c};
-	//InstructionVectorAppend(tape, i);
+	Instruction i = (Instruction) {.instr = NULL, .dst = *a, .src_1 = *b, .src_2 = *c};
+	InstructionVectorAppend(tape, i);
 }
 
 void generateInstruction(InstructionOp op, Operand* a, Operand* b) {

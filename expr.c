@@ -7,6 +7,7 @@ extern Context *mainContext;
 extern Context *funcContext;
 extern Context *activeContext;
 extern Symbol *funcSymbol;
+extern InstructionVector *tape;
 
 static ExprToken temp_expr_token;
 static DataType return_value_data_type;
@@ -288,7 +289,8 @@ AFTER_REDUCE:
 		print_type_table(i);
 	}*/
 
-	if (instr_counter == 0)
+	Instruction *last = InstructionVectorLast(tape);
+	if (instr_counter == 0 || last->instr == Instr_CALL)
 	{
 		//ExprTokenPrint(ExprTokenVectorLast(expr_token_vector));
 		//append NONTERM to stack ( a := b )

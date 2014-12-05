@@ -3,6 +3,7 @@
 
 extern void *mem_alloc(size_t len);
 extern Stack stack;
+extern uint64_t IP;
 
 #define vectorAt(v, i) (StackData*)((StackData*)(v->array) + (i))
 
@@ -343,14 +344,14 @@ void Instr_CALL(Instruction *i) {
 	stack.SP++;
 	top_of_stack->offset = ++IP; // push adress
 
-	for (int i = 0; i < i->src_1->int_; i++
+	for (int x = 0; x < i->src_1.int_; x++)
 	{
 		top_of_stack++;
 		stack.SP++;
 		top_of_stack->initialized = false;
 	}
 
-	IP = i->dst->offset;
+	IP = i->dst.offset;
 
 }
 
