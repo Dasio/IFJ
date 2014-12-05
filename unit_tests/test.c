@@ -15,7 +15,6 @@ int main()
 	ADD_TEST_SUITE(IALTest);
 	ADD_TEST_SUITE(SYMBOLtest);
 	ADD_TEST_SUITE(VECTORtest);
-	ADD_TEST_SUITE(STACKtest);
 
 	printf("Starting %d test suites \n",testSuitesCount);
 	for(uint8_t i=0;i<testSuitesCount;i++)
