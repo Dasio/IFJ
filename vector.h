@@ -187,14 +187,18 @@ struct Vector{
 		if(Vect->used < number) { setError(ERR_OutOfRange) return NULL; }				\
 		Vect->used -= number; /* Mark last X value as invalid and return last address*/ \
 		return (type*)Vect->array + Vect->used;											\
-	}																		\
+	}																			\
 	void type##VectorAtSet(type##Vector *Vect, uint32_t index, type value) {	\
-		if(index >= Vect->capacity)											\
+		if(index >= Vect->used)													\
 		{																	\
-			while(index >= Vect->capacity);									\
-				Vect->capacity *= 2;											\
-			Vect->array = realloc(Vect->array, Vect->capacity * sizeof(type));	\
-		}																		\
+			if(index >= Vect->capacity)										\
+			{																\
+				while(index >= Vect->capacity)								\
+					Vect->capacity *= 2;											\
+				Vect->array = realloc(Vect->array, Vect->capacity * sizeof(type));	\
+			}																		\
+			Vect->used = index +1;											\
+		}																	\
 		type *tmp;															\
 		tmp = (type*)Vect->array + index;									\
 		*tmp = value;														\
