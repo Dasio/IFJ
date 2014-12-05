@@ -7,7 +7,7 @@
 #ifndef _STACK_H
 #define _STACK_H
 
-#define DEFAULT_STACK_SIZE 8192
+#define DEFAULT_STACK_SIZE 32768
 
 	typedef Operand StackData;
 

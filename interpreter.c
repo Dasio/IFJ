@@ -22,34 +22,6 @@ void initInterpret() {
 }
 
 /**
- * Generated
- */
-
-//void Instr_ADD_LLCII(Instruction *i) {
-	// i->src_1.offset;
-
-	// StackData *dst = StackDataVectorAt(stack.vect, stack.BP+(i->src_1.offset));
-	// StackData *src_1 = StackDataVectorAt(stack.vect, stack.BP+(i->src_2.offset));
-	// int constant = i->dst.int;
-//}
-
-// void Inst_ADD_II(Operand* a, Operand* b, Operand* c) {
-// 	printf("%d\n", b->int_ + c->int_);
-// }
-
-// void Inst_ADD_ID(Operand* a, Operand* b, Operand* c) {
-// 	printf("%f\n", b->int_ + c->double_);
-// }
-
-// void Inst_ADD_DI(Operand* a, Operand* b, Operand* c) {
-// 	printf("%f\n", b->double_ + c->int_);
-// }
-
-void Inst_ADD_DD(Instruction *i) {
-	printf("%f\n", i->dst.double_ + i->src_1.double_ + i->src_2.double_);
-}
-
-/**
  * CORE
  */
 
@@ -59,9 +31,9 @@ void generateExprInstruction(InstructionOp op, Operand* a, Operand* b, Operand* 
 	int instruction_offset = op << 8 | b->var_type << 6 | c->var_type << 4 |
 						b->data_type << 2 | c->data_type;
 
-	printf("%d\n", instruction_offset);
-
-	Instruction i = (Instruction) {.instr = NULL, .dst = *a, .src_1 = *b, .src_2 = *c};
+	assert(instruction_table[instruction_offset]);
+	Instruction i = (Instruction) {.instr = instruction_table[instruction_offset],
+										 .dst = *a, .src_1 = *b, .src_2 = *c};
 	InstructionVectorAppend(tape, i);
 }
 

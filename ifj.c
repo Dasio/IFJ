@@ -1,6 +1,7 @@
 #include "system.h"
 #include "scanner.h"
 #include "parser.h"
+#include "interpreter.h"
 #include "memory_mgmt.h"
 
 int main(int argc, char *argv[]) {
@@ -30,8 +31,16 @@ int main(int argc, char *argv[]) {
 	if(getError())
 		goto err;
 
+	initInterpret();
+
 	// Recursive descent
 	parse(tokenVector);
+
+	if(getError())
+		goto err;
+
+	// Interpretation
+	runInterpretation();
 
 	// Error handling
 err:
