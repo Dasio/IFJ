@@ -6,8 +6,9 @@ function factorial(n : integer) : integer;
 var
 temp_result : integer;
 decremented_n : integer;
+lol : boolean;
 	begin
-	if n < 2 then
+	if true = false then
 		begin
 		factorial := 1
 		end
@@ -16,6 +17,7 @@ decremented_n : integer;
 		decremented_n := n - 1;
 		temp_result := factorial(decremented_n);
 		factorial := n * temp_result
+
 		end
 	end;
 

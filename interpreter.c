@@ -4,6 +4,7 @@
  * "Global" tape containing instructions
  */
 InstructionVector *tape;
+extern int instr_counter;
 
 /**
  * Pointer to instruction tape at beginning
@@ -54,6 +55,7 @@ void Inst_ADD_DD(Instruction *i) {
 
 void generateExprInstruction(InstructionOp op, Operand* a, Operand* b, Operand* c) {
 
+	instr_counter++;
 	int instruction_offset = op << 8 | b->var_type << 6 | c->var_type << 4 |
 						b->data_type << 2 | c->data_type;
 
@@ -65,6 +67,7 @@ void generateExprInstruction(InstructionOp op, Operand* a, Operand* b, Operand* 
 
 void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
 
+	instr_counter++;
 	// switch(op) {
 	// 	case(CALL):
 	// }

@@ -16,6 +16,7 @@ static Operand a;
 static Operand b;
 static Operand c;
 static uint64_t MY_OFFSET;
+int instr_counter;
 
 static void reduce(ExprTokenVector *expr_vector);
 static inline void reduce_handle_unary_minus(THandle handle);
@@ -217,7 +218,7 @@ static const int type_table[OPERATORS_COUNT][num_of_data_types][num_of_data_type
 DataType expr()
 {
 	int action;
-	int instr_counter = 0;
+	instr_counter = 0;
 	bool end_of_eval = true;
 	return_value_data_type = EXPR_ERROR;
 	//assert(funcContext);
@@ -292,8 +293,13 @@ AFTER_REDUCE:
 	Instruction *last = InstructionVectorLast(tape);
 	if (instr_counter == 0 || last->instr == Instr_CALL)
 	{
-		//ExprTokenPrint(ExprTokenVectorLast(expr_token_vector));
-		//append NONTERM to stack ( a := b )
+		b.var_type = LOCAL;
+		b.data_type = return_value_data_type;
+		b.offset = MY_OFFSET - 1;
+		b.initialized = true;
+		a.sp_inc = 1;
+		a.offset = MY_OFFSET - 1;
+		generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
 	}
 
 	ExprTokenVectorFree(expr_token_vector);
@@ -394,10 +400,13 @@ static inline void reduce_handle_unary_minus(THandle handle)
 		}
 		else // LOCAL / GLOBAL
 		{
-			// generating instruction
-
+			b = temp->E;
+			a.sp_inc = 1;
+			a.offset = MY_OFFSET++;
+			generateExprInstruction(NEG, &a, &b, &c);
 		}
-
+		temp->E.var_type = LOCAL;
+		temp->E.offset = MY_OFFSET-1;
 		// reducing tokens
 		ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
 		ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
@@ -446,13 +455,17 @@ static inline void reduce_handle_not(THandle handle)
 		}
 		else // LOCAL / GLOBAL
 		{
-			// generating instruction
-
-
-			// reducing tokens
-			ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
-			ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
+			b = temp->E;
+			a.sp_inc = 1;
+			a.offset = MY_OFFSET++;
+			generateExprInstruction(NOT, &a, &b, &c);
 		}
+
+		temp->E.var_type = LOCAL;
+		temp->E.offset = MY_OFFSET-1;
+		// reducing tokens
+		ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+		ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
 	}
 }
 
@@ -494,12 +507,18 @@ static inline void reduce_handle_three_tokens(THandle handle)
 		}
 		else	// generating instruction
 		{
-
+			c = handle.first[0].E;
+			b = handle.first[2].E;
+			a.sp_inc = 1;
+			a.offset = MY_OFFSET++;
+			generateExprInstruction((InstructionOp)handle.first[1].token->type, &a, &b, &c);
 		}
 
 		// reducing tokens
 		handle.first->handle_start = false;
 		handle.first->E.data_type = value_type;
+		handle.first->E.var_type = LOCAL;
+		handle.first->E.offset = MY_OFFSET-1;
 		ExprTokenVectorPopMore(handle.expr_vector, 2);
 	}
 	else

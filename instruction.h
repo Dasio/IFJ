@@ -49,6 +49,7 @@
 	 *
 	 */
 	typedef enum {
+		// dont change order !! must be same as order of token types
 		NEG, // 8  {*,L,G}{*,*,*}{I*,D*}
 		NOT, // 4  {*,L,G}{*,*,*}{B*}
 		MUL, // 64 {C,L,G}{C,L,G}{II,DI,ID,DD}
