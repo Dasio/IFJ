@@ -63,7 +63,7 @@ void generateExprInstruction(InstructionOp op, Operand* a, Operand* b, Operand* 
 	//InstructionVectorAppend(tape, i);
 }
 
-void generateInstruction(InstructionOp op, Operand* a, Operand* b, Operand* c) {
+void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
 
 	// switch(op) {
 	// 	case(CALL):

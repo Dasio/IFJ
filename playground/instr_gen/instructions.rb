@@ -66,14 +66,14 @@ instructions = {
 	c.puts "#define extract_data() \\"
 	c.puts "	/* Pointers to local data */ \\"
 	c.puts "	StackData *local_src1 = vectorAt(stack.vect, stack.BP + i->src_1.offset); \\"
-	c.puts "	StackData *local_src2 = vectorAt(stack.vect, stack.BP + i->src_1.offset); \\"
+	c.puts "	StackData *local_src2 = vectorAt(stack.vect, stack.BP + i->src_2.offset); \\"
 	c.puts "	StackData *local_dst  = vectorAt(stack.vect, stack.BP + i->dst.offset);   \\"
 	c.puts "\\"
 	c.puts "	/* Pointers to constants */ \\"
-	c.puts "	int     *constant_src_1_I = &i->src_2.int_;   \\"
-	c.puts "	bool    *constant_src_1_B = &i->src_2.bool_;  \\"
-	c.puts "	double  *constant_src_1_D = &i->src_2.double_;\\"
-	c.puts "	String  *constant_src_1_S =  i->src_2.str;    \\"
+	c.puts "	int     *constant_src_1_I = &i->src_1.int_;   \\"
+	c.puts "	bool    *constant_src_1_B = &i->src_1.bool_;  \\"
+	c.puts "	double  *constant_src_1_D = &i->src_1.double_;\\"
+	c.puts "	String  *constant_src_1_S =  i->src_1.str;    \\"
 	c.puts "\\"
 	c.puts "	int     *constant_src_2_I = &i->src_2.int_;   \\"
 	c.puts "	bool    *constant_src_2_B = &i->src_2.bool_;  \\"
@@ -81,7 +81,7 @@ instructions = {
 	c.puts "	String  *constant_src_2_S =  i->src_2.str;    \\"
 	c.puts "	/* Pointers to global data */ \\"
 	c.puts "	StackData *global_src1 = vectorAt(stack.vect, i->src_1.offset); \\"
-	c.puts "	StackData *global_src2 = vectorAt(stack.vect, i->src_1.offset);"
+	c.puts "	StackData *global_src2 = vectorAt(stack.vect, i->src_2.offset);"
 	c.puts ""
 
 
@@ -248,6 +248,7 @@ instructions.each do |name, regex|
 		end
 		#
 		c.puts "	local_dst->initialized = true;"
+		c.puts "	stack.SP = stack.SP + local_dst->sp_inc;"
 		c.puts
 		if not implemented
 			c.puts "	assert(false && \"Instruction not implemented!\");"

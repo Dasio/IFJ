@@ -29,9 +29,9 @@
 	typedef struct {
 		uint8_t var_type : 2; // GLOBAL / LOCAL / CONST
 		uint8_t data_type: 3; // STRING / DOUBLE / INT / BOOL
+		uint8_t sp_inc : 1;
 
 		bool initialized : 1;
-		bool sp_inc : 1;
 
 		union {
 			int64_t offset;
@@ -63,7 +63,14 @@
 		LE , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
 		GE , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
 		EQ , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
-		NE   // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
+		NE , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
+
+		READLN, // 8  [LG][SDIB]  len DST
+		WRITELN,// 1  src1->int_ pocet argumentov
+		MOV,    // 4  [G][SDIB]   len DST
+		PUSH,   // 12 [CLG][SDIB] len SRC
+		CALL,   //
+		RET
 	} InstructionOp;
 
 	struct instruction;
