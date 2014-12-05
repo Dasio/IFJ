@@ -409,6 +409,7 @@ void Instr_DIV_CLII(Instruction *i) {
 	//CLII
 	if(local_src2->int_ == 0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -423,6 +424,7 @@ void Instr_DIV_CLID(Instruction *i) {
 	//CLID
 	if(local_src2->double_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -437,6 +439,7 @@ void Instr_DIV_CLDI(Instruction *i) {
 	//CLDI
 	if(local_src2->int_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -451,6 +454,7 @@ void Instr_DIV_CLDD(Instruction *i) {
 	//CLDD
 	if(local_src2->double_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -465,6 +469,7 @@ void Instr_DIV_CGII(Instruction *i) {
 	//CGII
 	if(global_src2->int_ == 0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -479,6 +484,7 @@ void Instr_DIV_CGID(Instruction *i) {
 	//CGID
 	if(global_src2->double_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -493,6 +499,7 @@ void Instr_DIV_CGDI(Instruction *i) {
 	//CGDI
 	if(global_src2->int_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -507,6 +514,7 @@ void Instr_DIV_CGDD(Instruction *i) {
 	//CGDD
 	if(global_src2->double_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -521,6 +529,7 @@ void Instr_DIV_LCII(Instruction *i) {
 	//LCII
 	if(*constant_src_2_I == 0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -535,6 +544,7 @@ void Instr_DIV_LCID(Instruction *i) {
 	//LCID
 	if(*constant_src_2_D == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -549,6 +559,7 @@ void Instr_DIV_LCDI(Instruction *i) {
 	//LCDI
 	if(*constant_src_2_I == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -563,6 +574,7 @@ void Instr_DIV_LCDD(Instruction *i) {
 	//LCDD
 	if(*constant_src_2_D == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -577,6 +589,7 @@ void Instr_DIV_LLII(Instruction *i) {
 	//LLII
 	if(local_src2->int_ == 0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -591,6 +604,7 @@ void Instr_DIV_LLID(Instruction *i) {
 	//LLID
 	if(local_src2->double_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -605,6 +619,7 @@ void Instr_DIV_LLDI(Instruction *i) {
 	//LLDI
 	if(local_src2->int_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -619,6 +634,7 @@ void Instr_DIV_LLDD(Instruction *i) {
 	//LLDD
 	if(local_src2->double_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -633,6 +649,7 @@ void Instr_DIV_LGII(Instruction *i) {
 	//LGII
 	if(global_src2->int_ == 0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -647,6 +664,7 @@ void Instr_DIV_LGID(Instruction *i) {
 	//LGID
 	if(global_src2->double_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -661,6 +679,7 @@ void Instr_DIV_LGDI(Instruction *i) {
 	//LGDI
 	if(global_src2->int_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -675,6 +694,7 @@ void Instr_DIV_LGDD(Instruction *i) {
 	//LGDD
 	if(global_src2->double_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -689,6 +709,7 @@ void Instr_DIV_GCII(Instruction *i) {
 	//GCII
 	if(*constant_src_2_I == 0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -703,6 +724,7 @@ void Instr_DIV_GCID(Instruction *i) {
 	//GCID
 	if(*constant_src_2_D == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -717,6 +739,7 @@ void Instr_DIV_GCDI(Instruction *i) {
 	//GCDI
 	if(*constant_src_2_I == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -731,6 +754,7 @@ void Instr_DIV_GCDD(Instruction *i) {
 	//GCDD
 	if(*constant_src_2_D == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -745,6 +769,7 @@ void Instr_DIV_GLII(Instruction *i) {
 	//GLII
 	if(local_src2->int_ == 0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -759,6 +784,7 @@ void Instr_DIV_GLID(Instruction *i) {
 	//GLID
 	if(local_src2->double_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -773,6 +799,7 @@ void Instr_DIV_GLDI(Instruction *i) {
 	//GLDI
 	if(local_src2->int_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -787,6 +814,7 @@ void Instr_DIV_GLDD(Instruction *i) {
 	//GLDD
 	if(local_src2->double_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -801,6 +829,7 @@ void Instr_DIV_GGII(Instruction *i) {
 	//GGII
 	if(global_src2->int_ == 0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -815,6 +844,7 @@ void Instr_DIV_GGID(Instruction *i) {
 	//GGID
 	if(global_src2->double_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -829,6 +859,7 @@ void Instr_DIV_GGDI(Instruction *i) {
 	//GGDI
 	if(global_src2->int_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 
@@ -843,6 +874,7 @@ void Instr_DIV_GGDD(Instruction *i) {
 	//GGDD
 	if(global_src2->double_ == 0.0) {
 		setError(ERR_DivisionByZero);
+		die();
 		return;
 	}
 

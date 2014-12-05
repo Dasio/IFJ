@@ -1,6 +1,7 @@
 #include "system.h"
 #include "instruction.h"
 #include "stack.h"
+#include "memory_mgmt.h"
 
 #ifndef _INSTRUCTIONS_GENERATED_H
 #define _INSTRUCTIONS_GENERATED_H
