@@ -99,6 +99,9 @@ void printError()
 		case ERR_ReadInput:
 			printErrorDetails("Wrong input");
 			break;
+		case ERR_OutOfRange:
+			printErrorDetails("Out of range");
+			break;
 		default:
 			printErrorDetails("Unrecognized error");
 	}
