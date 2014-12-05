@@ -5,7 +5,7 @@
 START_TEST_SUITE(IALTest)
 	String find = initString("abc");
 	String text = initString("ababab");
-	TEST_EXPR("FindString: \"abc\" is NOT in \"ababab\"",(FindString(&text, &find) == (int)text.length));
+	TEST_EXPR("FindString: \"abc\" is NOT in \"ababab\"",(FindString(&text, &find) == 0));
 	appendCharToString(&text, 'c');
 	appendCharToString(&text, 's');
 	TEST_EXPR("FindString: \"abc\" IS in \"abababcs\" at index 5 (indexing from 1)",(FindString(&text, &find) == 5));
