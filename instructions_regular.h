@@ -1,4 +1,5 @@
 #include "instruction.h"
+#include "stack.h"
 
 #ifndef _INSTRUCTIONS_REGULAR_H
 #define _INSTRUCTIONS_REGULAR_H
