@@ -52,11 +52,10 @@ void Inst_ADD_DD(Instruction *i) {
  * CORE
  */
 
-void appendInstruction(InstructionOp op, InstrFuncPtr instr, Operand* a, Operand* b, Operand* c) {
+void generateExprInstruction(InstructionOp op, Operand* a, Operand* b, Operand* c) {
 
-	int instruction_offset = op << 10 |
-						a->var_type << 8 | b->var_type << 6 | c->var_type << 4 |
-						b->data_type << 2 |c->data_type;
+	int instruction_offset = op << 8 | b->var_type << 6 | c->var_type << 4 |
+						b->data_type << 2 | c->data_type;
 
 	printf("%d\n", instruction_offset);
 
@@ -65,26 +64,13 @@ void appendInstruction(InstructionOp op, InstrFuncPtr instr, Operand* a, Operand
 }
 
 void generateInstruction(InstructionOp op, Operand* a, Operand* b, Operand* c) {
-	switch(op) {
-		case ADD:{
-			// Invalid pointers yet
-			if(b->data_type == INT && c->data_type == INT) {
-				appendInstruction(op, Instr_ADD_CLII, a, b, c);
-			} else if (b->data_type == INT && c->data_type == DOUBLE) {
-				appendInstruction(op, Instr_ADD_CLII, a, b, c);
-			} else if (b->data_type == DOUBLE && c->data_type == INT) {
-				appendInstruction(op, Instr_ADD_CLII, a, b, c);
-			} else if(b->data_type == DOUBLE && c->data_type == DOUBLE) {
-				appendInstruction(op, Instr_ADD_CLII, a, b, c);
-			} else {
-				appendInstruction(op, Instr_ADD_CLII, a, b, c);
-			}
-			break;
-		}
-		default: {
-			appendInstruction(op, Instr_ADD_CLII, a, b, c);
-		}
-	}
+
+	// switch(op) {
+	// 	case(CALL):
+	// }
+
+	//Instruction i = (Instruction) {.instr = NULL, .dst = *a, .src_1 = *b, .src_2 = *c};
+	//InstructionVectorAppend(tape, i);
 }
 
 static bool interpretationStep() {
