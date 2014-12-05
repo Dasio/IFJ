@@ -324,7 +324,7 @@ uint32_t term_list()
 }
 uint8_t terms(uint8_t next)
 {
-	Symbol *symbol;
+	Symbol *symbol = NULL;
 	Scope scope;
 	if(next)
 	{
@@ -388,6 +388,8 @@ uint8_t terms(uint8_t next)
 					//gen Instr_PUSH_GB
 				}
 				break;
+			default:
+				break;
 		}
 	}
 	else
@@ -405,6 +407,8 @@ uint8_t terms(uint8_t next)
 				break;
 			case T_bool:
 				//gen Instr_PUSH_CB
+				break;
+			default:
 				break;
 		}
 	}
@@ -697,6 +701,8 @@ void readln()
 		case T_bool:
 			setError(ERR_ReadBool);
 			return;
+		default:
+			break;
 	}
 	token++;
 	if(token->type != TT_rightBrace)
@@ -828,7 +834,9 @@ void addBuiltInFunctions()
 	symbol->index = -1;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_int;
+	SymbolAdd(funcContext, T_int, "length", NULL, NULL);
 	AddArgToContext(funcContext, T_String, "s", NULL);
+	funcContext->locCount--;
 
 	// copy(s : string; i : integer; n : integer) : string
 	funcContext = InitContext();
@@ -836,9 +844,11 @@ void addBuiltInFunctions()
 	symbol->index = -2;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_String;
+	SymbolAdd(funcContext, T_String, "copy", NULL, NULL);
 	AddArgToContext(funcContext, T_String, "s", NULL);
 	AddArgToContext(funcContext, T_int, "i", NULL);
 	AddArgToContext(funcContext, T_int, "n", NULL);
+	funcContext->locCount--;
 
 	// find(s : string; search : string) : integer
 	funcContext = InitContext();
@@ -846,8 +856,10 @@ void addBuiltInFunctions()
 	symbol = SymbolAdd(mainContext, T_FunPointer, "find", funcContext, NULL);
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_int;
+	SymbolAdd(funcContext, T_int, "find", NULL, NULL);
 	AddArgToContext(funcContext, T_String, "s", NULL);
 	AddArgToContext(funcContext, T_String, "search", NULL);
+	funcContext->locCount--;
 
 	// sort(s : string) : string
 	funcContext = InitContext();
@@ -855,7 +867,9 @@ void addBuiltInFunctions()
 	symbol->index = -4;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_String;
+	SymbolAdd(funcContext, T_String, "name", NULL, NULL);
 	AddArgToContext(funcContext, T_String, "s", NULL);
+	funcContext->locCount--;
 
 	funcContext = NULL;
 }
