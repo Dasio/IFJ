@@ -324,6 +324,8 @@ uint32_t term_list()
 }
 uint8_t terms(uint8_t next)
 {
+	Symbol *symbol;
+	Scope scope;
 	if(next)
 	{
 		token++;
@@ -341,11 +343,71 @@ uint8_t terms(uint8_t next)
 	}
 	if(token->type == TT_identifier)
 	{
-		findVarOrFunc(token->str.data,NULL);
+		symbol = findVarOrFunc(token->str.data,&scope);
 		if(getError())
 			return 0;
+		switch(symbol->type)
+		{
+			case T_String:
+				if(scope == Local)
+				{
+					//gen Instr_PUSH_LS
+				}
+				else if(scope == Global)
+				{
+					//gen Instr_PUSH_GS
+				}
+				break;
+			case T_double:
+				if(scope == Local)
+				{
+					//gen Instr_PUSH_LD
+				}
+				else if(scope == Global)
+				{
+					//gen Instr_PUSH_GD
+				}
+				break;
+			case T_int:
+				if(scope == Local)
+				{
+					//gen Instr_PUSH_LI
+				}
+				else if(scope == Global)
+				{
+					//gen Instr_PUSH_GI
+				}
+				break;
+			case T_bool:
+				if(scope == Local)
+				{
+					//gen Instr_PUSH_LB
+				}
+				else if(scope == Global)
+				{
+					//gen Instr_PUSH_GB
+				}
+				break;
+		}
 	}
-
+	else
+	{
+		switch(symbol->type)
+		{
+			case T_String:
+				//gen Instr_PUSH_CS
+				break;
+			case T_double:
+				//gen Instr_PUSH_CD
+				break;
+			case T_int:
+				//gen Instr_PUSH_CI
+				break;
+			case T_bool:
+				//gen Instr_PUSH_CB
+				break;
+		}
+	}
 	count = terms(1);
 	if(getError())
 		return 0;
@@ -415,7 +477,7 @@ void stmt_empty()
 uint8_t stmt(uint8_t empty)
 {
 	uint8_t epsilon = 0;
-	uint8_t scope;
+	Scope scope;
 	Symbol *id = NULL;
 	DataType exprType;
 	// IF wasnt called from stmt_empty(), need to load next token
@@ -581,6 +643,7 @@ uint8_t if_n()
 
 void readln()
 {
+	Scope scope;
 	// keyword readln already loaded from STMT
 	token++;
 	if(token->type != TT_leftBrace)
@@ -595,15 +658,46 @@ void readln()
 		setError(ERR_Syntax);
 		return;
 	}
-	Symbol *symbol = findVarOrFunc(token->str.data,NULL);
+	Symbol *symbol = findVarOrFunc(token->str.data,&scope);
 	if(getError())
 		return;
-	if(symbol->type == T_bool)
-	{
-		setError(ERR_ReadBool);
-		return;
-	}
 
+	switch(symbol->type)
+	{
+		case T_String:
+			if(scope == Local)
+			{
+				//gen Instr_READLN_LS
+			}
+			else if(scope == Global)
+			{
+				//gen Instr_READLN_GS
+			}
+			break;
+		case T_double:
+			if(scope == Local)
+			{
+				//gen Instr_READLN_LD
+			}
+			else if(scope == Global)
+			{
+				//gen Instr_READLN_GD
+			}
+			break;
+		case T_int:
+			if(scope == Local)
+			{
+				//gen Instr_READLN_LI
+			}
+			else if(scope == Global)
+			{
+				//gen Instr_READLN_GI
+			}
+			break;
+		case T_bool:
+			setError(ERR_ReadBool);
+			return;
+	}
 	token++;
 	if(token->type != TT_rightBrace)
 	{
@@ -765,7 +859,7 @@ void addBuiltInFunctions()
 
 	funcContext = NULL;
 }
-Symbol *findVarOrFunc(char *name, uint8_t *scope)
+Symbol *findVarOrFunc(char *name, Scope *scope)
 {
 	Symbol *id = SymbolFind(activeContext,name);
 	if(id == NULL)
@@ -785,10 +879,10 @@ Symbol *findVarOrFunc(char *name, uint8_t *scope)
 			return NULL;
 		}
 		if(scope)
-			*scope = 0;
+			*scope = Global;
 		return id;
 	}
 	if(scope)
-			*scope = 1;
+			*scope = Local;
 	return id;
 }
