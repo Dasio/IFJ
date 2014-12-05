@@ -778,6 +778,12 @@ Symbol *findVarOrFunc(char *name, uint8_t *scope)
 			setError(ERR_UndefVarOrFunction);
 			return NULL;
 		}
+		// Bultin function cant be as identifier
+		if(id->index < 0)
+		{
+			setError(ERR_BuiltFuncAsID);
+			return NULL;
+		}
 		if(scope)
 			*scope = 0;
 		return id;

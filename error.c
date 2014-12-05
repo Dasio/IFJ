@@ -22,6 +22,7 @@ static const int returnCodeTable[] = {
 	[ERR_DeclrFunc]         = 3,
 	[ERR_BadDefArg]         = 3,
 	[ERR_NoDefFunc]         = 3,
+	[ERR_BuiltFuncAsID]		= 3,
 	[ERR_ReadBool]			= 4,
 	// Expression
 	[ERR_SyntaxExpr]		= 2,
@@ -75,6 +76,9 @@ void printError()
 			break;
 		case ERR_NoDefFunc:
 			printErrorDetails("Function was declared, but afterward it wasn't defined");
+			break;
+		case ERR_BuiltFuncAsID:
+			printErrorDetails("Built-in function can't be used where identifier is expected");
 			break;
 		case ERR_SyntaxExpr:
 			printErrorDetails("Error in syntax of expression");
