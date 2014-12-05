@@ -15,22 +15,22 @@ comb = [["C", "L", "G","x"], # VarType SRC1
 comb = comb.first.product(*comb[1..-1]).map(&:join).reject {|s| s =~ /CC/}
 
 instructions = {
-	#neg: /[xLG][x][ID]x/,
-	#not: /[xLG][x][B]x/,
+	neg: /[xLG][x][ID]x/,
+	not: /[xLG][x][B]x/,
 
-	# mul: /[CLG][CLG][ID][ID]/,
-	# div: /[CLG][CLG][ID][ID]/,
-	# and: /[CLG][CLG]BB/,
+	mul: /[CLG][CLG][ID][ID]/,
+	div: /[CLG][CLG][ID][ID]/,
+	and: /[CLG][CLG]BB/,
 	add: /[CLG][CLG]([ID][ID]|SS)/,
-	# sub: /[CLG][CLG][ID][ID]/,
-	# or:  /[CLG][CLG]BB/,
-	# xor: /[CLG][CLG]BB/,
-	# l:   /[CLG][CLG](II|DD|BB|SS)/,
-	# g:   /[CLG][CLG](II|DD|BB|SS)/,
-	# le:  /[CLG][CLG](II|DD|BB|SS)/,
-	# ge:  /[CLG][CLG](II|DD|BB|SS)/,
-	# eq:  /[CLG][CLG](II|DD|BB|SS)/,
-	# ne:  /[CLG][CLG](II|DD|BB|SS)/
+	sub: /[CLG][CLG][ID][ID]/,
+	or:  /[CLG][CLG]BB/,
+	xor: /[CLG][CLG]BB/,
+	l:   /[CLG][CLG](II|DD|BB|SS)/,
+	g:   /[CLG][CLG](II|DD|BB|SS)/,
+	le:  /[CLG][CLG](II|DD|BB|SS)/,
+	ge:  /[CLG][CLG](II|DD|BB|SS)/,
+	eq:  /[CLG][CLG](II|DD|BB|SS)/,
+	ne:  /[CLG][CLG](II|DD|BB|SS)/
 }
 
 	c = File.open("../../instructions_generated.c", "w")
@@ -107,19 +107,21 @@ instructions.each do |name, regex|
 		c.puts "	//#{proto}"
 
 		if proto[0] == "L"
-			src1 = "local_src1->"+types[proto[2]].to_s
+			src1     = "local_src1->"+types[proto[2]].to_s
 		elsif proto[0] == "G"
-			src1 = "global_src1->"+types[proto[2]].to_s
+			src1     = "global_src1->"+types[proto[2]].to_s
 		elsif proto[0] == "C"
-			src1 = "*constant_src_1_"+proto[2]
+			src1     = "*constant_src_1_"+proto[2]
+			src1_raw = "constant_src_1_"+proto[2]
 		end
 
 		if proto[1] == "L"
-			src2 = "local_src2->"+types[proto[3]].to_s
+			src2     = "local_src2->"+types[proto[3]].to_s
 		elsif proto[1] == "G"
-			src2 = "global_src2->"+types[proto[3]].to_s
+			src2     = "global_src2->"+types[proto[3]].to_s
 		elsif proto[1] == "C"
-			src2 = "*constant_src_2_"+proto[3]
+			src2     = "*constant_src_2_"+proto[3]
+			src2_raw = "constant_src_2_"+proto[3]
 		end
 
 		# if proto[2] == "I"
@@ -127,11 +129,115 @@ instructions.each do |name, regex|
 		# 		c.puts "local_dst->#{types['I']} = #{src1}  #{src2};"
 		# 	end
 		# end
-		if proto[3] != "S" && proto[2] != "S"
-			c.puts "	local_dst->#{types[proto[2]]} = #{src1} #{operators[name]} #{src2};"
-			implemented = true
-		end
+		# if proto[3] != "S" && proto[2] != "S"
+		# 	c.puts "	local_dst->#{types[proto[2]]} = #{src1} #{operators[name]} #{src2};"
+		# 	implemented = true
+		# end
+		#
+		# proto ma format "LLII"
+		src_types = proto[2,2] # Vybere SRC1 a SRC2 typy ako string
+		src_type1 = proto[2]
+		src_type2 = proto[3]
 
+		if    src_types == "II"
+			case name # Instruction switch
+			when :mul
+				c.puts "	local_dst->int_ = #{src1} * #{src2};"; implemented = true
+			when :div
+				c.puts "	if(#{src2} == 0) {"
+				c.puts "		setError(ERR_DivisionByZero);"
+				c.puts "	};"
+				c.puts "	return;"
+				# TODO: Pretypovat src1 alebo nehat celociselne delenie?
+				c.puts "	local_dst->double_ = #{src1} / #{src2};"; implemented = true
+			when :add
+				c.puts "	local_dst->int_ = #{src1} + #{src2};"; implemented = true
+			when :sub
+				c.puts "	local_dst->int_ = #{src1} - #{src2};"; implemented = true
+			when :l
+				c.puts "	local_dst->bool_ = #{src1} < #{src2};"; implemented = true
+			when :g
+				c.puts "	local_dst->bool_ = #{src1} > #{src2};"; implemented = true
+			when :le
+				c.puts "	local_dst->bool_ = #{src1} <= #{src2};"; implemented = true
+			when :ge
+				c.puts "	local_dst->bool_ = #{src1} >= #{src2};"; implemented = true
+			when :eq
+				c.puts "	local_dst->bool_ = #{src1} == #{src2};"; implemented = true
+			when :ne
+				c.puts "	local_dst->bool_ = #{src1} != #{src2};"; implemented = true
+			end
+		elsif src_types == "ID" || src_types == "DI" || src_types == "DD"
+			case name # Instruction switch
+			when :mul
+				c.puts "	local_dst->double_ = #{src1} * #{src2};"; implemented = true
+			when :div
+				c.puts "	if(#{src2} == 0.0) {"
+				c.puts "		setError(ERR_DivisionByZero);"
+				c.puts "	};"
+				c.puts "	return;"
+				c.puts "	local_dst->double_ = #{src1} / #{src2};"; implemented = true
+			when :add
+				c.puts "	local_dst->double_ = #{src1} + #{src2};"; implemented = true
+			when :sub
+				c.puts "	local_dst->double_ = #{src1} - #{src2};"; implemented = true
+			when :l
+				c.puts "	local_dst->bool_ = #{src1} < #{src2};"; implemented = true
+			when :g
+				c.puts "	local_dst->bool_ = #{src1} > #{src2};"; implemented = true
+			when :le
+				c.puts "	local_dst->bool_ = #{src1} <= #{src2};"; implemented = true
+			when :ge
+				c.puts "	local_dst->bool_ = #{src1} >= #{src2};"; implemented = true
+			when :eq
+				c.puts "	local_dst->bool_ = #{src1} == #{src2};"; implemented = true
+			when :ne
+				c.puts "	local_dst->bool_ = #{src1} != #{src2};"; implemented = true
+			end
+		elsif src_types == "BB"
+			case name # Instruction switch
+			when :and
+				c.puts "	local_dst->bool_ = #{src1} && #{src2};"; implemented = true
+			when :or
+				c.puts "	local_dst->bool_ = #{src1} || #{src2};"; implemented = true
+			when :xor
+				c.puts "	local_dst->bool_ = #{src1} ^ #{src2};"; implemented = true
+			when :l
+				c.puts "	local_dst->bool_ = #{src1} < #{src2};"; implemented = true
+			when :g
+				c.puts "	local_dst->bool_ = #{src1} > #{src2};"; implemented = true
+			when :le
+				c.puts "	local_dst->bool_ = #{src1} <= #{src2};"; implemented = true
+			when :ge
+				c.puts "	local_dst->bool_ = #{src1} >= #{src2};"; implemented = true
+			when :eq
+				c.puts "	local_dst->bool_ = #{src1} == #{src2};"; implemented = true
+			when :ne
+				c.puts "	local_dst->bool_ = #{src1} != #{src2};"; implemented = true
+			end
+		elsif src_types == "SS"
+			if name == :add
+				c.puts "appendCharsToString(#{proto[0] == "C" && src1_raw || src1}, #{proto[1] == "C" && src2_raw || src2}->data);"
+				implemented = true
+			end
+			c.puts ""
+			c.puts "int compare_result = strcmp(#{proto[0] == "C" && src1_raw || src1}->data, #{proto[1] == "C" && src2_raw || src2}->data);"
+			case name # Instruction switch
+			when :l
+				c.puts "	local_dst->bool_ = compare_result < 0;"; implemented = true
+			when :g
+				c.puts "	local_dst->bool_ = compare_result > 0;"; implemented = true
+			when :le
+				c.puts "	local_dst->bool_ = compare_result <= 0;"; implemented = true
+			when :ge
+				c.puts "	local_dst->bool_ = compare_result >= 0;"; implemented = true
+			when :eq
+				c.puts "	local_dst->bool_ = compare_result == 0;"; implemented = true
+			when :ne
+				c.puts "	local_dst->bool_ = compare_result != 0;"; implemented = true
+			end
+		end
+		#
 		if not implemented
 			c.puts "	assert(false && \"Instruction not implemented!\");"
 		end
