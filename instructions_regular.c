@@ -300,7 +300,10 @@ void Instr_PUSH_GB(Instruction *i) {
 
 // CALL
 void Instr_CALL(Instruction *i) {
-
+	// Pri appendovani BP a RetAddr sa ma incrementovat SP
+	//
+	// V cykle pushovanie premennych, kazdej nastavit flag ze je
+	// neinicializovana.
 }
 
 
