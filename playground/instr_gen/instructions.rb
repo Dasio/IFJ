@@ -61,6 +61,31 @@ instructions = {
 #endif
 
 '
+
+	# Definition
+	c.puts "#define extract_data() \\"
+	c.puts "	/* Pointers to local data */ \\"
+	c.puts "	StackData *local_src1 = vectorAt(stack.vect, stack.BP + i->src_1.offset); \\"
+	c.puts "	StackData *local_src2 = vectorAt(stack.vect, stack.BP + i->src_1.offset); \\"
+	c.puts "	StackData *local_dst  = vectorAt(stack.vect, stack.BP + i->dst.offset);   \\"
+	c.puts "\\"
+	c.puts "	/* Pointers to constants */ \\"
+	c.puts "	int     *constant_src_1_I = &i->src_2.int_;   \\"
+	c.puts "	bool    *constant_src_1_B = &i->src_2.bool_;  \\"
+	c.puts "	double  *constant_src_1_D = &i->src_2.double_;\\"
+	c.puts "	String  *constant_src_1_S =  i->src_2.str;    \\"
+	c.puts "\\"
+	c.puts "	int     *constant_src_2_I = &i->src_2.int_;   \\"
+	c.puts "	bool    *constant_src_2_B = &i->src_2.bool_;  \\"
+	c.puts "	double  *constant_src_2_D = &i->src_2.double_;\\"
+	c.puts "	String  *constant_src_2_S =  i->src_2.str;    \\"
+	c.puts "	/* Pointers to global data */ \\"
+	c.puts "	StackData *global_src1 = vectorAt(stack.vect, i->src_1.offset); \\"
+	c.puts "	StackData *global_src2 = vectorAt(stack.vect, i->src_1.offset);"
+	c.puts ""
+
+
+
 operators = {:add => "+", :mul => "*"}
 
 def operation(name, src1, src2)
@@ -81,28 +106,9 @@ instructions.each do |name, regex|
 		# Prototype
 		h.puts "void #{function_name}(Instruction *i);"
 
-		# Definition
 		c.puts "void #{function_name}(Instruction *i) {"
-		c.puts "	// Pointers to local data"
-		c.puts "	StackData *local_src1 = vectorAt(stack.vect, stack.BP + i->src_1.offset);"
-		c.puts "	StackData *local_src2 = vectorAt(stack.vect, stack.BP + i->src_1.offset);"
-		c.puts "	StackData *local_dst  = vectorAt(stack.vect, stack.BP + i->dst.offset);"
-		c.puts ""
-		c.puts "	// Pointers to constants"
-		c.puts "	int     *constant_src_1_I = &i->src_2.int_;"
-		c.puts "	bool    *constant_src_1_B = &i->src_2.bool_;"
-		c.puts "	double  *constant_src_1_D = &i->src_2.double_;"
-		c.puts "	String  *constant_src_1_S =  i->src_2.str;"
-		c.puts ""
-		c.puts "	int     *constant_src_2_I = &i->src_2.int_;"
-		c.puts "	bool    *constant_src_2_B = &i->src_2.bool_;"
-		c.puts "	double  *constant_src_2_D = &i->src_2.double_;"
-		c.puts "	String  *constant_src_2_S =  i->src_2.str;"
+		c.puts "	extract_data() // Macro for unrolling pointers"
 
-		c.puts "	// Pointers to global data"
-		c.puts "	StackData *global_src1 = vectorAt(stack.vect, i->src_1.offset);"
-		c.puts "	StackData *global_src2 = vectorAt(stack.vect, i->src_1.offset);"
-		c.puts ""
 		#c.puts "	local_dst->int_ = local_src1->int_ + local_src2->int_;"
 		c.puts "	//#{proto}"
 
