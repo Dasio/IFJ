@@ -1,0 +1,15 @@
+{L,G}{L,G}{I,D}
+{L,G}{L,G}{B}
+{L,G}{C,L,G}{C,L,G}{II,DI,ID,II}
+{L,G}{C,L,G}{C,L,G}{II,DI,ID,II}
+{L,G}{C,L,G}{C,L,G}{BB}
+{L,G}{C,L,G}{C,L,G}{II,DI,ID,II,SS}
+{L,G}{C,L,G}{C,L,G}{II,DI,ID,II}
+{L,G}{C,L,G}{C,L,G}{BB}
+{L,G}{C,L,G}{C,L,G}{BB}
+{L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}
+{L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}
+{L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}
+{L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}
+{L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}
+{L,G}{C,L,G}{C,L,G}{II,DD,BB,SS}
