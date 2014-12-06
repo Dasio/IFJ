@@ -138,17 +138,21 @@ Token getToken(Scanner *scanner)
 	if(token.type == TT_keyword) {
 		switch(token.keyword_token) {
 			case Key_true: {
+
+				destroyString(&token.str);
+
 				token.type = TT_bool;
 				token.n = 1;
 
-				destroyString(&token.str);
 				break;
 			}
 			case Key_false: {
+
+				destroyString(&token.str);
+
 				token.type = TT_bool;
 				token.n = 0;
 
-				destroyString(&token.str);
 				break;
 			}
 			default: {
