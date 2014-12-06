@@ -5,11 +5,13 @@ extern void *mem_alloc(size_t len);
 extern Stack stack;
 extern uint64_t IP;
 
-#define vectorAt(v, i) (StackData*)((StackData*)(v->array) + (i))
+static StackData operand;
+static StackData empty = { .initialized=false };
+
+#define vectorAt(v, i) ((StackData*)(v->array) + (i))
 
 // READLN 6   [LG][SDI]  len DST
 void Instr_READLN_LS(Instruction *i) {
-	StackData *local_dst  = vectorAt(stack.vect, stack.BP + i->dst.offset);
 
 	bool begin=true;
 	int c;
@@ -32,12 +34,13 @@ void Instr_READLN_LS(Instruction *i) {
 
 	mem_ptradd(str->data);
 
-	local_dst->str = str;
-	local_dst->initialized = true;
+	operand.str = str;
+	operand.initialized = true;
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
 }
 
 void Instr_READLN_LD(Instruction *i) {
-	StackData *local_dst  = vectorAt(stack.vect, stack.BP + i->dst.offset);
 
 	bool start=false;
 	char *error;
@@ -67,15 +70,15 @@ void Instr_READLN_LD(Instruction *i) {
 	if(*error != 0)
 	{
 		setError(ERR_ReadInput);
-		return;
+		die();
 	}
 
-	local_dst->double_ = d;
-	local_dst->initialized = true;
+	operand.double_ = d;
+	operand.initialized = true;
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 }
 
 void Instr_READLN_LI(Instruction *i) {
-	StackData *local_dst  = vectorAt(stack.vect, stack.BP + i->dst.offset);
 
 	bool start=false;
 	char *error;
@@ -105,15 +108,15 @@ void Instr_READLN_LI(Instruction *i) {
 	if(*error != 0)
 	{
 		setError(ERR_ReadInput);
-		return;
+		die();
 	}
 
-	local_dst->int_ = n;
-	local_dst->initialized = true;
+	operand.int_ = n;
+	operand.initialized = true;
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 }
 
 void Instr_READLN_GS(Instruction *i) {
-	StackData *global_dst  = vectorAt(stack.vect, i->dst.offset);
 
 	bool begin=true;
 	int c;
@@ -136,12 +139,12 @@ void Instr_READLN_GS(Instruction *i) {
 
 	mem_ptradd(str->data);
 
-	global_dst->str = str;
-	global_dst->initialized = true;
+	operand.str = str;
+	operand.initialized = true;
+	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
 }
 
 void Instr_READLN_GD(Instruction *i) {
-	StackData *global_dst  = vectorAt(stack.vect, i->dst.offset);
 
 	bool start=false;
 	char *error;
@@ -170,15 +173,15 @@ void Instr_READLN_GD(Instruction *i) {
 	if(*error != 0)
 	{
 		setError(ERR_ReadInput);
-		return;
+		die();
 	}
 
-	global_dst->double_ = d;
-	global_dst->initialized = true;
+	operand.double_ = d;
+	operand.initialized = true;
+	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
 }
 
 void Instr_READLN_GI(Instruction *i) {
-	StackData *global_dst  = vectorAt(stack.vect, i->dst.offset);
 
 	bool start=false;
 	char *error;
@@ -208,28 +211,71 @@ void Instr_READLN_GI(Instruction *i) {
 	if(*error != 0)
 	{
 		setError(ERR_ReadInput);
-		return;
+		die();
 	}
 
-	global_dst->int_ = n;
-	global_dst->initialized = true;
+	operand.int_ = n;
+	operand.initialized = true;
+	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
 }
 
-void Instr_COPY_LS(Instruction *i) {
+// COPY  dst_{}
+void Instr_COPY_LS() {
 
-	StackData *local_dst  = vectorAt(stack.vect, stack.BP + i->dst.offset);
-	StackData *op;
-	op = vectorAt(stack.vect, stack.BP - 1);
-	String *s = op->str;
-	//op-- ?
-	op = vectorAt(stack.vect, stack.BP - 2);
-	uint32_t pos = op->int_;
-	op = vectorAt(stack.vect, stack.BP - 3);
-	uint32_t n = op->int_;
-	String *str = malloc(sizeof(String));
+	StackData *op = vectorAt(stack.vect, stack.SP - 1);
+	String *s = NULL;
+	int32_t pos = 0;
+	int32_t n = 0;
+
+	switch(op->var_type)
+	{
+		case LOCAL:
+			s = vectorAt(stack.vect, stack.BP + op->offset)->str;
+			break;
+		case GLOBAL:
+			s = vectorAt(stack.vect, op->offset)->str;
+			break;
+		case CONST:
+			s = op->str;
+			break;
+		default:
+			break;
+	}
+
+	switch((--op)->var_type)
+	{
+		case LOCAL:
+			pos = vectorAt(stack.vect, stack.BP + op->offset)->int_;
+			break;
+		case GLOBAL:
+			pos = vectorAt(stack.vect, op->offset)->int_;
+			break;
+		case CONST:
+			pos = op->int_;
+			break;
+		default:
+			break;
+	}
+
+	switch((--op)->var_type)
+	{
+		case LOCAL:
+			n = vectorAt(stack.vect, stack.BP + op->offset)->int_;
+			break;
+		case GLOBAL:
+			n = vectorAt(stack.vect, op->offset)->int_;
+			break;
+		case CONST:
+			n = op->int_;
+			break;
+		default:
+			break;
+	}
+
+	String *str = mem_alloc(sizeof(String));
 	*str = initStringSize(n+1);
 
-	uint32_t length = s->length;
+	int32_t length = s->length;
 	if(n > length)
 		n=length;
 	// If Index is larger than the length of the string S or index is negative,
@@ -248,13 +294,14 @@ void Instr_COPY_LS(Instruction *i) {
 
 	mem_ptradd(str->data);
 
-	local_dst->str = str;
-	local_dst->initialized = true;
+	(--op)->str = str;
+	op->initialized = true;
 
+	stack.SP -= 3; // args_count
 }
 
 
-// // WRITELN 1      src1->int_ pocet argumentov
+// // WRITELN 1    number of arguments - first operand
 // void Instr_WRITELN(Instruction *i) {
 
 // }
@@ -355,31 +402,30 @@ void Instr_PUSH_GS(Instruction *i) {
 
 // CALL
 void Instr_CALL(Instruction *i) {
-	// Pri appendovani BP a RetAddr sa ma incrementovat SP
-	//
-	// V cykle pushovanie premennych, kazdej nastavit flag ze je
-	// neinicializovana.
 
-	StackData *top_of_stack = vectorAt(stack.vect, ++stack.SP);
+	operand.offset = stack.BP;
+	StackDataVectorAtSet(stack.vect, ++stack.SP, operand);
+	stack.BP = stack.SP;
 
-	top_of_stack->offset = stack.BP;
-	top_of_stack++;
-	stack.SP++;
-	top_of_stack->offset = ++IP; // push adress
+	operand.offset = IP;
+	StackDataVectorAtSet(stack.vect, ++stack.SP, operand);
 
 	for (int x = 0; x < i->src_1.int_; x++)
 	{
-		top_of_stack++;
-		stack.SP++;
-		top_of_stack->initialized = false;
+		StackDataVectorAtSet(stack.vect, ++stack.SP, empty);
 	}
 
 	IP = i->dst.offset;
-
 }
 
 
-// RET
-// void Instr_RET(Instruction *i) {
+// RET (controlling initialized flag of return vale isn't needed here)
+void Instr_RET(Instruction *i) {
 
-// }
+	StackData *BP_ptr = vectorAt(stack.vect, stack.BP);
+	stack.SP = stack.BP;
+	stack.BP = BP_ptr->offset;
+	IP = (++BP_ptr)->offset;
+
+	stack.SP -= i->dst.int_; // args_count
+}

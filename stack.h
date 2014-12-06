@@ -68,6 +68,6 @@
  * @param  index index where variable is(negativ-arg, positive-locVar)
  * @return       value of variable
  */
-StackData *StackReadValue(Stack *stack, int index);
+//StackData *StackReadValue(Stack *stack, int index);
 
 #endif

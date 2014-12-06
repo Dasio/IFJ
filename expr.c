@@ -221,7 +221,7 @@ DataType expr()
 	instr_counter = 0;
 	bool end_of_eval = true;
 	return_value_data_type = EXPR_ERROR;
-	//assert(funcContext);
+	//assert(activeContext);
 	MY_OFFSET = activeContext->locCount + 2;
 
 	token++;
