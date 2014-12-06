@@ -20,7 +20,7 @@
 		/********************************/
 
 		/* priority 0 */
-		TT_unaryMinus,
+		TT_unaryMinus = 0,
 		TT_not,
 
 		/* priority 1 */
@@ -36,7 +36,7 @@
 
 		/* priority 3 */
 		TT_less,
-		TT_greater,
+		TT_greater, // 10
 		TT_lessOrEqual,
 		TT_greaterOrEqual,
 		TT_equality,
@@ -47,7 +47,7 @@
 		TT_function, // not used in scanner
 		TT_comma,
 		TT_empty, // special token, default value
-		TT_identifier,
+		TT_identifier, // 20
 		TT_real,
 		TT_integer,
 		TT_string,
@@ -59,7 +59,7 @@
 		TT_dot,
 		TT_semicolon,
 		TT_leftCurlyBrace,
-		TT_rightCurlyBrace,
+		TT_rightCurlyBrace, // 30
 
 		TT_keyword
 	} TokenType;

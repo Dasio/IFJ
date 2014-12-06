@@ -8,7 +8,7 @@ temp_result : integer;
 decremented_n : integer;
 lol : boolean;
 	begin
-	if true = false then
+	if true = not not not false then
 		begin
 		factorial := 1
 		end

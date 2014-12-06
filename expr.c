@@ -249,8 +249,9 @@ AFTER_REDUCE:
 
 		/* vypisy */
 		//static const char *actions[] = {"shift", "reduce", "handle", "error"};
-		//fprintf(stderr, " %s\n", actions[action]);
 		//ExprTokenVectorPrint(expr_token_vector);
+		//fprintf(stderr, " %s\n", actions[action]);
+
 
 		switch(action)
 		{
@@ -281,7 +282,6 @@ AFTER_REDUCE:
 		if (token_to_index(token) != TT_empty)
 			token++;
 	}
-	//ExprTokenVectorPrint(expr_token_vector);
 
 
 	/*for (int i = TT_unaryMinus; i <= TT_inequality; i++)
@@ -352,6 +352,13 @@ static void reduce(ExprTokenVector *expr_vector)
 		}
 		else
 		{
+			/*
+			fprintf(stderr, "%d\n", handle.tokens_count);
+			fprintf(stderr, "%s", stringifyToken(top_most_term->token));
+			fprintf(stderr, "   _%d\n", top_most_term->token->type);
+			fprintf(stderr, "%s", stringifyToken(temp_expr_token.token));
+			fprintf(stderr, "   _%d\n", temp_expr_token.token->type);
+			*/
 			setError(ERR_Reduction);
 			return;
 		}
@@ -397,6 +404,10 @@ static inline void reduce_handle_unary_minus(THandle handle)
 				temp->E.int_ = - temp->E.int_;
 			else if (temp->E.data_type == DOUBLE)
 				temp->E.double_ = - temp->E.double_;
+
+			// reducing tokens
+			ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+			ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
 		}
 		else // LOCAL / GLOBAL
 		{
@@ -404,12 +415,13 @@ static inline void reduce_handle_unary_minus(THandle handle)
 			a.sp_inc = 1;
 			a.offset = MY_OFFSET++;
 			generateExprInstruction(NEG, &a, &b, &c);
+
+			temp->E.var_type = LOCAL;
+			temp->E.offset = MY_OFFSET-1;
+			// reducing tokens
+			ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+			ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
 		}
-		temp->E.var_type = LOCAL;
-		temp->E.offset = MY_OFFSET-1;
-		// reducing tokens
-		ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
-		ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
 	}
 }
 
@@ -439,12 +451,9 @@ static inline void reduce_handle_not(THandle handle)
 
 	if (not_counter % 2 == 0)
 	{
-		if (temp->E.var_type != CONST) // LOCAL / GLOBAL
-		{
-			// reducing tokens
-			ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
-			ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
-		}
+		// reducing tokens
+		ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+		ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
 	}
 	else // if (not_counter % 2 == 1)
 	{
@@ -452,6 +461,10 @@ static inline void reduce_handle_not(THandle handle)
 		{
 			if (temp->E.data_type == BOOL)
 				temp->E.bool_ = ! temp->E.bool_;
+
+			// reducing tokens
+			ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+			ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
 		}
 		else // LOCAL / GLOBAL
 		{
@@ -459,13 +472,13 @@ static inline void reduce_handle_not(THandle handle)
 			a.sp_inc = 1;
 			a.offset = MY_OFFSET++;
 			generateExprInstruction(NOT, &a, &b, &c);
-		}
 
-		temp->E.var_type = LOCAL;
-		temp->E.offset = MY_OFFSET-1;
-		// reducing tokens
-		ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
-		ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
+			temp->E.var_type = LOCAL;
+			temp->E.offset = MY_OFFSET-1;
+			// reducing tokens
+			ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+			ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
+		}
 	}
 }
 
