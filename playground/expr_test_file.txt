@@ -1,18 +1,27 @@
-:= ----5+8*7/9+(7*2);
+var
+a : integer;
+vysl : integer;
+{ Definice funkce pro vypocet hodnoty faktorialu }
+function factorial(n : integer) : integer;
+var
+temp_result : integer;
+decremented_n : integer;
+lol : boolean;
+	begin
+	if true = not not not false then
+		begin
+		factorial := 1
+		end
+	else
+		begin
+		decremented_n := n - 1;
+		temp_result := factorial(decremented_n);
+		factorial := n * temp_result
 
--     ---5+8*7/9+(7*2); shift
---     --5+8*7/9+(7*2); handle
----     -5+8*7/9+(7*2); handle
-----     5+8*7/9+(7*2); handle
-----5     +8*7/9+(7*2); shift
-----E     +8*7/9+(7*2); reduce
-E         +8*7/9+(7*2); reduce
-E+         8*7/9+(7*2); shift
-E+8         *7/9+(7*2); shift
-E+E         *7/9+(7*2); reduce
-E+E*         7/9+(7*2); shift
+		end
+	end;
 
-E           *7/9+(7*2); shift
-
-func1(func2(a,2)*b,a-c)
-end;
+begin
+a := factorial(5);
+write(a)
+end.

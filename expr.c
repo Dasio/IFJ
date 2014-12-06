@@ -7,10 +7,16 @@ extern Context *mainContext;
 extern Context *funcContext;
 extern Context *activeContext;
 extern Symbol *funcSymbol;
+extern InstructionVector *tape;
 
 static ExprToken temp_expr_token;
 static DataType return_value_data_type;
 static ExprToken *top_most_term;
+static Operand a;
+static Operand b;
+static Operand c;
+static uint64_t MY_OFFSET;
+int instr_counter;
 
 static void reduce(ExprTokenVector *expr_vector);
 static inline void reduce_handle_unary_minus(THandle handle);
@@ -26,7 +32,8 @@ static inline int index_handle_start(ExprTokenVector *expr_token_vector);
 static inline bool check_id_function(Symbol *identifier);
 static inline bool check_unary_minus(ExprTokenVector *expr_vector);
 static inline void print_type_table(int operator);
-
+void ExprTokenVectorPrint(ExprTokenVector *expr_token);
+void ExprTokenPrint(ExprToken *expr_token);
 
 typedef enum
 {
@@ -37,7 +44,7 @@ typedef enum
 } TokenPrecedence;
 enum { SHIFT = S, REDUCE = R, HANDLE = H, ERROR = E};
 
-//static const char *actions[] = {"shift", "reduce", "handle", "error"};
+
 
 static const int precedence_table[TT_assignment][TT_assignment] =
 {
@@ -211,8 +218,11 @@ static const int type_table[OPERATORS_COUNT][num_of_data_types][num_of_data_type
 DataType expr()
 {
 	int action;
-	int instr_counter = 0;
+	instr_counter = 0;
+	bool end_of_eval = true;
 	return_value_data_type = EXPR_ERROR;
+	//assert(funcContext);
+	MY_OFFSET = activeContext->locCount + 2;
 
 	token++;
 
@@ -220,7 +230,6 @@ DataType expr()
 		&& !(token->type >= TT_identifier && token->type <= TT_bool))
 	{
 		setError(ERR_SyntaxExpr);
-		printError();
 		return EXPR_ERROR;
 	}
 
@@ -231,18 +240,30 @@ DataType expr()
 	ExprTokenVectorAppend(expr_token_vector, temp_expr_token); // first token, (empty = $)
 	// [$, , , , , ]
 
-	while (token_to_index(token) != TT_empty)
+	while (end_of_eval)
 	{
 		convert_to_ExprToken(token, expr_token_vector);
 		if(getError()) return EXPR_ERROR;
 AFTER_REDUCE:
 		action = precedence(expr_token_vector);
+
+		/* vypisy */
+		//static const char *actions[] = {"shift", "reduce", "handle", "error"};
+		//ExprTokenVectorPrint(expr_token_vector);
 		//fprintf(stderr, " %s\n", actions[action]);
+
+
 		switch(action)
 		{
 			case ERROR:
+				if (top_most_term->token->type == TT_empty &&
+					token_to_index(temp_expr_token.token) == TT_empty &&
+					expr_token_vector->used != 3)
+				{
+					end_of_eval = false;
+					break;
+				}
 				setError(ERR_PrecedenceTable);
-				printError();
 				return EXPR_ERROR;
 			case SHIFT:
 				ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
@@ -250,7 +271,6 @@ AFTER_REDUCE:
 					top_most_term[1].handle_start = true;
 				break;
 			case HANDLE:
-				//handle(expr_token_vector)
 				ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
 				break;
 			case REDUCE:
@@ -259,11 +279,10 @@ AFTER_REDUCE:
 				goto AFTER_REDUCE;
 				break;
 		}
-		token++;
+		if (token_to_index(token) != TT_empty)
+			token++;
 	}
-	//ExprTokenVectorPrint(expr_token_vector);
 
-	ExprTokenVectorFree(expr_token_vector);
 
 	/*for (int i = TT_unaryMinus; i <= TT_inequality; i++)
 	{
@@ -271,10 +290,19 @@ AFTER_REDUCE:
 		print_type_table(i);
 	}*/
 
-	if (instr_counter == 0)
+	Instruction *last = InstructionVectorLast(tape);
+	if (instr_counter == 0 || last->instr == Instr_CALL)
 	{
-		//append NONTERM to stack ( a := b )
+		b.var_type = LOCAL;
+		b.data_type = return_value_data_type;
+		b.offset = MY_OFFSET - 1;
+		b.initialized = true;
+		a.sp_inc = 1;
+		a.offset = MY_OFFSET - 1;
+		generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
 	}
+
+	ExprTokenVectorFree(expr_token_vector);
 
 	return return_value_data_type;
 }
@@ -295,7 +323,6 @@ static void reduce(ExprTokenVector *expr_vector)
 		else
 		{
 			setError(ERR_Reduction);
-			printError();
 			return;
 		}
 	}
@@ -315,18 +342,24 @@ static void reduce(ExprTokenVector *expr_vector)
 		{
 			reduce_handle_not(handle);
 		}
-		else if (handle.tokens_count == 3) //// 3 tokens... E + E ... ( E )
-		{
-			reduce_handle_three_tokens(handle);
-		}
-		else if (handle.first->token->type == TT_function) // 4, 6, 8 .. tokens
+		else if (handle.first->token->type == TT_function) // 3, 4, 6, 8 .. tokens
 		{
 			reduce_handle_function(handle);
 		}
+		else if (handle.tokens_count == 3 && handle.first->type == NONTERM) //// 3 tokens... E + E ... ( E )
+		{
+			reduce_handle_three_tokens(handle);
+		}
 		else
 		{
+			/*
+			fprintf(stderr, "%d\n", handle.tokens_count);
+			fprintf(stderr, "%s", stringifyToken(top_most_term->token));
+			fprintf(stderr, "   _%d\n", top_most_term->token->type);
+			fprintf(stderr, "%s", stringifyToken(temp_expr_token.token));
+			fprintf(stderr, "   _%d\n", temp_expr_token.token->type);
+			*/
 			setError(ERR_Reduction);
-			printError();
 			return;
 		}
 		if(getError()) return;
@@ -347,13 +380,11 @@ static inline void reduce_handle_unary_minus(THandle handle)
 	if (temp != handle.last)
 	{
 		setError(ERR_Reduction);
-		printError();
 		return;
 	}
 	if (temp->E.data_type != INT && temp->E.data_type != DOUBLE) // check data_type
 	{
 		setError(ERR_TypeCompatibility);
-		printError();
 		return;
 	}
 	else
@@ -373,16 +404,24 @@ static inline void reduce_handle_unary_minus(THandle handle)
 				temp->E.int_ = - temp->E.int_;
 			else if (temp->E.data_type == DOUBLE)
 				temp->E.double_ = - temp->E.double_;
+
+			// reducing tokens
+			ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+			ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
 		}
 		else // LOCAL / GLOBAL
 		{
-			// generating instruction
+			b = temp->E;
+			a.sp_inc = 1;
+			a.offset = MY_OFFSET++;
+			generateExprInstruction(NEG, &a, &b, &c);
 
+			temp->E.var_type = LOCAL;
+			temp->E.offset = MY_OFFSET-1;
+			// reducing tokens
+			ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+			ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
 		}
-
-		// reducing tokens
-		ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
-		ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
 	}
 }
 
@@ -400,13 +439,11 @@ static inline void reduce_handle_not(THandle handle)
 	if (temp != handle.last)
 	{
 		setError(ERR_Reduction);
-		printError();
 		return;
 	}
 	if (temp->E.data_type != BOOL) // check data_type
 	{
 		setError(ERR_TypeCompatibility);
-		printError();
 		return;
 	}
 	else
@@ -414,12 +451,9 @@ static inline void reduce_handle_not(THandle handle)
 
 	if (not_counter % 2 == 0)
 	{
-		if (temp->E.var_type != CONST) // LOCAL / GLOBAL
-		{
-			// reducing tokens
-			ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
-			ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
-		}
+		// reducing tokens
+		ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+		ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
 	}
 	else // if (not_counter % 2 == 1)
 	{
@@ -427,12 +461,20 @@ static inline void reduce_handle_not(THandle handle)
 		{
 			if (temp->E.data_type == BOOL)
 				temp->E.bool_ = ! temp->E.bool_;
+
+			// reducing tokens
+			ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
+			ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
 		}
 		else // LOCAL / GLOBAL
 		{
-			// generating instruction
+			b = temp->E;
+			a.sp_inc = 1;
+			a.offset = MY_OFFSET++;
+			generateExprInstruction(NOT, &a, &b, &c);
 
-
+			temp->E.var_type = LOCAL;
+			temp->E.offset = MY_OFFSET-1;
 			// reducing tokens
 			ExprTokenVectorAtSet(handle.expr_vector, handle.first_index, *temp);
 			ExprTokenVectorPopMore(handle.expr_vector, handle.tokens_count - 1);
@@ -464,7 +506,6 @@ static inline void reduce_handle_three_tokens(THandle handle)
 		if (value_type == UNDEF)
 		{
 			setError(ERR_TypeCompatibility);
-			printError();
 			return;
 		}
 		else
@@ -479,18 +520,23 @@ static inline void reduce_handle_three_tokens(THandle handle)
 		}
 		else	// generating instruction
 		{
-
+			c = handle.first[0].E;
+			b = handle.first[2].E;
+			a.sp_inc = 1;
+			a.offset = MY_OFFSET++;
+			generateExprInstruction((InstructionOp)handle.first[1].token->type, &a, &b, &c);
 		}
 
 		// reducing tokens
 		handle.first->handle_start = false;
 		handle.first->E.data_type = value_type;
+		handle.first->E.var_type = LOCAL;
+		handle.first->E.offset = MY_OFFSET-1;
 		ExprTokenVectorPopMore(handle.expr_vector, 2);
 	}
 	else
 	{
 		setError(ERR_Reduction);
-		printError();
 		return;
 	}
 }
@@ -510,10 +556,9 @@ static void reduce_two_constants(THandle handle)
 				if (handle.first[2].E.int_ == 0)
 				{
 					setError(ERR_TypeCompatibility);
-					printError();
 					return;
 				}
-				handle.first[0].E.double_ = handle.first[0].E.int_ / handle.first[2].E.int_;
+				handle.first[0].E.double_ = (double)handle.first[0].E.int_ / handle.first[2].E.int_;
 				break;
 			case TT_plus:
 				handle.first[0].E.int_ = handle.first[0].E.int_ + handle.first[2].E.int_;
@@ -555,7 +600,6 @@ static void reduce_two_constants(THandle handle)
 				if (handle.first[2].E.double_ == 0)
 				{
 					setError(ERR_TypeCompatibility);
-					printError();
 					return;
 				}
 				handle.first[0].E.double_ = handle.first[0].E.int_ / handle.first[2].E.double_;
@@ -600,7 +644,6 @@ static void reduce_two_constants(THandle handle)
 				if (handle.first[2].E.int_ == 0)
 				{
 					setError(ERR_TypeCompatibility);
-					printError();
 					return;
 				}
 				handle.first[0].E.double_ = handle.first[0].E.double_ / handle.first[2].E.int_;
@@ -645,7 +688,6 @@ static void reduce_two_constants(THandle handle)
 				if (handle.first[2].E.double_ == 0)
 				{
 					setError(ERR_TypeCompatibility);
-					printError();
 					return;
 				}
 				handle.first[0].E.double_ = handle.first[0].E.double_ / handle.first[2].E.double_;
@@ -719,7 +761,7 @@ static void reduce_two_constants(THandle handle)
 	{
 		if (handle.first[1].token->type == TT_plus)
 		{
-			appendCharsToString(handle.first[0].E.str, handle.first[2].E.str->data);
+			appendStringToString(handle.first[0].E.str, handle.first[2].E.str);
 			return;
 		}
 		int compare_result = strcmp(handle.first[0].E.str->data, handle.first[2].E.str->data);
@@ -747,18 +789,87 @@ static void reduce_two_constants(THandle handle)
 				break;
 		}
 	}
+	else
+	{
+		setError(ERR_Reduction);
+		return;
+	}
 }
 
 
-// 4, 6, 8 .. tokens
+// 3, 4, 6, 8 .. tokens
 static inline void reduce_handle_function(THandle handle)
 {
-	if (handle.tokens_count < 4 || handle.tokens_count % 2 == 1)
+	int num_of_commas = 0;
+	ExprToken *temp = handle.first;
+	if ((++temp)->token->type != TT_leftBrace)
 	{
 		setError(ERR_Reduction);
-		printError();
 		return;
 	}
+	temp++;
+
+	Symbol *id = SymbolFind(mainContext, handle.first->token->str.data);
+	Context *context = id->funCont;
+	return_value_data_type = (DataType) context->returnType;
+
+	for (uint32_t i = 0; i < context->argCount; i++) // check arguments
+	{
+		if (temp->E.data_type != context->arg[i]->type)
+		{
+			setError(ERR_TypeCompatibilityArg);
+			return;
+		}
+		if (context->argCount > 1 && (++temp)->token->type != TT_comma)
+		{
+			setError(ERR_Reduction);
+			return;
+		}
+		temp++;
+	}
+	// check the end of handle
+	if ((temp)->token->type != TT_rightBrace || temp != handle.last)
+	{
+		setError(ERR_Reduction);
+		return;
+	}
+
+	// reserve place for return value
+	//b.data_type = context->returnType; // type doesnt matter
+	b.initialized = false;
+	a.sp_inc = 1;
+	a.offset = MY_OFFSET++;
+
+	generateInstruction(PUSH, &a, &b); // b = pushed operand
+
+	for (uint32_t i = 0; i < context->argCount; i++) // push arguments in reversed order
+	{
+		temp--;
+
+		b = temp->E;
+		b.initialized = true;
+		a.sp_inc = 1;
+		a.offset = MY_OFFSET++;
+		generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
+
+		temp--;
+	}
+
+	a.offset = id->index;
+	b.int_ = context->argCount;
+	// generate CALL instruction
+	generateInstruction(CALL, &a, &b); // b = pushed operand
+
+	// reducing tokenvector
+	MY_OFFSET -= context->argCount;
+	handle.first->handle_start = false;
+	handle.first->type = NONTERM;
+	handle.first->E.data_type = return_value_data_type;
+	handle.first->E.var_type = LOCAL;
+	handle.first->E.offset = MY_OFFSET - 1;
+	if (context->argCount > 1)
+		num_of_commas = context->argCount - 1;
+	ExprTokenVectorPopMore(handle.expr_vector, context->argCount + 2 + num_of_commas);
 }
 
 
@@ -806,7 +917,6 @@ static void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vector)
 			if (id == NULL)
 			{
 				setError(ERR_UndefVarOrFunction);
-				printError();
 				return;
 			}
 			break;
@@ -880,7 +990,6 @@ static inline int index_handle_start(ExprTokenVector *expr_token_vector)
 		if (last_handle_start->token->type == TT_empty)
 		{
 			setError(ERR_Reduction);
-			printError();
 			return -1;
 		}
 		last_handle_start--;
@@ -940,10 +1049,37 @@ void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector)
 	for (uint32_t i = 0; i < expr_token_vector->used; i++)
 	{
 		expr_token = ExprTokenVectorAt(expr_token_vector, i);
-		fprintf(stderr, "%s ", stringifyToken(expr_token->token));
+		if (expr_token->type == NONTERM)
+			ExprTokenPrint(expr_token);
+		else
+			fprintf(stderr, "%s ", stringifyToken(expr_token->token));
 	}
 	fprintf(stderr, "\n");
 }
+
+void ExprTokenPrint(ExprToken *expr_token)
+{
+	assert(expr_token);
+	switch (expr_token->E.data_type)
+	{
+		case INT:
+			fprintf(stderr, "%d ", expr_token->E.int_);
+			break;
+		case DOUBLE:
+			fprintf(stderr, "%f ", expr_token->E.double_);
+			break;
+		case STRING:
+			fprintf(stderr, "%s ", expr_token->E.str->data);
+			break;
+		case BOOL:
+			fprintf(stderr, "%d ", expr_token->E.bool_);
+			break;
+		case UNDEF:
+			fprintf(stderr, "UNDEF ");
+			break;
+	}
+}
+
 
 
 

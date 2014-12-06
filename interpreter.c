@@ -3,72 +3,81 @@
 /**
  * "Global" tape containing instructions
  */
-static InstructionVector *tape;
+InstructionVector *tape;
+extern int instr_counter;
 
 /**
  * Pointer to instruction tape at beginning
  */
-static uint64_t IP = 0;
+uint64_t IP = 0;
 
-static STACK stack;
+Stack stack;
 
 void initInterpret() {
-	StackInit(stack);
+	stack.vect = StackDataVectorInit(DEFAULT_STACK_SIZE);
 
 	// TODO: Test optimal initial size
 	if(!tape)
-		tape = InstructionVectorInit(256);
-
-	return;
+		tape = InstructionVectorInit(512);
 }
 
 /**
  * CORE
  */
 
-// void sum_i(Operand *a, Operand *b, Operand *c) {
-// 	printf("%d\n", a->int_ + b->int_);
-// }
+void generateExprInstruction(InstructionOp op, Operand* a, Operand* b, Operand* c) {
 
-// void sum_f(Operand *a, Operand *b, Operand *c) {
-// 	printf("%f\n", a->double_ + b->double_);
-// }
+	instr_counter++;
+	int instruction_offset = op << 8 | b->var_type << 6 | c->var_type << 4 |
+						b->data_type << 2 | c->data_type;
 
-//const instrFunc instructions[2] = {sum_i, sum_f};
+	assert(instruction_table[instruction_offset]);
+	Instruction i = (Instruction) {.instr = instruction_table[instruction_offset],
+										 .dst = *a, .src_1 = *b, .src_2 = *c};
+	InstructionVectorAppend(tape, i);
+}
 
-// void generate_add(Operand *a, Operand *b, Operand *c) {
-// 	//instrFunc add_instructions = {sum_i, sum_f};
+void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
 
-// 	if(b->data_type == DOUBLE && c->data_type == INT) {
+	instr_counter++;
+	InstrFuncPtr i_ptr = NULL;
 
-// 		appendInstruction(sum_i);
-// 	}
-// }
+	fprintf(stderr, "OP : %d\n", op);
 
+	switch(op) {
+		case PUSH: {
+			// FIXME
+			i_ptr = Instr_PUSH_CS;
+			break;
+		}
+		case CALL: {
+			i_ptr = Instr_CALL;
+			break;
+		}
+		default:
+			i_ptr = Instr_CALL;
+	}
+
+	Instruction i = (Instruction) {.instr = i_ptr, .dst = *a, .src_1 = *b, .src_2 = (StackData){.data_type = UNDEF}};
+	InstructionVectorAppend(tape, i);
+}
 
 static bool interpretationStep() {
 	Instruction *IP_ptr = InstructionVectorAt(tape, IP);
-	assert(IP_ptr);
+	if(!IP_ptr)
+		return false;
+
+	(IP_ptr->instr)(IP_ptr);
 
 	return true;
 }
 
-
-
 void runInterpretation() {
 	assert(tape && "Call initInterpret() before running interpreter");
 
-	// (instructions[I_])( &(Operand) {.data_type = INT, .int_ = 20},
-	// 					&(Operand) {.data_type = INT, .int_ = 20},
-	// 					&(Operand) {.data_type = INT, .int_ = 20});
-
-
-	// (instructions[1])(  &(Operand) {.data_type = DOUBLE, .double_ = 20.5},
-	// 					&(Operand) {.data_type = DOUBLE, .double_ = 20.8},
-	// 					&(Operand) {.data_type = DOUBLE, .double_ = 20});
-	// // while(true) {
-	// 	bool ret = interpretationStep();
-	// 	if(!ret)
-	// 		break;
-	// }
+	while(true) {
+	 	bool ret = interpretationStep();
+	 	if(!ret)
+	 		break;
+	}
 }

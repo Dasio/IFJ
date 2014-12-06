@@ -12,6 +12,7 @@ START_TEST_SUITE(VECTORtest)
 
 
     int *x = intVectorAt(Vec, 4);
+    TEST_EXPR("intVectorAt", 1);
     TEST_EXPR("intVectorAt", *x==3);
     TEST_EXPR("intVectorAtValue", intVectorAtValue(Vec, 1) == 2);
 	TEST_EXPR("intVectorPopValue", intVectorPopValue(Vec) == 5);
@@ -20,6 +21,9 @@ START_TEST_SUITE(VECTORtest)
 	TEST_EXPR("intVectorPop", *x==0);
 
 	TEST_EXPR("intVectorFirst", intVectorFirstValue(Vec)==1);
+    intVectorAtSet(Vec, 64, 0);
+    TEST_EXPR("intVectorCapacity", Vec->capacity == 128);
+    TEST_EXPR("intVectorUsed", Vec->used == 65);
 
     intVectorFree(Vec);
 

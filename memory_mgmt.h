@@ -29,6 +29,12 @@ GenVectorPrototypes(MemItem)
  */
 void *mem_alloc(size_t len);
 
+/**
+ * Appends pointer to memitem Vector.
+ * @param ptr Any pointer
+ */
+void mem_ptradd(void *ptr);
+
 /*
  * Free's all allocated memory blocks
  */
@@ -40,6 +46,11 @@ void cleanAllMemory();
  * Use with caution ^_^
  */
 void implodeMemory();
+
+/**
+ * Implodes memory and exit according to return code.
+ */
+void die();
 
 /*
  * Prints pointers to all allocated blocks

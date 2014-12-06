@@ -12,6 +12,18 @@ String initEmptyString()
 	return str;
 }
 
+String initStringSize(uint32_t size)
+{
+	String str = {
+		.length  = 0,
+		.allocated_size = size,
+		.data    = malloc(size * sizeof(char))
+	};
+	MALLOC_TEST(str.data);
+
+	return str;
+}
+
 void destroyString(String *dst) {
 	if(dst->allocated_size > 0)
 	{
@@ -91,6 +103,52 @@ void appendCharsToString(String *dst, char *c) {
 	while(*c != (char)0) {
 		appendCharToString(dst, *(c++));
 	}
+}
+
+String *concatStringToString(String *src1, String *src2) {
+	String *tmp = malloc(sizeof(String));
+	MALLOC_TEST(tmp);
+	uint32_t resulting_length = src1->length + src2->length;
+
+	tmp->length = resulting_length;
+	tmp->allocated_size = resulting_length + 1;
+
+	tmp->data = malloc(tmp->allocated_size * sizeof(char));
+	MALLOC_TEST(tmp->data);
+
+	memcpy(tmp->data,                src1->data, src1->length);
+	memcpy(tmp->data + src1->length, src2->data, src2->length);
+	tmp->data[resulting_length] = (char) 0;
+
+	return tmp;
+}
+
+void appendStringToString(String *dst, String *src) {
+	assert(src);
+	assert(dst);
+
+	assert(dst->allocated_size > 0 &&
+								"Performed operation on uninitialized String");
+	if (src->length > 0)
+	{
+		assert(src->allocated_size > 0 &&
+								"Performed operation on uninitialized String");
+
+		uint32_t resulting_length = src->length + dst->length;
+		uint32_t allocated_size = resulting_length + 1;
+
+		if (allocated_size > dst->allocated_size)
+		{
+			dst->data = realloc(dst->data, allocated_size);
+			dst->allocated_size = allocated_size;
+		}
+
+		memcpy(dst->data + dst->length, src->data, src->length);
+		dst->length = resulting_length;
+
+		dst->data[resulting_length] = '\0';
+	}
+
 }
 
 void truncateString(String *dst) {

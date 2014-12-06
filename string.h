@@ -13,6 +13,7 @@
 	} String;
 
 	String initEmptyString();
+	String initStringSize(uint32_t size);
 	String initString(char *src);
 
 	char atString(String *dst, uint32_t pos);
@@ -22,11 +23,17 @@
 	void aboutString(String *dst);
 	void appendCharToString(String *dst, char c);
 	void appendCharsToString(String *dst, char *c);
+	void appendStringToString(String *dst, String *src);
 
-/* #define appendToString(dst, src) _Generic((src),					\
-									String *: appendStringToString, \
-									default:  appendCharsToString)(dst, src)
-*/
+	/**
+	 * Takes two strings, returns new one combining both.
+	 * Strings from arguments remain untouched (nondestructive).
+	 * @param  src1 First string
+	 * @param  src2 Second string
+	 * @return      Concatenation of both strings.
+	 */
+	String *concatStringToString(String *src1, String *src2);
+
 #define StringEquals(dst, src) _Generic((src),                \
 						String *: equalsStringString,  \
 						default:  equalsStringChars)(dst, src)

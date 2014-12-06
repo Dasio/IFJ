@@ -1,6 +1,6 @@
 {Missing semicolon}
 begin
-	while 10 do
+	while true do
 		begin
 		end
 	a := 20

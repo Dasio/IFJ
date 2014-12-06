@@ -22,18 +22,21 @@ static const int returnCodeTable[] = {
 	[ERR_DeclrFunc]         = 3,
 	[ERR_BadDefArg]         = 3,
 	[ERR_NoDefFunc]         = 3,
-
+	[ERR_BuiltFuncAsID]		= 3,
+	[ERR_ReadBool]			= 4,
 	// Expression
 	[ERR_SyntaxExpr]		= 2,
 	[ERR_PrecedenceTable]	= 2,
 	[ERR_Reduction]			= 2,
 	[ERR_TypeCompatibility]	= 4,
+	[ERR_TypeCompatibilityArg]	= 4,
 	[ERR_UndefVarOrFunction]= 3,
 
 	// Interpreter
 	[ERR_UnknownInstruction]= 99,
 	[ERR_UnitializedAccess] = 7,
 	[ERR_DivisionByZero]	= 8,
+	[ERR_ReadInput]			= 6,
 
 	// Other
 	[ERR_OutOfRange]        = 9,
@@ -74,6 +77,9 @@ void printError()
 		case ERR_NoDefFunc:
 			printErrorDetails("Function was declared, but afterward it wasn't defined");
 			break;
+		case ERR_BuiltFuncAsID:
+			printErrorDetails("Built-in function can't be used where identifier is expected");
+			break;
 		case ERR_SyntaxExpr:
 			printErrorDetails("Error in syntax of expression");
 			break;
@@ -86,11 +92,23 @@ void printError()
 		case ERR_TypeCompatibility:
 			printErrorDetails("Error in data type of some operand");
 			break;
+		case ERR_TypeCompatibilityArg:
+			printErrorDetails("Error in data type of some argument");
+			break;
 		case ERR_UndefVarOrFunction:
 			printErrorDetails("Undefined variable or function");
 			break;
 		case ERR_DivisionByZero:
 			printErrorDetails("You can't divide by zero !");
+			break;
+		case ERR_ReadBool:
+			printErrorDetails("Cant't read input into bool variable");
+			break;
+		case ERR_ReadInput:
+			printErrorDetails("Wrong input");
+			break;
+		case ERR_OutOfRange:
+			printErrorDetails("Out of range");
 			break;
 		default:
 			printErrorDetails("Unrecognized error");

@@ -4,6 +4,8 @@
 
 #include "system.h"
 #include "instruction.h"
+#include "instructions_generated.h"
+#include "instructions_regular.h"
 #include "vector.h"
 #include "stack.h"
 
@@ -17,11 +19,19 @@
 	/**
 	 * Appends instruction to end of instruction tape.
 	 * @param op Op code of instruction (see instruction.h)
-	 * @param a  Operand A (Source A)
+	 * @param a  Operand A (Destination A)
 	 * @param b  Operand B (Source B)
-	 * @param c  Operand C (Destination C)
+	 * @param c  Operand C (Source C)
 	 */
-	void generateInstruction(InstructionOp op, Operand* a, Operand* b, Operand* c);
+	void generateExprInstruction(InstructionOp op, Operand* a, Operand* b, Operand* c);
+
+	/**
+	 * Appends instruction to end of instruction tape.
+	 * @param op Op code of instruction (see instruction.h)
+	 * @param a  Operand A (Destination A)
+	 * @param b  Operand B (Source B)
+	 */
+	void generateInstruction(InstructionOp op, Operand* a, Operand* b);
 
 	void runInterpretation();
 

@@ -27,18 +27,22 @@ typedef enum
 	ERR_DeclrFunc,
 	ERR_BadDefArg,
 	ERR_NoDefFunc,         /**< Function was declared and no defintion was found */
+	ERR_BuiltFuncAsID,
+	ERR_ReadBool,
 
 	// Expression
 	ERR_SyntaxExpr,
 	ERR_PrecedenceTable,
 	ERR_Reduction,
 	ERR_TypeCompatibility,
+	ERR_TypeCompatibilityArg,
 	ERR_UndefVarOrFunction,
 
 	// Interpreter
 	ERR_UnknownInstruction,
 	ERR_UnitializedAccess,
 	ERR_DivisionByZero,
+	ERR_ReadInput,
 
 	// Other
 	ERR_OutOfRange,

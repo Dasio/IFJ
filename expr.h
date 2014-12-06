@@ -4,6 +4,8 @@
 #include "token.h"
 #include "system.h"
 #include "instruction.h"
+#include "instructions_regular.h"
+#include "interpreter.h"
 
 #ifndef EXPR_H
 #define EXPR_H
@@ -41,7 +43,6 @@ typedef struct
 
 // after a call of expr(), value of the expression is stored on the top of stack
 DataType expr();
-void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector);
 
 
 

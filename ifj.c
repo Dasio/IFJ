@@ -1,18 +1,24 @@
 #include "system.h"
 #include "scanner.h"
 #include "parser.h"
+#include "interpreter.h"
+#include "memory_mgmt.h"
 
 int main(int argc, char *argv[]) {
 	// Error code initialized to success
 	int ecode = 0;
-
-	// Scanner initialization
-	Scanner scanner = initScanner();
+	bool scanner_initialized = false;
+	bool token_vector_initialized = false;
 
 	if(argc <= 1) {
 		setError(ERR_CannotOpenFile);
 		goto err;
 	}
+
+	// Scanner initialization
+	Scanner scanner = initScanner();
+	scanner_initialized = true;
+
 	assignFile(&scanner.input, argv[1]);
 
 	if(getError())
@@ -20,9 +26,12 @@ int main(int argc, char *argv[]) {
 
 	// Scanner
 	TokenVector *tokenVector = getTokenVector(&scanner);
+	token_vector_initialized = true;
 
 	if(getError())
 		goto err;
+
+	initInterpret();
 
 	// Recursive descent
 	parse(tokenVector);
@@ -30,17 +39,23 @@ int main(int argc, char *argv[]) {
 	if(getError())
 		goto err;
 
-	// Cleanup
-	destroyTokenVector(tokenVector);
-	destroyScanner(&scanner);
+	// Interpretation
+	//runInterpretation();
 
 	// Error handling
 err:
-
 	if(getError()) {
 		printError();
 		ecode = getReturnError();
 	}
+
+	// Cleanup
+	if(token_vector_initialized)
+		destroyTokenVector(tokenVector);
+	if(scanner_initialized)
+		destroyScanner(&scanner);
+
+	implodeMemory();
 
 	return ecode;
 }

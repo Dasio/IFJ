@@ -871,9 +871,6 @@ KeywordTokenType identifierToKeyword(String *str)
 			if(keyword_cmp("false")) {
 				return Key_false;
 			}
-			if(keyword_cmp("find")) {
-				return Key_find;
-			}
 			if(keyword_cmp("forward")) {
 				return Key_forward;
 			}
@@ -916,9 +913,6 @@ KeywordTokenType identifierToKeyword(String *str)
 			return Key_none;
 		}
 		case 's': {
-			if(keyword_cmp("sort")) {
-				return Key_sort;
-			}
 			if(keyword_cmp("string")) {
 				return Key_string;
 			}

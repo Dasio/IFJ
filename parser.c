@@ -17,18 +17,15 @@ void parse(TokenVector *tokvect)
 	mainContext = InitContext();
 	activeContext = mainContext;
 	token = TokenVectorFirst(tokenVector);
+	addBuiltInFunctions();
 
 	program();
-	if(getError())
-		printError();
 	// Cleanup
 
 	FreeContext(mainContext);
 }
 void program()
 {
-	addBuiltInFunctions();
-
 	var_declr();
 	if(getError())
 		return;
@@ -206,7 +203,6 @@ void forward(SymbolType returnType)
 	updateFunc(returnType,FS_Declared);
 	if(getError())
 		return;
-	fprintf(stderr,"Function(Declaration) name = %s type = %d, index = %lu, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
 	}
 	// 2. rule = Function Definition
 	else
@@ -215,8 +211,6 @@ void forward(SymbolType returnType)
 		updateFunc(returnType,FS_Defined);
 		if(getError())
 			return;
-		fprintf(stderr,"Function(Definition) name = %s type = %d, index = %lu, argsCount = %d\n",funcSymbol->name,funcSymbol->type,funcSymbol->index,funcContext->argCount);
-
 		// Switch to function context
 		activeContext = funcContext;
 		var_declr();
@@ -306,46 +300,122 @@ void params_def(uint8_t next)
 		return;
 
 }
-void term_list()
+uint32_t term_list()
 {
+	uint32_t count = 0;
 	token++;
 	if(token->type != TT_leftBrace)
 	{
 		setError(ERR_Syntax);
-		return;
+		return 0;
 	}
 
-	terms(0);
+	count += terms(0);
 	if(getError())
-		return;
+		return 0;
 
 	// Token loaded from terms
 	if(token->type != TT_rightBrace)
 	{
 		setError(ERR_Syntax);
-		return;
+		return 0;
 	}
+	return count;
 }
-void terms(uint8_t next)
+uint8_t terms(uint8_t next)
 {
+	Symbol *symbol = NULL;
+	Scope scope;
 	if(next)
 	{
 		token++;
 		// Epsilon rule
 		if(token->type != TT_comma)
-			return;
+			return 0;
 	}
+	uint32_t count = 0;
 	token++;
 	// If token is not term(bool,int,double,string) or id
 	if(token->type < TT_identifier || token->type > TT_bool)
 	{
 		setError(ERR_Syntax);
-		return;
+		return 0;
 	}
-
-	terms(1);
+	if(token->type == TT_identifier)
+	{
+		symbol = findVarOrFunc(token->str.data,&scope);
+		if(getError())
+			return 0;
+		switch(symbol->type)
+		{
+			case T_String:
+				if(scope == Local)
+				{
+					//gen Instr_PUSH_LS
+				}
+				else if(scope == Global)
+				{
+					//gen Instr_PUSH_GS
+				}
+				break;
+			case T_double:
+				if(scope == Local)
+				{
+					//gen Instr_PUSH_LD
+				}
+				else if(scope == Global)
+				{
+					//gen Instr_PUSH_GD
+				}
+				break;
+			case T_int:
+				if(scope == Local)
+				{
+					//gen Instr_PUSH_LI
+				}
+				else if(scope == Global)
+				{
+					//gen Instr_PUSH_GI
+				}
+				break;
+			case T_bool:
+				if(scope == Local)
+				{
+					//gen Instr_PUSH_LB
+				}
+				else if(scope == Global)
+				{
+					//gen Instr_PUSH_GB
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	else
+	{
+		switch(symbol->type)
+		{
+			case T_String:
+				//gen Instr_PUSH_CS
+				break;
+			case T_double:
+				//gen Instr_PUSH_CD
+				break;
+			case T_int:
+				//gen Instr_PUSH_CI
+				break;
+			case T_bool:
+				//gen Instr_PUSH_CB
+				break;
+			default:
+				break;
+		}
+	}
+	count = terms(1);
 	if(getError())
-		return;
+		return 0;
+	return count+1;
 }
 void compound_stmt(uint8_t semicolon)
 {
@@ -411,6 +481,7 @@ void stmt_empty()
 uint8_t stmt(uint8_t empty)
 {
 	uint8_t epsilon = 0;
+	Scope scope;
 	Symbol *id = NULL;
 	DataType exprType;
 	// IF wasnt called from stmt_empty(), need to load next token
@@ -420,18 +491,9 @@ uint8_t stmt(uint8_t empty)
 		// 1. rule = Assignemnt
 		case TT_identifier:
 			// Check if was declared
-			id = SymbolFind(activeContext,token->str.data);
-			if(id == NULL)
-			{
-				// Search also in GST
-				if(activeContext != mainContext)
-					id = SymbolFind(mainContext,token->str.data);
-				if(id == NULL)
-				{
-					setError(ERR_UndefVarOrFunction);
-					return 0;
-				}
-			}
+			id = findVarOrFunc(token->str.data,&scope);
+			if(getError())
+				return 0;
 			token++;
 			if(token->type != TT_assignment)
 			{
@@ -446,6 +508,7 @@ uint8_t stmt(uint8_t empty)
 				setError(ERR_TypeCompatibility);
 				return 0;
 			}
+			// INST global=mov, local=prepisovat predchadzajucu instrukciou
 			token--;
 			break;
 		case TT_keyword:
@@ -466,9 +529,11 @@ uint8_t stmt(uint8_t empty)
 						setError(ERR_Syntax);
 						return 0;
 					}
+					// gen instruction if1 JMP_FALSE without adress
 					// compound_stmt expect already loaded token
 					token++;
 					compound_stmt(0);
+					//gen empty instruction if2 JMP without adress
 					if(getError())
 						return 0;
 
@@ -486,7 +551,7 @@ uint8_t stmt(uint8_t empty)
 						setError(ERR_TypeCompatibility);
 						return 0;
 					}
-
+					// gen instruction JMP_FALSE while1
 					if(token->type != TT_keyword || token->keyword_token != Key_do)
 					{
 						setError(ERR_Syntax);
@@ -495,10 +560,13 @@ uint8_t stmt(uint8_t empty)
 					// compound_stmt expect already loaded token
 					token++;
 					compound_stmt(0);
+					// gen instruction JMP to while1
+					// update inst while1 with vectorsize+1
 					if(getError())
 						return 0;
 					break;
 				case Key_repeat:
+					// save vectorsize = repeat1
 					stmt(0);
 					if(getError())
 						return 0;
@@ -518,6 +586,7 @@ uint8_t stmt(uint8_t empty)
 						setError(ERR_TypeCompatibility);
 						return 0;
 					}
+					// gen instruction JMP_TRUE to repeat1
 					token--;
 					break;
 				case Key_begin:
@@ -561,13 +630,16 @@ uint8_t if_n()
 {
 	token++;
 	// Epsilon rule
+	// update instruction if1 with vectorsize+1
+	// change if2 to NOP
 	if(token->type != TT_keyword || token->keyword_token != Key_else)
 		return 1;
 	// keyword 'else' loaded
 	token++;
+	// update instruction if1 with vectorsize+1
 	// Compound_stmt expect loaded next token
 	compound_stmt(0);
-
+	// update instruction if2 with vectorsize+1
 	if(getError())
 		return 0;
 	return 0;
@@ -575,6 +647,7 @@ uint8_t if_n()
 
 void readln()
 {
+	Scope scope;
 	// keyword readln already loaded from STMT
 	token++;
 	if(token->type != TT_leftBrace)
@@ -589,7 +662,48 @@ void readln()
 		setError(ERR_Syntax);
 		return;
 	}
+	Symbol *symbol = findVarOrFunc(token->str.data,&scope);
+	if(getError())
+		return;
 
+	switch(symbol->type)
+	{
+		case T_String:
+			if(scope == Local)
+			{
+				//gen Instr_READLN_LS
+			}
+			else if(scope == Global)
+			{
+				//gen Instr_READLN_GS
+			}
+			break;
+		case T_double:
+			if(scope == Local)
+			{
+				//gen Instr_READLN_LD
+			}
+			else if(scope == Global)
+			{
+				//gen Instr_READLN_GD
+			}
+			break;
+		case T_int:
+			if(scope == Local)
+			{
+				//gen Instr_READLN_LI
+			}
+			else if(scope == Global)
+			{
+				//gen Instr_READLN_GI
+			}
+			break;
+		case T_bool:
+			setError(ERR_ReadBool);
+			return;
+		default:
+			break;
+	}
 	token++;
 	if(token->type != TT_rightBrace)
 	{
@@ -610,7 +724,6 @@ void addFunc(char *name)
 	funcSymbol = SymbolFind(mainContext, name);
 	if(funcSymbol == NULL)
 	{
-		fprintf(stderr,"Added to GST -> ");
 		funcContext = InitContext();
 		if(getError())
 			return;
@@ -651,7 +764,6 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 			else
 			{
 				//@todo Adresss Vector
-				fprintf(stderr,"Defined -> ");
 				funcSymbol->stateFunc = FS_Defined;
 			}
 		}
@@ -666,6 +778,7 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 		return;
 	returnSymbol->type = returnType;
 	funcContext->returnType = returnType;
+	funcContext->locCount--;
 	funcSymbol->stateFunc = funcState;
 	funcSymbol->index = -funcContext->argCount - 1;
 }
@@ -721,7 +834,9 @@ void addBuiltInFunctions()
 	symbol->index = -1;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_int;
+	SymbolAdd(funcContext, T_int, "length", NULL, NULL);
 	AddArgToContext(funcContext, T_String, "s", NULL);
+	funcContext->locCount--;
 
 	// copy(s : string; i : integer; n : integer) : string
 	funcContext = InitContext();
@@ -729,9 +844,11 @@ void addBuiltInFunctions()
 	symbol->index = -2;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_String;
+	SymbolAdd(funcContext, T_String, "copy", NULL, NULL);
 	AddArgToContext(funcContext, T_String, "s", NULL);
 	AddArgToContext(funcContext, T_int, "i", NULL);
 	AddArgToContext(funcContext, T_int, "n", NULL);
+	funcContext->locCount--;
 
 	// find(s : string; search : string) : integer
 	funcContext = InitContext();
@@ -739,8 +856,10 @@ void addBuiltInFunctions()
 	symbol = SymbolAdd(mainContext, T_FunPointer, "find", funcContext, NULL);
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_int;
+	SymbolAdd(funcContext, T_int, "find", NULL, NULL);
 	AddArgToContext(funcContext, T_String, "s", NULL);
 	AddArgToContext(funcContext, T_String, "search", NULL);
+	funcContext->locCount--;
 
 	// sort(s : string) : string
 	funcContext = InitContext();
@@ -748,7 +867,36 @@ void addBuiltInFunctions()
 	symbol->index = -4;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_String;
+	SymbolAdd(funcContext, T_String, "name", NULL, NULL);
 	AddArgToContext(funcContext, T_String, "s", NULL);
+	funcContext->locCount--;
 
 	funcContext = NULL;
+}
+Symbol *findVarOrFunc(char *name, Scope *scope)
+{
+	Symbol *id = SymbolFind(activeContext,name);
+	if(id == NULL)
+	{
+	// Search also in GST
+	if(activeContext != mainContext)
+		id = SymbolFind(mainContext,name);
+		if(id == NULL)
+		{
+			setError(ERR_UndefVarOrFunction);
+			return NULL;
+		}
+		// Bultin function cant be as identifier
+		if(id->index < 0)
+		{
+			setError(ERR_BuiltFuncAsID);
+			return NULL;
+		}
+		if(scope)
+			*scope = Global;
+		return id;
+	}
+	if(scope)
+			*scope = Local;
+	return id;
 }

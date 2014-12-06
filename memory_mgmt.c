@@ -32,6 +32,10 @@ void *mem_alloc(size_t len) {
 	return mem_ptr;
 }
 
+void mem_ptradd(void *ptr) {
+	initMemItemAndAppend(ptr, 1);
+}
+
 /**
  * DEALLOCATION
  */
@@ -62,6 +66,16 @@ void cleanAllMemory() {
 void implodeMemory() {
 	cleanAllMemory();
 	destroyMemoryManagement();
+}
+
+void die() {
+	implodeMemory();
+	int exit_code = 9;
+	if(getError()) {
+		exit_code = getReturnError();
+	}
+
+	exit(exit_code);
 }
 
 /**
