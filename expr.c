@@ -291,7 +291,14 @@ AFTER_REDUCE:
 	}*/
 
 	Instruction *last = InstructionVectorLast(tape);
-	if (instr_counter == 0 || last->instr == Instr_CALL)
+	if (instr_counter == 0)
+	{
+		b = (++top_most_term)->E;
+		a.sp_inc = 1;
+		a.offset = MY_OFFSET++;
+		generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
+	}
+	else if (last->instr == Instr_CALL)
 	{
 		b.var_type = LOCAL;
 		b.data_type = return_value_data_type;
