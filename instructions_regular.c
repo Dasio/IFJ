@@ -328,76 +328,140 @@ void Instr_COPY_LS() {
 
 // PUSH 12    [CLG][SDIB] len SRC
 void Instr_PUSH_CS(Instruction *i) {
-	//assert(i->src_1.data_type == STRING);
 
-	stack.SP++;
-	StackDataVectorAtSet(stack.vect, stack.SP, i->src_1);
-	StackDataVectorAt(stack.vect, stack.SP)->initialized = true;
+	operand.str = i->src_1.str;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
 }
 
-// void Instr_PUSH_CD(Instruction *i) {
-// 	assert(i->src_1.data_type == DOUBLE);
+void Instr_PUSH_CD(Instruction *i) {
 
-// 	stack.SP++;
-// 	StackDataVectorAtSet(stack.vect, stack.SP, i->src_1);
-// 	StackDataVectorAt(stack.vect, stack.SP)->initialized = true;
-// }
+	operand.double_ = i->src_1.double_;
+	operand.initialized = true;
 
-// void Instr_PUSH_CI(Instruction *i) {
-// 	assert(i->src_1.data_type == INT);
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
-// 	stack.SP++;
-// 	StackDataVectorAtSet(stack.vect, stack.SP, i->src_1);
-// 	StackDataVectorAt(stack.vect, stack.SP)->initialized = true;
-// }
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
 
-// void Instr_PUSH_CB(Instruction *i) {
-// 	assert(i->src_1.data_type == BOOL);
+void Instr_PUSH_CI(Instruction *i) {
 
-// 	stack.SP++;
-// 	StackDataVectorAtSet(stack.vect, stack.SP, i->src_1);
-// 	StackDataVectorAt(stack.vect, stack.SP)->initialized = true;
-// }
+	operand.int_ = i->src_1.int_;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
+
+void Instr_PUSH_CB(Instruction *i) {
+
+	operand.bool_ = i->src_1.bool_;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
 
 void Instr_PUSH_LS(Instruction *i) {
-	//assert(i->src_1.data_type == STRING);
 
-	int32_t pos = stack.BP + i->src_1.offset;
+	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
 
-	stack.SP++;
-	StackDataVectorAtSet(stack.vect, pos, i->src_1);
-	StackDataVectorAt(stack.vect, pos)->initialized = true;
+	operand.str = local_src->str;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
 }
 
-// void Instr_PUSH_LD(Instruction *i) {
+void Instr_PUSH_LD(Instruction *i) {
 
-// }
+	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
 
-// void Instr_PUSH_LI(Instruction *i) {
+	operand.double_ = local_src->double_;
+	operand.initialized = true;
 
-// }
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
-// void Instr_PUSH_LB(Instruction *i) {
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
 
-// }
+void Instr_PUSH_LI(Instruction *i) {
+
+	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
+
+	operand.int_ = local_src->int_;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
+
+void Instr_PUSH_LB(Instruction *i) {
+
+	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
+
+	operand.bool_ = local_src->bool_;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
 
 void Instr_PUSH_GS(Instruction *i) {
-	//stack.SP++;
-	StackDataVectorAtSet(stack.vect, i->src_1.offset, i->src_1);
-	StackDataVectorAt(stack.vect, i->src_1.offset)->initialized = true;
+
+	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
+
+	operand.str = global_src->str;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
 }
 
-// void Instr_PUSH_GD(Instruction *i) {
+void Instr_PUSH_GD(Instruction *i) {
 
-// }
+	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
 
-// void Instr_PUSH_GI(Instruction *i) {
+	operand.double_ = global_src->double_;
+	operand.initialized = true;
 
-// }
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
-// void Instr_PUSH_GB(Instruction *i) {
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
 
-// }
+void Instr_PUSH_GI(Instruction *i) {
+
+	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
+
+	operand.int_ = global_src->int_;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
+
+void Instr_PUSH_GB(Instruction *i) {
+
+	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
+
+	operand.bool_ = global_src->bool_;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
 
 
 // CALL
