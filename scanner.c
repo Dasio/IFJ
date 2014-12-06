@@ -155,6 +155,38 @@ Token getToken(Scanner *scanner)
 
 				break;
 			}
+			case Key_and: {
+
+				destroyString(&token.str);
+
+				token.type = TT_and;
+
+				break;
+			}
+			case Key_or: {
+
+				destroyString(&token.str);
+
+				token.type = TT_or;
+
+				break;
+			}
+			case Key_not: {
+
+				 destroyString(&token.str);
+
+				 token.type = TT_not;
+
+				 break;
+			}
+			case Key_xor: {
+
+				destroyString(&token.str);
+
+				token.type = TT_xor;
+
+				break;
+			}
 			default: {
 				break;
 			}
