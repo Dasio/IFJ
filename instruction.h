@@ -67,7 +67,7 @@
 		NE , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
 
 		READLN, //  8 [LG][SDIB]  only DST
-		WRITELN,//  1 dst.int_ ... arg_count
+		WRITE,//  1 dst.int_ ... arg_count
 		MOV,    //  4 [G][SDIB]   only DST
 		PUSH,   // 12 [CLG][SDIB] only SRC
 		CALL,   //  1 [ADDR], [locals_count]

@@ -220,8 +220,8 @@ void Instr_READLN_GI(Instruction *i) {
 }
 
 
-// WRITELN 1    number of arguments - first operand
-void Instr_WRITELN(Instruction *i) {
+// WRITE 1    number of arguments - first operand
+void Instr_WRITE(Instruction *i) {
 
 	StackData *op = vectorAt(stack.vect, stack.SP);
 
@@ -347,8 +347,7 @@ void Instr_MOV_GB(Instruction *i) {
 // PUSH 12    [CLG][SDIB] len SRC
 void Instr_PUSH_CS(Instruction *i) {
 
-	operand.str = i->src_1.str;
-	operand.initialized = true;
+	operand = i->src_1;
 
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
@@ -357,8 +356,7 @@ void Instr_PUSH_CS(Instruction *i) {
 
 void Instr_PUSH_CD(Instruction *i) {
 
-	operand.double_ = i->src_1.double_;
-	operand.initialized = true;
+	operand = i->src_1;
 
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
@@ -367,8 +365,7 @@ void Instr_PUSH_CD(Instruction *i) {
 
 void Instr_PUSH_CI(Instruction *i) {
 
-	operand.int_ = i->src_1.int_;
-	operand.initialized = true;
+	operand = i->src_1;
 
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
@@ -377,8 +374,7 @@ void Instr_PUSH_CI(Instruction *i) {
 
 void Instr_PUSH_CB(Instruction *i) {
 
-	operand.bool_ = i->src_1.bool_;
-	operand.initialized = true;
+	operand = i->src_1;
 
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 

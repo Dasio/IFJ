@@ -15,7 +15,7 @@ static ExprToken *top_most_term;
 static Operand a;
 static Operand b;
 static Operand c;
-static uint64_t MY_OFFSET;
+static int64_t MY_OFFSET;
 int instr_counter;
 
 static void reduce(ExprTokenVector *expr_vector);
@@ -294,6 +294,7 @@ AFTER_REDUCE:
 	if (instr_counter == 0)
 	{
 		b = (++top_most_term)->E;
+		b.initialized = true;
 		a.sp_inc = 1;
 		a.offset = MY_OFFSET++;
 		generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
@@ -845,7 +846,7 @@ static inline void reduce_handle_function(THandle handle)
 	}
 
 	// reserve place for return value
-	//b.data_type = context->returnType; // type doesnt matter
+	b.var_type = CONST; // for pushing initialized flag
 	b.initialized = false;
 	a.sp_inc = 1;
 	a.offset = MY_OFFSET++;

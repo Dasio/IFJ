@@ -14,8 +14,8 @@
 	void Instr_READLN_GD(Instruction *i);
 	void Instr_READLN_GI(Instruction *i);
 
-	// WRITELN 1     number of arguments - first operand
-	void Instr_WRITELN(Instruction *i);
+	// WRITE 1     number of arguments - first operand
+	void Instr_WRITE(Instruction *i);
 
 	// MOV 4      [G][SDIB]   only DST
 	void Instr_MOV_GS(Instruction *i);
@@ -40,8 +40,8 @@
 	// CALL ... Address - first operand, locals_count - second operand
 	void Instr_CALL();
 
-	// CALL_LEGTH
-	void Instr_CALL_LEGTH();
+	// CALL_LENGTH
+	void Instr_CALL_LENGTH();
 
 	// CALL_COPY
 	void Instr_CALL_COPY();
