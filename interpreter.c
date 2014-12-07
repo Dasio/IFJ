@@ -186,6 +186,7 @@ void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
 						break;
 				}
 			}
+			break;
 		case WRITE:
 			i_ptr = Instr_WRITE;
 			break;
