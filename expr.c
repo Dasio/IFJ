@@ -244,6 +244,7 @@ DataType expr()
 	{
 		convert_to_ExprToken(token, expr_token_vector);
 		if(getError()) return EXPR_ERROR;
+
 AFTER_REDUCE:
 		action = precedence(expr_token_vector);
 
@@ -251,7 +252,6 @@ AFTER_REDUCE:
 		//static const char *actions[] = {"shift", "reduce", "handle", "error"};
 		//ExprTokenVectorPrint(expr_token_vector);
 		//fprintf(stderr, " %s\n", actions[action]);
-
 
 		switch(action)
 		{
@@ -304,7 +304,7 @@ AFTER_REDUCE:
 		b.data_type = return_value_data_type;
 		b.offset = MY_OFFSET - 1;
 		b.initialized = true;
-		a.sp_inc = 1;
+		a.sp_inc = 0;
 		a.offset = MY_OFFSET - 1;
 		generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
 	}
@@ -524,6 +524,9 @@ static inline void reduce_handle_three_tokens(THandle handle)
 		{
 			reduce_two_constants(handle);
 			if(getError()) return;
+
+			// reducing tokens
+			ExprTokenVectorPopMore(handle.expr_vector, 2);
 		}
 		else	// generating instruction
 		{
@@ -532,14 +535,14 @@ static inline void reduce_handle_three_tokens(THandle handle)
 			a.sp_inc = 1;
 			a.offset = MY_OFFSET++;
 			generateExprInstruction((InstructionOp)handle.first[1].token->type, &a, &b, &c);
-		}
 
-		// reducing tokens
+			// reducing tokens
+			handle.first->E.var_type = LOCAL;
+			handle.first->E.offset = MY_OFFSET-1;
+			ExprTokenVectorPopMore(handle.expr_vector, 2);
+		}
 		handle.first->handle_start = false;
 		handle.first->E.data_type = value_type;
-		handle.first->E.var_type = LOCAL;
-		handle.first->E.offset = MY_OFFSET-1;
-		ExprTokenVectorPopMore(handle.expr_vector, 2);
 	}
 	else
 	{
