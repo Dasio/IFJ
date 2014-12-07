@@ -71,7 +71,7 @@ instructions = {
 
 	c.puts '#include "instructions_generated.h"'
 	c.puts 'extern Stack stack;'
-	c.puts '#define vectorAt(v, i) (StackData*)((StackData*)(v->array) + (i))'
+	c.puts '#define vectorAt(v, i) ((StackData*)(v->array) + (i))'
 	c.puts
 	c.puts '
 #if defined(__clang__)
@@ -93,7 +93,6 @@ instructions = {
 	c.puts "	/* Pointers to local data */ \\"
 	c.puts "	StackData *local_src1 = vectorAt(stack.vect, stack.BP + i->src_1.offset); \\"
 	c.puts "	StackData *local_src2 = vectorAt(stack.vect, stack.BP + i->src_2.offset); \\"
-	c.puts "	StackData *local_dst  = vectorAt(stack.vect, stack.BP + i->dst.offset);   \\"
 	c.puts "\\"
 	c.puts "	/* Pointers to constants */ \\"
 	c.puts "	int     *constant_src_1_I = &i->src_1.int_;   \\"
@@ -109,7 +108,9 @@ instructions = {
 	c.puts "	StackData *global_src1 = vectorAt(stack.vect, i->src_1.offset); \\"
 	c.puts "	StackData *global_src2 = vectorAt(stack.vect, i->src_2.offset);"
 	c.puts ""
-
+	c.puts "//////////////////////////////////////////////////////////////////////"
+	c.puts "static Operand operand;"
+	c.puts
 
 
 operators = {:add => "+", :mul => "*"}
@@ -135,7 +136,7 @@ instructions.each do |name, regex|
 		c.puts "void #{function_name}(Instruction *i) {"
 		c.puts "	extract_data() // Macro for unrolling pointers"
 
-		#c.puts "	local_dst->int_ = local_src1->int_ + local_src2->int_;"
+		#c.puts "	operand.int_ = local_src1->int_ + local_src2->int_;"
 		c.puts "	//#{proto}"
 
 		if proto[0] == "L"
@@ -161,6 +162,7 @@ instructions.each do |name, regex|
 			c.puts "	if(i->src_1.initialized == false) {"
 			c.puts "		setError(ERR_UnitializedAccess);"
 			c.puts "		die();"
+			c.puts "		return;"
 			c.puts "	}"
 		end
 
@@ -168,6 +170,7 @@ instructions.each do |name, regex|
 			c.puts "	if(i->src_2.initialized == false) {"
 			c.puts "		setError(ERR_UnitializedAccess);"
 			c.puts "		die();"
+			c.puts "		return;"
 			c.puts "	}"
 		end
 		c.puts
@@ -180,7 +183,7 @@ instructions.each do |name, regex|
 		if    src_types == "II"
 			case name # Instruction switch
 			when :mul
-				c.puts "	local_dst->int_ = #{src1} * #{src2};"; implemented = true
+				c.puts "	operand.int_ = #{src1} * #{src2};"; implemented = true
 			when :div
 				c.puts "	if(#{src2} == 0) {"
 				c.puts "		setError(ERR_DivisionByZero);"
@@ -188,28 +191,28 @@ instructions.each do |name, regex|
 				c.puts "		return;"
 				c.puts "	}"
 				c.puts ""
-				c.puts "	local_dst->double_ = (double)#{src1} / #{src2};"; implemented = true
+				c.puts "	operand.double_ = (double)#{src1} / #{src2};"; implemented = true
 			when :add
-				c.puts "	local_dst->int_ = #{src1} + #{src2};"; implemented = true
+				c.puts "	operand.int_ = #{src1} + #{src2};"; implemented = true
 			when :sub
-				c.puts "	local_dst->int_ = #{src1} - #{src2};"; implemented = true
+				c.puts "	operand.int_ = #{src1} - #{src2};"; implemented = true
 			when :l
-				c.puts "	local_dst->bool_ = #{src1} < #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} < #{src2};"; implemented = true
 			when :g
-				c.puts "	local_dst->bool_ = #{src1} > #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} > #{src2};"; implemented = true
 			when :le
-				c.puts "	local_dst->bool_ = #{src1} <= #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} <= #{src2};"; implemented = true
 			when :ge
-				c.puts "	local_dst->bool_ = #{src1} >= #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} >= #{src2};"; implemented = true
 			when :eq
-				c.puts "	local_dst->bool_ = #{src1} == #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} == #{src2};"; implemented = true
 			when :ne
-				c.puts "	local_dst->bool_ = #{src1} != #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} != #{src2};"; implemented = true
 			end
 		elsif src_types == "ID" || src_types == "DI" || src_types == "DD"
 			case name # Instruction switch
 			when :mul
-				c.puts "	local_dst->double_ = #{src1} * #{src2};"; implemented = true
+				c.puts "	operand.double_ = #{src1} * #{src2};"; implemented = true
 			when :div
 				c.puts "	if(#{src2} == 0.0) {"
 				c.puts "		setError(ERR_DivisionByZero);"
@@ -217,65 +220,65 @@ instructions.each do |name, regex|
 				c.puts "		return;"
 				c.puts "	}"
 				c.puts ""
-				c.puts "	local_dst->double_ = #{src1} / #{src2};"; implemented = true
+				c.puts "	operand.double_ = #{src1} / #{src2};"; implemented = true
 			when :add
-				c.puts "	local_dst->double_ = #{src1} + #{src2};"; implemented = true
+				c.puts "	operand.double_ = #{src1} + #{src2};"; implemented = true
 			when :sub
-				c.puts "	local_dst->double_ = #{src1} - #{src2};"; implemented = true
+				c.puts "	operand.double_ = #{src1} - #{src2};"; implemented = true
 			when :l
-				c.puts "	local_dst->bool_ = #{src1} < #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} < #{src2};"; implemented = true
 			when :g
-				c.puts "	local_dst->bool_ = #{src1} > #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} > #{src2};"; implemented = true
 			when :le
-				c.puts "	local_dst->bool_ = #{src1} <= #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} <= #{src2};"; implemented = true
 			when :ge
-				c.puts "	local_dst->bool_ = #{src1} >= #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} >= #{src2};"; implemented = true
 			when :eq
-				c.puts "	local_dst->bool_ = #{src1} == #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} == #{src2};"; implemented = true
 			when :ne
-				c.puts "	local_dst->bool_ = #{src1} != #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} != #{src2};"; implemented = true
 			end
 		elsif src_types == "BB"
 			case name # Instruction switch
 			when :and
-				c.puts "	local_dst->bool_ = #{src1} && #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} && #{src2};"; implemented = true
 			when :or
-				c.puts "	local_dst->bool_ = #{src1} || #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} || #{src2};"; implemented = true
 			when :xor
-				c.puts "	local_dst->bool_ = #{src1} ^ #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} ^ #{src2};"; implemented = true
 			when :l
-				c.puts "	local_dst->bool_ = #{src1} < #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} < #{src2};"; implemented = true
 			when :g
-				c.puts "	local_dst->bool_ = #{src1} > #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} > #{src2};"; implemented = true
 			when :le
-				c.puts "	local_dst->bool_ = #{src1} <= #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} <= #{src2};"; implemented = true
 			when :ge
-				c.puts "	local_dst->bool_ = #{src1} >= #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} >= #{src2};"; implemented = true
 			when :eq
-				c.puts "	local_dst->bool_ = #{src1} == #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} == #{src2};"; implemented = true
 			when :ne
-				c.puts "	local_dst->bool_ = #{src1} != #{src2};"; implemented = true
+				c.puts "	operand.bool_ = #{src1} != #{src2};"; implemented = true
 			end
 		elsif src_types == "SS"
 			if name == :add
-				c.puts "	local_dst->str = concatStringToString(#{proto[0] == "C" && src1_raw || src1}, #{proto[1] == "C" && src2_raw || src2});"
+				c.puts "	operand.str = concatStringToString(#{proto[0] == "C" && src1_raw || src1}, #{proto[1] == "C" && src2_raw || src2});"
 				implemented = true
 			else
 				c.puts ""
 				c.puts "	int compare_result = strcmp(#{proto[0] == "C" && src1_raw || src1}->data, #{proto[1] == "C" && src2_raw || src2}->data);"
 				case name # Instruction switch
 				when :l
-					c.puts "	local_dst->bool_ = compare_result < 0;"; implemented = true
+					c.puts "	operand.bool_ = compare_result < 0;"; implemented = true
 				when :g
-					c.puts "	local_dst->bool_ = compare_result > 0;"; implemented = true
+					c.puts "	operand.bool_ = compare_result > 0;"; implemented = true
 				when :le
-					c.puts "	local_dst->bool_ = compare_result <= 0;"; implemented = true
+					c.puts "	operand.bool_ = compare_result <= 0;"; implemented = true
 				when :ge
-					c.puts "	local_dst->bool_ = compare_result >= 0;"; implemented = true
+					c.puts "	operand.bool_ = compare_result >= 0;"; implemented = true
 				when :eq
-					c.puts "	local_dst->bool_ = compare_result == 0;"; implemented = true
+					c.puts "	operand.bool_ = compare_result == 0;"; implemented = true
 				when :ne
-					c.puts "	local_dst->bool_ = compare_result != 0;"; implemented = true
+					c.puts "	operand.bool_ = compare_result != 0;"; implemented = true
 				end
 			end
 		end
@@ -284,26 +287,27 @@ instructions.each do |name, regex|
 		if src_types[0] == "B"
 			case name
 			when :not
-				c.puts "	local_dst->bool_ = !#{src1};"; implemented = true
+				c.puts "	operand.bool_ = !#{src1};"; implemented = true
 			end
 		end
 
 		if src_types[0] == "I"
 			case name
 			when :neg
-				c.puts "	local_dst->int_ = (-1)* #{src1};"; implemented = true
+				c.puts "	operand.int_ = (-1)* #{src1};"; implemented = true
 			end
 		end
 
 		if src_types[0] == "D"
 			case name
 			when :neg
-				c.puts "	local_dst->double_ = (-1)* #{src1};"; implemented = true
+				c.puts "	operand.double_ = (-1)* #{src1};"; implemented = true
 			end
 		end
 		#
-		c.puts "	local_dst->initialized = true;"
-		c.puts "	stack.SP = stack.SP + local_dst->sp_inc;"
+		c.puts "	operand.initialized = true;"
+		c.puts "	stack.SP = stack.SP + i->dst.sp_inc;"
+		c.puts "	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);"
 		if not implemented
 			c.puts
 			c.puts "	assert(false && \"Instruction not implemented!\");"

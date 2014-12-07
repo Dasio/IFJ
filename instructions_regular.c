@@ -501,8 +501,8 @@ void Instr_CALL(Instruction *i) {
 
 
 
-// CALL_LEGTH
-void Instr_CALL_LEGTH() {
+// CALL_LENGTH
+void Instr_CALL_LENGTH() {
 
 }
 
