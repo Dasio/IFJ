@@ -20,6 +20,7 @@ void parse(TokenVector *tokvect)
 
 	mainContext = InitContext();
 	activeContext = mainContext;
+	activeOffset = &mainOffset;
 	token = TokenVectorFirst(tokenVector);
 	addBuiltInFunctions();
 
