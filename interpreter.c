@@ -11,7 +11,7 @@ extern int instr_counter;
  */
 uint64_t IP = 0;
 
-Stack stack;
+Stack stack = {.SP = -1, .BP = 0};
 
 void initInterpret() {
 	stack.vect = StackDataVectorInit(DEFAULT_STACK_SIZE);
