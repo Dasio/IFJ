@@ -705,9 +705,7 @@ void write()
 	MY_OFFSET = activeContext->locCount + 2;
 	// keyword write already loaded from STMT
 	uint32_t count = term_list();
-	a.sp_inc = 1;
-	a.offset = MY_OFFSET++;
-	b.int_ = count;
+	a.int_ = count;
 	generateInstruction(WRITE,&a,&b);
 
 }
