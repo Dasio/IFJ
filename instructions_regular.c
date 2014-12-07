@@ -245,7 +245,7 @@ void Instr_WRITE(Instruction *i) {
 						printf("%s", vectorAt(stack.vect, stack.BP + op->offset)->str->data);
 						break;
 					case DOUBLE:
-						printf("%f", vectorAt(stack.vect, stack.BP + op->offset)->double_);
+						printf("%g", vectorAt(stack.vect, stack.BP + op->offset)->double_);
 						break;
 					case INT:
 						printf("%d", vectorAt(stack.vect, stack.BP + op->offset)->int_);
@@ -264,7 +264,7 @@ void Instr_WRITE(Instruction *i) {
 						printf("%s", vectorAt(stack.vect, op->offset)->str->data);
 						break;
 					case DOUBLE:
-						printf("%f", vectorAt(stack.vect, op->offset)->double_);
+						printf("%g", vectorAt(stack.vect, op->offset)->double_);
 						break;
 					case INT:
 						printf("%d", vectorAt(stack.vect, op->offset)->int_);
@@ -283,7 +283,7 @@ void Instr_WRITE(Instruction *i) {
 						printf("%s", op->str->data);
 						break;
 					case DOUBLE:
-						printf("%f", op->double_);
+						printf("%g", op->double_);
 						break;
 					case INT:
 						printf("%d", op->int_);

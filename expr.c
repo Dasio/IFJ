@@ -12,9 +12,7 @@ extern InstructionVector *tape;
 static ExprToken temp_expr_token;
 static DataType return_value_data_type;
 static ExprToken *top_most_term;
-static Operand a;
-static Operand b;
-static Operand c;
+static Operand a, b, c;
 static int64_t MY_OFFSET;
 int instr_counter;
 
@@ -1094,7 +1092,7 @@ void ExprTokenPrint(ExprToken *expr_token)
 			fprintf(stderr, "%d ", expr_token->E.int_);
 			break;
 		case DOUBLE:
-			fprintf(stderr, "%f ", expr_token->E.double_);
+			fprintf(stderr, "%g ", expr_token->E.double_);
 			break;
 		case STRING:
 			fprintf(stderr, "%s ", expr_token->E.str->data);
@@ -1109,26 +1107,4 @@ void ExprTokenPrint(ExprToken *expr_token)
 }
 
 
-
-
 GenVectorFunctions(ExprToken)
-
-/*
-ExprToken *allocExprToken()
-{
-	ExprToken *new_expr_token = malloc(sizeof(ExprToken));
-	new_expr_token->type = TERM;
-
-	//new_expr_token->token = malloc(sizeof(Token));
-	//(new_expr_token->token) = initToken();
-
-	return new_expr_token;
-}
-
-void destroyExprToken(ExprToken *expr_token)
-{
-	assert(expr_token);
-	//destroyToken(expr_token->token);
-	//free(expr_token->token);
-	free(expr_token);
-}*/
