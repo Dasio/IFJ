@@ -31,10 +31,10 @@ instruction_codes = {
 func_table = {}
 
 comb = [["C", "L", "G"], # VarType SRC1
-		["C", "L", "G"], # VarType SRC2
+		["C", "L", "G", "x"], # VarType SRC2
 							  # DST Implicit
 		["I", "D", "B", "S"], # SRC1
-		["I", "D", "B", "S"]  # SRC2
+		["I", "D", "B", "S", "x"]  # SRC2
 	]
 
 comb = comb.first.product(*comb[1..-1]).map(&:join).reject {|s| s =~ /CC/}
@@ -121,6 +121,7 @@ end
 
 prototypes = {}
 types = {"I" => "int_", "D" => "double_", "B" => "bool_", "S" => "str"}
+additional = {} # Used for proto =~ /x/
 
 instructions.each do |name, regex|
 	puts name
@@ -128,6 +129,27 @@ instructions.each do |name, regex|
 
 	prototypes[name].each do |proto|
 		function_name = "Instr_#{name.upcase}_#{proto}"
+
+		# Neg/Not exception
+		if (name == :neg && proto !~ /[LG]x[ID]x/) || (name == :not && proto !~ /[LG]x[B]x/)
+			if proto =~ /x/
+				next
+			end
+			id = instruction_codes[name] << 8 |
+			 conversion[:var_type][proto[0]] << 6 |
+		     conversion[:var_type][proto[1]] << 4 |
+		     conversion[:data_type][proto[2]] << 2 |
+		     conversion[:data_type][proto[3]]
+
+		    proto_orig = proto.dup
+		    proto[1] = "x"
+		    proto[3] = "x"
+		    function_name = "Instr_#{name.upcase}_#{proto} /* #{proto_orig} */"
+		    func_table[id] = function_name
+		    next
+		end
+
+
 		implemented = false
 
 		# Prototype
@@ -284,21 +306,21 @@ instructions.each do |name, regex|
 		end
 
 		# Must be separated
-		if src_types[0] == "B"
+		if src_types[0] == "B" && proto =~ /x/
 			case name
 			when :not
 				c.puts "	operand.bool_ = !#{src1};"; implemented = true
 			end
 		end
 
-		if src_types[0] == "I"
+		if src_types[0] == "I" && proto =~ /x/
 			case name
 			when :neg
 				c.puts "	operand.int_ = (-1)* #{src1};"; implemented = true
 			end
 		end
 
-		if src_types[0] == "D"
+		if src_types[0] == "D" && proto =~ /x/
 			case name
 			when :neg
 				c.puts "	operand.double_ = (-1)* #{src1};"; implemented = true
