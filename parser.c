@@ -1,5 +1,4 @@
 #include "parser.h"
-#include "expr.h"
 
 TokenVector *tokenVector;
 Token *token;
@@ -9,6 +8,8 @@ Context *activeContext;
 Symbol *funcSymbol;
 uint8_t inGST = 0;
 uint32_t argIndex;
+static int64_t MY_OFFSET;
+static Operand a,b;
 
 void parse(TokenVector *tokvect)
 {
@@ -302,6 +303,8 @@ void params_def(uint8_t next)
 }
 uint32_t term_list()
 {
+	Scope scope;
+	Symbol *symbol = NULL;
 	uint32_t count = 0;
 	token++;
 	if(token->type != TT_leftBrace)
@@ -309,11 +312,69 @@ uint32_t term_list()
 		setError(ERR_Syntax);
 		return 0;
 	}
-
+	Token *first = token+1;
 	count += terms(0);
 	if(getError())
 		return 0;
-
+	Token *current = token-1;
+	while(current>=first)
+	{
+		a.sp_inc = 1;
+		a.offset = MY_OFFSET++;
+		if(current->type == TT_identifier)
+		{
+			symbol = findVarOrFunc(current->str.data,&scope);
+			if(getError())
+				return 0;
+			b.var_type = scope==Global ? GLOBAL : LOCAL;
+			b.offset = symbol->index;
+			switch(current->type)
+			{
+			case T_String:
+				b.data_type = STRING;
+				break;
+			case T_double:
+				b.data_type = DOUBLE;
+				break;
+			case T_int:
+				b.data_type = INT;
+				break;
+			case T_bool:
+				b.data_type = BOOL;
+				break;
+			default:
+				break;
+			}
+		}
+		else
+		{
+			b.var_type = CONST;
+			switch(symbol->type)
+			{
+				case T_String:
+					b.data_type = STRING;
+					b.str = &(current->str);
+					break;
+				case T_double:
+					b.data_type = DOUBLE;
+					b.double_ = current->r;
+					break;
+				case T_int:
+					b.data_type = INT;
+					b.int_ = current->n;
+					break;
+				case T_bool:
+					b.data_type = BOOL;
+					b.bool_ = (bool)current->n;
+					break;
+				default:
+					break;
+			}
+		}
+		generateInstruction(PUSH, &a, &b);
+		// Skip comma and move to next argument
+		current -= 2;
+	}
 	// Token loaded from terms
 	if(token->type != TT_rightBrace)
 	{
@@ -324,8 +385,6 @@ uint32_t term_list()
 }
 uint8_t terms(uint8_t next)
 {
-	Symbol *symbol = NULL;
-	Scope scope;
 	if(next)
 	{
 		token++;
@@ -340,77 +399,6 @@ uint8_t terms(uint8_t next)
 	{
 		setError(ERR_Syntax);
 		return 0;
-	}
-	if(token->type == TT_identifier)
-	{
-		symbol = findVarOrFunc(token->str.data,&scope);
-		if(getError())
-			return 0;
-		switch(symbol->type)
-		{
-			case T_String:
-				if(scope == Local)
-				{
-					//gen Instr_PUSH_LS
-				}
-				else if(scope == Global)
-				{
-					//gen Instr_PUSH_GS
-				}
-				break;
-			case T_double:
-				if(scope == Local)
-				{
-					//gen Instr_PUSH_LD
-				}
-				else if(scope == Global)
-				{
-					//gen Instr_PUSH_GD
-				}
-				break;
-			case T_int:
-				if(scope == Local)
-				{
-					//gen Instr_PUSH_LI
-				}
-				else if(scope == Global)
-				{
-					//gen Instr_PUSH_GI
-				}
-				break;
-			case T_bool:
-				if(scope == Local)
-				{
-					//gen Instr_PUSH_LB
-				}
-				else if(scope == Global)
-				{
-					//gen Instr_PUSH_GB
-				}
-				break;
-			default:
-				break;
-		}
-	}
-	else
-	{
-		switch(symbol->type)
-		{
-			case T_String:
-				//gen Instr_PUSH_CS
-				break;
-			case T_double:
-				//gen Instr_PUSH_CD
-				break;
-			case T_int:
-				//gen Instr_PUSH_CI
-				break;
-			case T_bool:
-				//gen Instr_PUSH_CB
-				break;
-			default:
-				break;
-		}
 	}
 	count = terms(1);
 	if(getError())
@@ -714,8 +702,14 @@ void readln()
 
 void write()
 {
+	MY_OFFSET = activeContext->locCount + 2;
 	// keyword write already loaded from STMT
-	term_list();
+	uint32_t count = term_list();
+	a.sp_inc = 1;
+	a.offset = MY_OFFSET++;
+	b.int_ = count;
+	generateInstruction(WRITE,&a,&b);
+
 }
 
 void addFunc(char *name)
