@@ -222,7 +222,7 @@ void Instr_READLN_GI(Instruction *i) {
 // COPY  dst_{}
 void Instr_COPY_LS() {
 
-	StackData *op = vectorAt(stack.vect, stack.SP - 1);
+	StackData *op = vectorAt(stack.vect, stack.SP);
 	String *s = NULL;
 	int32_t pos = 0;
 	int32_t n = 0;
@@ -301,30 +301,129 @@ void Instr_COPY_LS() {
 }
 
 
-// // WRITELN 1    number of arguments - first operand
-// void Instr_WRITELN(Instruction *i) {
+// WRITELN 1    number of arguments - first operand
+void Instr_WRITELN(Instruction *i) {
 
-// }
+	StackData *op = vectorAt(stack.vect, stack.SP);
 
+	for (int x = 0; x < i->dst.int_; x++)
+	{
+		switch(op->var_type)
+		{
+			case LOCAL:
+				switch(op->data_type)
+				{
+					case STRING:
+						printf("%s", vectorAt(stack.vect, stack.BP + op->offset)->str->data);
+						break;
+					case DOUBLE:
+						printf("%f", vectorAt(stack.vect, stack.BP + op->offset)->double_);
+						break;
+					case INT:
+						printf("%d", vectorAt(stack.vect, stack.BP + op->offset)->int_);
+						break;
+					case BOOL:
+						printf("%d", vectorAt(stack.vect, stack.BP + op->offset)->bool_);
+						break;
+					default:
+						break;
+				}
+				break;
+			case GLOBAL:
+				switch(op->data_type)
+				{
+					case STRING:
+						printf("%s", vectorAt(stack.vect, op->offset)->str->data);
+						break;
+					case DOUBLE:
+						printf("%f", vectorAt(stack.vect, op->offset)->double_);
+						break;
+					case INT:
+						printf("%d", vectorAt(stack.vect, op->offset)->int_);
+						break;
+					case BOOL:
+						printf("%d", vectorAt(stack.vect, op->offset)->bool_);
+						break;
+					default:
+						break;
+				}
+				break;
+			case CONST:
+				switch(op->data_type)
+				{
+					case STRING:
+						printf("%s", op->str->data);
+						break;
+					case DOUBLE:
+						printf("%f", op->double_);
+						break;
+					case INT:
+						printf("%d", op->int_);
+						break;
+					case BOOL:
+						printf("%d", op->bool_);
+						break;
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+		op--;
+	}
 
-// // MOV 4      [G][SDIB]   len DST
-// void Instr_MOV_GS(Instruction *i) {
-// 	// Zobere ->offset z prveho operandu (index), skopiruje z vrchu zasobiku
-// 	// na ten index
-// }
+	stack.SP -= i->dst.int_; // args_count
+}
 
-// void Instr_MOV_GD(Instruction *i) {
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
-// }
+// MOV 4      [G][SDIB]   only DST
+void Instr_MOV_GS(Instruction *i) {
 
-// void Instr_MOV_GI(Instruction *i) {
+	operand.str = vectorAt(stack.vect, stack.SP)->str;
+	operand.initialized = true;
 
-// }
+	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
 
-// void Instr_MOV_GB(Instruction *i) {
+	stack.SP--;
+}
 
-// }
+void Instr_MOV_GD(Instruction *i) {
 
+	operand.double_ = vectorAt(stack.vect, stack.SP)->double_;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
+
+	stack.SP--;
+}
+
+void Instr_MOV_GI(Instruction *i) {
+
+	operand.int_ = vectorAt(stack.vect, stack.SP)->int_;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
+
+	stack.SP--;
+}
+
+void Instr_MOV_GB(Instruction *i) {
+
+	operand.bool_ = vectorAt(stack.vect, stack.SP)->bool_;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
+
+	stack.SP--;
+}
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 // PUSH 12    [CLG][SDIB] len SRC
 void Instr_PUSH_CS(Instruction *i) {
@@ -463,6 +562,9 @@ void Instr_PUSH_GB(Instruction *i) {
 	stack.SP = stack.SP + i->dst.sp_inc;
 }
 
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 // CALL
 void Instr_CALL(Instruction *i) {
