@@ -968,7 +968,6 @@ static void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vector)
 			temp_expr_token.E.var_type = CONST;
 			temp_expr_token.E.data_type = BOOL;
 			temp_expr_token.E.bool_ = (bool)token->n;
-
 			break;
 		case TT_minus:
 			if (check_unary_minus(expr_vector))
