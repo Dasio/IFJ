@@ -203,10 +203,26 @@ void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
 	InstructionVectorAppend(tape, i);
 }
 
+void dumpTape() {
+	assert(tape);
+
+	uint32_t tape_length = tape->used;
+	Instruction *first = InstructionVectorFirst(tape);
+
+	fprintf(stderr, "TAPE DUMP: ============\n");
+	for(uint32_t i = 0; i < tape_length; i++) {
+		Instruction *inst = first+i;
+		fprintf(stderr, "%d - %p\n", i, inst->instr);
+	}
+	fprintf(stderr, "TAPE DUMP OVER ========\n");
+}
+
 void runInterpretation() {
 	assert(tape && "Call initInterpret() before running interpreter");
 
 	Instruction *first = InstructionVectorFirst(tape);
+	assert(first && "Instruction tape is empty!");
+
 	while(true) {
 		Instruction *i = first + IP;
 		(i->instr)(i);

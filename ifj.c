@@ -45,7 +45,8 @@ int main(int argc, char *argv[]) {
 		goto err;
 
 	// Interpretation
-	//runInterpretation();
+	dumpTape();
+	runInterpretation();
 
 	// Error handling
 err:

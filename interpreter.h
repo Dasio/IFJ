@@ -33,6 +33,11 @@
 	 */
 	void generateInstruction(InstructionOp op, Operand* a, Operand* b);
 
+	/**
+	 * Prints content of tape to stderr.
+	 */
+	void dumpTape();
+
 	void runInterpretation();
 
 #endif
