@@ -14,9 +14,6 @@
 	void Instr_READLN_GD(Instruction *i);
 	void Instr_READLN_GI(Instruction *i);
 
-	// COPY
-	void Instr_COPY_LS();
-
 	// WRITELN 1     number of arguments - first operand
 	void Instr_WRITELN(Instruction *i);
 
@@ -41,7 +38,19 @@
 	void Instr_PUSH_GB(Instruction *i);
 
 	// CALL ... Address - first operand, locals_count - second operand
-	void Instr_CALL(Instruction *i);
+	void Instr_CALL();
+
+	// CALL_LEGTH
+	void Instr_CALL_LEGTH();
+
+	// CALL_COPY
+	void Instr_CALL_COPY();
+
+	// CALL_FIND
+	void Instr_CALL_FIND();
+
+	// CALL_SORT
+	void Instr_CALL_SORT();
 
 	// RET ... arg_count in i->dst.int_
 	void Instr_RET(Instruction *i);

@@ -504,6 +504,14 @@ void Instr_CALL(Instruction *i) {
 }
 
 
+
+// CALL_LEGTH
+void Instr_CALL_LEGTH() {
+
+}
+
+
+
 // CALL_COPY
 void Instr_CALL_COPY() {
 
@@ -583,6 +591,17 @@ void Instr_CALL_COPY() {
 	op->initialized = true;
 
 	stack.SP -= 3; // args_count
+}
+
+
+// CALL_FIND
+void Instr_CALL_FIND() {
+
+}
+
+// CALL_SORT
+void Instr_CALL_SORT() {
+
 }
 
 
