@@ -1,6 +1,15 @@
 #include "instructions_regular.h"
 #include "ctype.h"
 
+/**
+ * Global variables assigned in ifj.c#main(), must be here due to cleanup
+ * at HALT.
+ */
+bool token_vector_initialized;
+bool scanner_initialized;
+TokenVector *tokenVectorMain;
+Scanner scannerMain;
+
 extern void *mem_alloc(size_t len);
 extern Stack stack;
 extern uint64_t IP;
@@ -636,4 +645,17 @@ void Instr_JMP(Instruction *i) {
 	IP = i->dst.offset;
 
 	stack.SP--;
+}
+
+// HALT
+void Instr_HALT(Instruction *i) {
+	(void) i; // Dummy pretype because of unused variable
+
+	if(token_vector_initialized)
+		destroyTokenVector(tokenVectorMain);
+	if(scanner_initialized)
+		destroyScanner(&scannerMain);
+
+	implodeMemory();
+	exit(0);
 }

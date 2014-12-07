@@ -4,6 +4,11 @@
 #include "interpreter.h"
 #include "memory_mgmt.h"
 
+extern bool scanner_initialized;
+extern bool token_vector_initialized;
+extern TokenVector *tokenVectorMain;
+extern Scanner scannerMain;
+
 int main(int argc, char *argv[]) {
 	// Error code initialized to success
 	int ecode = 0;
@@ -16,16 +21,16 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Scanner initialization
-	Scanner scanner = initScanner();
+	scannerMain = initScanner();
 	scanner_initialized = true;
 
-	assignFile(&scanner.input, argv[1]);
+	assignFile(&scannerMain.input, argv[1]);
 
 	if(getError())
 		goto err;
 
 	// Scanner
-	TokenVector *tokenVector = getTokenVector(&scanner);
+	tokenVectorMain = getTokenVector(&scannerMain);
 	token_vector_initialized = true;
 
 	if(getError())
@@ -34,7 +39,7 @@ int main(int argc, char *argv[]) {
 	initInterpret();
 
 	// Recursive descent
-	parse(tokenVector);
+	parse(tokenVectorMain);
 
 	if(getError())
 		goto err;
@@ -49,13 +54,13 @@ err:
 		ecode = getReturnError();
 	}
 
-	// Cleanup
-	if(token_vector_initialized)
-		destroyTokenVector(tokenVector);
-	if(scanner_initialized)
-		destroyScanner(&scanner);
+	// Cleanup done in HALT instruction
+	// if(token_vector_initialized)
+	// 	destroyTokenVector(tokenVectorMain);
+	// if(scanner_initialized)
+	// 	destroyScanner(&scannerMain);
 
-	implodeMemory();
+	//implodeMemory();
 
 	return ecode;
 }

@@ -1,6 +1,8 @@
 #include "instruction.h"
 #include "stack.h"
 #include "memory_mgmt.h"
+#include "token.h"
+#include "scanner.h"
 
 #ifndef _INSTRUCTIONS_REGULAR_H
 #define _INSTRUCTIONS_REGULAR_H
@@ -63,4 +65,7 @@
 
 	// JMP ... ADDR in i->dst.offset
 	void Instr_JMP(Instruction *i);
+
+	// HALT
+	void Instr_HALT(Instruction *i);
 #endif

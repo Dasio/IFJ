@@ -78,7 +78,8 @@
 		RET,    //  1 dst.int_ == arg_count
 		JMP_T,  //  1 dst.offset == ADDR
 		JMP_F,  //  1 dst.offset == ADDR
-		JMP     //  1 dst.offset == ADDR
+		JMP,    //  1 dst.offset == ADDR
+		HALT
 	} InstructionOp;
 
 	struct instruction;

@@ -191,31 +191,25 @@ void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
 		case WRITE:
 			i_ptr = Instr_WRITE;
 			break;
+		case HALT:
+			i_ptr = Instr_HALT;
+			break;
 		default:
 			i_ptr = Instr_CALL;
 			break;
 	}
 
-	Instruction i = (Instruction) {.instr = i_ptr, .dst = *a, .src_1 = *b, .src_2 = (StackData){.data_type = UNDEF}};
+	Instruction i = (Instruction) {.instr = i_ptr, .dst = *a, .src_1 = *b};
 	InstructionVectorAppend(tape, i);
-}
-
-static bool interpretationStep() {
-	Instruction *IP_ptr = InstructionVectorAt(tape, IP);
-	if(!IP_ptr)
-		return false;
-
-	(IP_ptr->instr)(IP_ptr);
-
-	return true;
 }
 
 void runInterpretation() {
 	assert(tape && "Call initInterpret() before running interpreter");
 
+	Instruction *first = InstructionVectorFirst(tape);
 	while(true) {
-	 	bool ret = interpretationStep();
-	 	if(!ret)
-	 		break;
+		Instruction *i = first + IP;
+		(i->instr)(i);
+		IP++;
 	}
 }
