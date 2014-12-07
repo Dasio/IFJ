@@ -5,7 +5,7 @@ else
 endif
 
 RM=rm -f
-CFLAGS=-ffast-math -Ofast -std=c11 -pedantic -Wall -Wextra -ftrapv -fstack-protector-all -funsigned-char -DNDEBUG
+CFLAGS=-g -ffast-math -Ofast -std=c11 -pedantic -Wall -Wextra -ftrapv -fstack-protector-all -funsigned-char
 LDFLAGS=
 LDLIBS=
 
