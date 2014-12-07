@@ -7,7 +7,9 @@ Context *funcContext;
 Context *activeContext;
 Symbol *funcSymbol;
 extern InstructionVector *tape;
-static int64_t MY_OFFSET;
+static int64_t mainOffset;
+static int64_t funcOffset;
+static int64_t *activeOffset;
 static Operand a,b;
 uint8_t inGST = 0;
 uint32_t argIndex;
@@ -22,6 +24,8 @@ void parse(TokenVector *tokvect)
 	addBuiltInFunctions();
 
 	program();
+	if(!getError())
+		generateInstruction(HALT,&a,&b);
 	// Cleanup
 
 	FreeContext(mainContext);
@@ -215,6 +219,7 @@ void forward(SymbolType returnType)
 			return;
 		// Switch to function context
 		activeContext = funcContext;
+		activeOffset = &funcOffset;
 		var_declr();
 		if(getError())
 			return;
@@ -224,6 +229,7 @@ void forward(SymbolType returnType)
 			return;
 		// Switch back to main context
 		activeContext = mainContext;
+		activeOffset = &mainOffset;
 	}
 	// Need load next token
 	token++;
@@ -321,7 +327,7 @@ uint32_t term_list()
 	while(current>=first)
 	{
 		a.sp_inc = 1;
-		a.offset = MY_OFFSET++;
+		a.offset = (*activeOffset)++;
 		if(current->type == TT_identifier)
 		{
 			symbol = findVarOrFunc(current->str.data,&scope);
@@ -408,6 +414,7 @@ uint8_t terms(uint8_t next)
 }
 void compound_stmt(uint8_t semicolon)
 {
+	*activeOffset = activeContext->locCount + 2;
 	if(token->type != TT_keyword || token->keyword_token != Key_begin)
 	{
 		setError(ERR_Syntax);
@@ -738,7 +745,6 @@ void readln()
 
 void write()
 {
-	MY_OFFSET = activeContext->locCount + 2;
 	// keyword write already loaded from STMT
 	uint32_t count = term_list();
 	a.int_ = count;
