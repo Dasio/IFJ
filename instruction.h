@@ -50,8 +50,8 @@
 	 */
 	typedef enum {
 		// dont change order !! must be same as order of token types
-		NEG, // 8  {*,L,G}{*,*,*}{I*,D*}
-		NOT, // 4  {*,L,G}{*,*,*}{B*}
+		NEG, //  8 {*,L,G}{*,*,*}{I*,D*}
+		NOT, //  4 {*,L,G}{*,*,*}{B*}
 		MUL, // 64 {C,L,G}{C,L,G}{II,DI,ID,DD}
 		DIV, // 64 {C,L,G}{C,L,G}{II,DI,ID,DD}
 		AND, // 16 {C,L,G}{C,L,G}{BB}
@@ -66,13 +66,19 @@
 		EQ , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
 		NE , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
 
-		READLN, // 8  [LG][SDIB]  len DST
-		WRITELN,// 1  src1->int_ pocet argumentov
-		COPY,   // 3  [CLG][S] src1->*String
-		MOV,    // 4  [G][SDIB]   len DST
-		PUSH,   // 12 [CLG][SDIB] len SRC
-		CALL,   //
-		RET
+		READLN, //  8 [LG][SDIB]  only DST
+		WRITELN,//  1 dst.int_ ... arg_count
+		MOV,    //  4 [G][SDIB]   only DST
+		PUSH,   // 12 [CLG][SDIB] only SRC
+		CALL,   //  1 [ADDR], [locals_count]
+		CALL_LENGTH,
+		CALL_COPY, // completed
+		CALL_FIND,
+		CALL_SORT,
+		RET,    //  1 dst.int_ == arg_count
+		JMP_T,  //  1 dst.offset == ADDR
+		JMP_F,  //  1 dst.offset == ADDR
+		JMP     //  1 dst.offset == ADDR
 	} InstructionOp;
 
 	struct instruction;

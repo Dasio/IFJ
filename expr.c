@@ -866,9 +866,27 @@ static inline void reduce_handle_function(THandle handle)
 	}
 
 	a.offset = id->index;
-	b.int_ = context->argCount;
+
 	// generate CALL instruction
-	generateInstruction(CALL, &a, &b); // b = pushed operand
+	switch (a.offset)
+	{
+		case -1:
+			generateInstruction(CALL_LENGTH, &a, &b);
+			break;
+		case -2:
+			generateInstruction(CALL_COPY, &a, &b);
+			break;
+		case -3:
+			generateInstruction(CALL_FIND, &a, &b);
+			break;
+		case -4:
+			generateInstruction(CALL_SORT, &a, &b);
+			break;
+		default:
+			b.int_ = context->locCount;
+			generateInstruction(CALL, &a, &b);
+			break;
+	}
 
 	// reducing tokenvector
 	MY_OFFSET -= context->argCount;

@@ -43,6 +43,15 @@
 	// CALL ... Address - first operand, locals_count - second operand
 	void Instr_CALL(Instruction *i);
 
-	// RET ... frame_size (int_) - first operand
+	// RET ... arg_count in i->dst.int_
 	void Instr_RET(Instruction *i);
+
+	// JMP_T ... ADDR in i->dst.offset
+	void Instr_JMP_T(Instruction *i);
+
+	// JMP_F ... ADDR in i->dst.offset
+	void Instr_JMP_F(Instruction *i);
+
+	// JMP ... ADDR in i->dst.offset
+	void Instr_JMP(Instruction *i);
 #endif

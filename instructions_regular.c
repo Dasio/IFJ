@@ -219,87 +219,6 @@ void Instr_READLN_GI(Instruction *i) {
 	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
 }
 
-// COPY  dst_{}
-void Instr_COPY_LS() {
-
-	StackData *op = vectorAt(stack.vect, stack.SP);
-	String *s = NULL;
-	int32_t pos = 0;
-	int32_t n = 0;
-
-	switch(op->var_type)
-	{
-		case LOCAL:
-			s = vectorAt(stack.vect, stack.BP + op->offset)->str;
-			break;
-		case GLOBAL:
-			s = vectorAt(stack.vect, op->offset)->str;
-			break;
-		case CONST:
-			s = op->str;
-			break;
-		default:
-			break;
-	}
-
-	switch((--op)->var_type)
-	{
-		case LOCAL:
-			pos = vectorAt(stack.vect, stack.BP + op->offset)->int_;
-			break;
-		case GLOBAL:
-			pos = vectorAt(stack.vect, op->offset)->int_;
-			break;
-		case CONST:
-			pos = op->int_;
-			break;
-		default:
-			break;
-	}
-
-	switch((--op)->var_type)
-	{
-		case LOCAL:
-			n = vectorAt(stack.vect, stack.BP + op->offset)->int_;
-			break;
-		case GLOBAL:
-			n = vectorAt(stack.vect, op->offset)->int_;
-			break;
-		case CONST:
-			n = op->int_;
-			break;
-		default:
-			break;
-	}
-
-	String *str = mem_alloc(sizeof(String));
-	*str = initStringSize(n+1);
-
-	int32_t length = s->length;
-	if(n > length)
-		n=length;
-	// If Index is larger than the length of the string S or index is negative,
-	// then an empty string is returned.
-	if(pos > length)
-	{
-		str->length = 0;
-		str->data[0] = '\0';
-	}
-	else
-	{
-		memcpy(str->data,s->data+pos-1,n);
-		str->data[n] = '\0';
-		str->length = n;
-	}
-
-	mem_ptradd(str->data);
-
-	(--op)->str = str;
-	op->initialized = true;
-
-	stack.SP -= 3; // args_count
-}
-
 
 // WRITELN 1    number of arguments - first operand
 void Instr_WRITELN(Instruction *i) {
@@ -585,6 +504,88 @@ void Instr_CALL(Instruction *i) {
 }
 
 
+// CALL_COPY
+void Instr_CALL_COPY() {
+
+	StackData *op = vectorAt(stack.vect, stack.SP);
+	String *s = NULL;
+	int32_t pos = 0;
+	int32_t n = 0;
+
+	switch(op->var_type)
+	{
+		case LOCAL:
+			s = vectorAt(stack.vect, stack.BP + op->offset)->str;
+			break;
+		case GLOBAL:
+			s = vectorAt(stack.vect, op->offset)->str;
+			break;
+		case CONST:
+			s = op->str;
+			break;
+		default:
+			break;
+	}
+
+	switch((--op)->var_type)
+	{
+		case LOCAL:
+			pos = vectorAt(stack.vect, stack.BP + op->offset)->int_;
+			break;
+		case GLOBAL:
+			pos = vectorAt(stack.vect, op->offset)->int_;
+			break;
+		case CONST:
+			pos = op->int_;
+			break;
+		default:
+			break;
+	}
+
+	switch((--op)->var_type)
+	{
+		case LOCAL:
+			n = vectorAt(stack.vect, stack.BP + op->offset)->int_;
+			break;
+		case GLOBAL:
+			n = vectorAt(stack.vect, op->offset)->int_;
+			break;
+		case CONST:
+			n = op->int_;
+			break;
+		default:
+			break;
+	}
+
+	String *str = mem_alloc(sizeof(String));
+	*str = initStringSize(n+1);
+
+	int32_t length = s->length;
+	if(n > length)
+		n=length;
+	// If Index is larger than the length of the string S or index is negative,
+	// then an empty string is returned.
+	if(pos > length)
+	{
+		str->length = 0;
+		str->data[0] = '\0';
+	}
+	else
+	{
+		memcpy(str->data,s->data+pos-1,n);
+		str->data[n] = '\0';
+		str->length = n;
+	}
+
+	mem_ptradd(str->data);
+
+	(--op)->str = str;
+	op->initialized = true;
+
+	stack.SP -= 3; // args_count
+}
+
+
 // RET (controlling initialized flag of return vale isn't needed here)
 void Instr_RET(Instruction *i) {
 
@@ -594,4 +595,30 @@ void Instr_RET(Instruction *i) {
 	IP = (++BP_ptr)->offset;
 
 	stack.SP -= i->dst.int_; // args_count
+}
+
+// JMP_T
+void Instr_JMP_T(Instruction *i) {
+
+	if (vectorAt(stack.vect, stack.SP)->bool_ == true)
+		IP = i->dst.offset;
+
+	stack.SP--;
+}
+
+// JMP_F
+void Instr_JMP_F(Instruction *i) {
+
+	if (vectorAt(stack.vect, stack.SP)->bool_ == false)
+		IP = i->dst.offset;
+
+	stack.SP--;
+}
+
+// JMP
+void Instr_JMP(Instruction *i) {
+
+	IP = i->dst.offset;
+
+	stack.SP--;
 }
