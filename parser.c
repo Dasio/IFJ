@@ -350,21 +350,21 @@ uint32_t term_list()
 		else
 		{
 			b.var_type = CONST;
-			switch(symbol->type)
+			switch(token->type)
 			{
-				case T_String:
+				case TT_string:
 					b.data_type = STRING;
 					b.str = &(current->str);
 					break;
-				case T_double:
+				case TT_real:
 					b.data_type = DOUBLE;
 					b.double_ = current->r;
 					break;
-				case T_int:
+				case TT_integer:
 					b.data_type = INT;
 					b.int_ = current->n;
 					break;
-				case T_bool:
+				case TT_bool:
 					b.data_type = BOOL;
 					b.bool_ = (bool)current->n;
 					break;
