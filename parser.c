@@ -6,10 +6,11 @@ Context *mainContext;
 Context *funcContext;
 Context *activeContext;
 Symbol *funcSymbol;
-uint8_t inGST = 0;
-uint32_t argIndex;
+extern InstructionVector *tape;
 static int64_t MY_OFFSET;
 static Operand a,b;
+uint8_t inGST = 0;
+uint32_t argIndex;
 
 void parse(TokenVector *tokvect)
 {
@@ -330,20 +331,20 @@ uint32_t term_list()
 			b.offset = symbol->index;
 			switch(current->type)
 			{
-			case T_String:
-				b.data_type = STRING;
-				break;
-			case T_double:
-				b.data_type = DOUBLE;
-				break;
-			case T_int:
-				b.data_type = INT;
-				break;
-			case T_bool:
-				b.data_type = BOOL;
-				break;
-			default:
-				break;
+				case T_String:
+					b.data_type = STRING;
+					break;
+				case T_double:
+					b.data_type = DOUBLE;
+					break;
+				case T_int:
+					b.data_type = INT;
+					break;
+				case T_bool:
+					b.data_type = BOOL;
+					break;
+				default:
+					break;
 			}
 		}
 		else
@@ -472,6 +473,8 @@ uint8_t stmt(uint8_t empty)
 	Scope scope;
 	Symbol *id = NULL;
 	DataType exprType;
+	Instruction *instruction;
+	uint32_t repeat1;
 	// IF wasnt called from stmt_empty(), need to load next token
 	if(!empty) token++;
 	switch(token->type)
@@ -497,6 +500,36 @@ uint8_t stmt(uint8_t empty)
 				return 0;
 			}
 			// INST global=mov, local=prepisovat predchadzajucu instrukciou
+			if(scope == Global)
+			{
+				b.offset = id->index;
+				switch(id->type)
+				{
+					case T_String:
+						b.data_type = STRING;
+						break;
+					case T_double:
+						b.data_type = DOUBLE;
+						break;
+					case T_int:
+						b.data_type = INT;
+						break;
+					case T_bool:
+						b.data_type = BOOL;
+						break;
+					default:
+						break;
+				}
+				generateInstruction(MOV,&a,&b);
+			}
+			// Local
+			else
+			{
+				instruction = InstructionVectorLast(tape);
+				instruction->dst.offset = id->index;
+				instruction->dst.sp_inc = 0;
+			}
+
 			token--;
 			break;
 		case TT_keyword:
@@ -519,13 +552,17 @@ uint8_t stmt(uint8_t empty)
 					}
 					// gen instruction if1 JMP_FALSE without adress
 					// compound_stmt expect already loaded token
+					generateInstruction(JMP_F,&a,&b);
+					Instruction *if1 = InstructionVectorLast(tape);
 					token++;
 					compound_stmt(0);
 					//gen empty instruction if2 JMP without adress
+					generateInstruction(JMP,&a,&b);
+					Instruction *if2 = InstructionVectorLast(tape);
 					if(getError())
 						return 0;
 
-					epsilon = if_n();
+					epsilon = if_n(if1,if2);
 					if(getError())
 						return 0;
 					break;
@@ -540,6 +577,9 @@ uint8_t stmt(uint8_t empty)
 						return 0;
 					}
 					// gen instruction JMP_FALSE while1
+					generateInstruction(JMP_F,&a,&b);
+					Instruction *while1 = InstructionVectorLast(tape);
+					uint32_t while1_index = tape->used;
 					if(token->type != TT_keyword || token->keyword_token != Key_do)
 					{
 						setError(ERR_Syntax);
@@ -550,11 +590,15 @@ uint8_t stmt(uint8_t empty)
 					compound_stmt(0);
 					// gen instruction JMP to while1
 					// update inst while1 with vectorsize+1
+					a.offset = while1_index;
+					generateInstruction(JMP,&a,&b);
+					while1->dst.offset = tape->used;
 					if(getError())
 						return 0;
 					break;
 				case Key_repeat:
 					// save vectorsize = repeat1
+					repeat1 = tape->used;
 					stmt(0);
 					if(getError())
 						return 0;
@@ -575,6 +619,8 @@ uint8_t stmt(uint8_t empty)
 						return 0;
 					}
 					// gen instruction JMP_TRUE to repeat1
+					a.offset = repeat1;
+					generateInstruction(JMP_T,&a,&b);
 					token--;
 					break;
 				case Key_begin:
@@ -614,22 +660,29 @@ uint8_t stmt(uint8_t empty)
 	if(!epsilon) token++;
 	return 0;
 }
-uint8_t if_n()
+uint8_t if_n(Instruction *if1, Instruction *if2)
 {
 	token++;
 	// Epsilon rule
 	// update instruction if1 with vectorsize+1
 	// change if2 to NOP
+
 	if(token->type != TT_keyword || token->keyword_token != Key_else)
+	{
+		if1->dst.offset = tape->used;
+		InstructionVectorPop(tape);
 		return 1;
+	}
 	// keyword 'else' loaded
 	token++;
 	// update instruction if1 with vectorsize+1
+	if1->dst.offset = tape->used;
 	// Compound_stmt expect loaded next token
 	compound_stmt(0);
 	// update instruction if2 with vectorsize+1
 	if(getError())
 		return 0;
+	if2->dst.offset = tape->used;
 	return 0;
 }
 
@@ -654,37 +707,23 @@ void readln()
 	if(getError())
 		return;
 
+	token++;
+	if(token->type != TT_rightBrace)
+	{
+		setError(ERR_Syntax);
+		return;
+	}
+
 	switch(symbol->type)
 	{
 		case T_String:
-			if(scope == Local)
-			{
-				//gen Instr_READLN_LS
-			}
-			else if(scope == Global)
-			{
-				//gen Instr_READLN_GS
-			}
+			a.data_type = STRING;
 			break;
 		case T_double:
-			if(scope == Local)
-			{
-				//gen Instr_READLN_LD
-			}
-			else if(scope == Global)
-			{
-				//gen Instr_READLN_GD
-			}
+			a.data_type = DOUBLE;
 			break;
 		case T_int:
-			if(scope == Local)
-			{
-				//gen Instr_READLN_LI
-			}
-			else if(scope == Global)
-			{
-				//gen Instr_READLN_GI
-			}
+			a.data_type = INT;
 			break;
 		case T_bool:
 			setError(ERR_ReadBool);
@@ -692,12 +731,9 @@ void readln()
 		default:
 			break;
 	}
-	token++;
-	if(token->type != TT_rightBrace)
-	{
-		setError(ERR_Syntax);
-		return;
-	}
+	a.var_type = scope==Global ? GLOBAL : LOCAL;
+	a.offset = symbol->index;
+	generateInstruction(READLN,&a,&b);
 }
 
 void write()

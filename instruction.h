@@ -66,7 +66,7 @@
 		EQ , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
 		NE , // 64 {C,L,G}{C,L,G}{II,DD,BB,SS}    ????
 
-		READLN, //  8 [LG][SDIB]  only DST
+		READLN, //  6 [LG][SDI]  only DST
 		WRITE,//  1 dst.int_ ... arg_count
 		MOV,    //  4 [G][SDIB]   only DST
 		PUSH,   // 12 [CLG][SDIB] only SRC
@@ -94,13 +94,6 @@
 	};
 
 	typedef struct instruction Instruction;
-	//typedef void (*InstrFuncPtr)(Instruction*);
-
-	// Pri kazdom priradeni do premennej treba flag empty nastavit
-
-	// Inkrementuje SP o parameter integer, vycisti polozku
-	// (popr. len flag empty)
-	//SPIncrement
 
 	GenVectorPrototypes(Instruction)
 

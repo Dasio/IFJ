@@ -48,7 +48,7 @@ uint8_t stmt(uint8_t empty);
 /**
  * @return: 1 if epsilon rule was used, else 0
  */
-uint8_t if_n();
+uint8_t if_n(Instruction *if1, Instruction *if2);
 
 void readln();
 void write();
