@@ -42,8 +42,6 @@ void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
 	instr_counter++;
 	InstrFuncPtr i_ptr = NULL;
 
-	fprintf(stderr, "OP : %d\n", op);
-
 	switch(op) {
 		case PUSH:
 			switch(b->var_type)
