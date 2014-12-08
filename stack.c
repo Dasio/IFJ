@@ -1,60 +1,27 @@
 #include "stack.h"
 
-// bool ReserveGlobalSymbol(STACK *stack, int num)
-// {
-// 	StackDataVectorPushMore(stack->Vec, num+1);
-// 	// push number of GlobalSymbols, skip index 0
-// 	if(getError()!=0) // if error occured during PushMorefunctions
-// 		return false;
-// 	stack->SP = 0;
-// 	return true;
-//  }
+// From interpreter.c global
+extern Stack stack;
 
-// bool CallFunction(STACK *stack, uint32_t LocCount, uint32_t InstrIndexCurr)
-// {
-// 	StackDataVectorAppend(stack->Vec, (StackData) {.int_ = stack->SP});
-// 	StackDataVectorAppend(stack->Vec, (StackData) {.int_ = InstrIndexCurr});
+static char data_type_translation[] = { 'S', 'D', 'I', 'B', 'U' };
 
-// 	StackDataVectorPushMore(stack->Vec, LocCount);
-// 	if(getError()!=0) // if error occured during PushMorefunctions
-// 		return false;
-// 	//skip temporary values on stack and calculate stack SP from the end of stack
-// 	stack->SP = stack->Vec->used - LocCount - 1;
-// 	return true;
-// }
+static char var_type_translation[] = { 'L', 'G', 'C', 'U' };
 
-// bool ReturnFunction(STACK *stack, uint32_t ArgCount, uint32_t LocCount, uint32_t *InstrIndexCurr)
-// {
-// 	StackDataVectorPopMore(stack->Vec, LocCount);
-// 	StackData *x = StackDataVectorPop(stack->Vec);
-// 	*InstrIndexCurr = x->int_ +1; // skip call instruction and go to new
-// 	x = StackDataVectorPop(stack->Vec);
-// 	stack->SP = x->int_;
-// 	StackDataVectorPopMore(stack->Vec, ArgCount);
-// 	// leave return value in the stack
-// 	if(getError()!=0) // if error occured during vector's functions
-// 		return false;
-// 	return true;
-// }
+void dumpStack() {
+	uint32_t stack_length = stack.vect->used;
+	StackData *first = StackDataVectorFirst(stack.vect);
 
-// void StackSetValue(STACK *stack, StackData data, int index)
-// {
-// 	assert(stack->Vec->used > stack->SP + index); // index longer than Vector
-// 	assert(index); // index == 0 is invalid
-// 	assert(stack->SP + index > 0); // if index is negativ(argument)
-// 	if(index<0) // if index point to argument, skip one value
-// 		index--;
-// 	StackDataVectorAtSet(stack->Vec, stack->SP+index, data);
-// }
-
-// StackData *StackReadValue(STACK *stack, int index)
-// {
-// 	assert(stack->Vec->used > stack->SP + index); // index longer than Vector
-// 	assert(index); // index==0 is invalid
-// 	assert(stack->SP + index > 1); // if index is negativ(argument)
-// 	if(index<0)
-// 		index--;
-// 	return StackDataVectorAt(stack->Vec, stack->SP+index);
-// }
+	fprintf(stderr, "============================\n");
+	fprintf(stderr, "STACK:");
+	fprintf(stderr, "\n");
+	for(uint32_t i = 0; i < stack_length; i++) {
+		StackData *s = first+i;
+		fprintf(stderr, "%d\t\t", i);
+		fprintf(stderr, "%c\t", data_type_translation[s->data_type]);
+		fprintf(stderr, "%c\n",  var_type_translation[s->var_type]);
+		fprintf(stderr, "\n");
+	}
+	fprintf(stderr, "==== BP: %lu === SP: %lu ===\n", stack.BP, stack.SP);
+}
 
 GenVectorFunctions(StackData)

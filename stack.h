@@ -23,6 +23,11 @@
 		StackDataVector *vect;
 	} Stack;
 
+	/**
+	 * Dumps content of stack, including vector
+	 */
+	void dumpStack();
+
 /**
  * prepare it for global symbols
  * @param  stack stack
