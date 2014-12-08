@@ -276,9 +276,13 @@ void Instr_MOV_GS(Instruction *i) {
 	operand.str = vectorAt(stack.vect, stack.SP)->str;
 	operand.initialized = true;
 
+	fprintf(stderr, "MOV GS: %s\n", operand.str->data);
+
 	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
 
 	stack.SP--;
+
+	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 void Instr_MOV_GD(Instruction *i) {
@@ -286,9 +290,13 @@ void Instr_MOV_GD(Instruction *i) {
 	operand.double_ = vectorAt(stack.vect, stack.SP)->double_;
 	operand.initialized = true;
 
+	fprintf(stderr, "MOV GD: %g\n", operand.double_);
+
 	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
 
 	stack.SP--;
+
+	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 void Instr_MOV_GI(Instruction *i) {
@@ -310,9 +318,13 @@ void Instr_MOV_GB(Instruction *i) {
 	operand.bool_ = vectorAt(stack.vect, stack.SP)->bool_;
 	operand.initialized = true;
 
+	fprintf(stderr, "MOV GB: %d\n", operand.bool_);
+
 	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
 
 	stack.SP--;
+
+	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 ////////////////////////////////////////////////////////////////////////

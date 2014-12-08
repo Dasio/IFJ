@@ -975,21 +975,25 @@ static void convert_to_ExprToken(Token *token, ExprTokenVector *expr_vector)
 			temp_expr_token.E.var_type = CONST;
 			temp_expr_token.E.data_type = DOUBLE;
 			temp_expr_token.E.double_ = token->r;
+			temp_expr_token.E.initialized = true;
 			break;
 		case TT_integer:
 			temp_expr_token.E.var_type = CONST;
 			temp_expr_token.E.data_type = INT;
 			temp_expr_token.E.int_ = token->n;
+			temp_expr_token.E.initialized = true;
 			break;
 		case TT_string:
 			temp_expr_token.E.var_type = CONST;
 			temp_expr_token.E.data_type = STRING;
 			temp_expr_token.E.str = &(token->str);
+			temp_expr_token.E.initialized = true;
 			break;
 		case TT_bool:
 			temp_expr_token.E.var_type = CONST;
 			temp_expr_token.E.data_type = BOOL;
 			temp_expr_token.E.bool_ = (bool)token->n;
+			temp_expr_token.E.initialized = true;
 			break;
 		case TT_minus:
 			if (check_unary_minus(expr_vector))
