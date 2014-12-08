@@ -231,6 +231,9 @@ void forward(SymbolType returnType)
 		compound_stmt(1);
 		if(getError())
 			return;
+
+		a.int_ = activeContext->argCount;
+		generateInstruction(RET,&a,&b);
 		// Switch back to main context
 		activeContext = mainContext;
 		activeOffset = &mainOffset;
