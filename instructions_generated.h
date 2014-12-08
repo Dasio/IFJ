@@ -5,6 +5,8 @@
 
 #ifndef _INSTRUCTIONS_GENERATED_H
 #define _INSTRUCTIONS_GENERATED_H
+
+char *stringifyInstructionPtr(InstrFuncPtr ptr);
 void Instr_NEG_LxIx(Instruction *i);
 void Instr_NEG_LxDx(Instruction *i);
 void Instr_NEG_GxIx(Instruction *i);

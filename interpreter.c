@@ -195,7 +195,7 @@ void dumpTape() {
 	fprintf(stderr, "TAPE DUMP: ============\n");
 	for(uint32_t i = 0; i < tape_length; i++) {
 		Instruction *inst = first+i;
-		fprintf(stderr, "%d - %p\n", i, inst->instr);
+		fprintf(stderr, "%d - %s\n", i, stringifyInstructionPtr(inst->instr));
 	}
 	fprintf(stderr, "TAPE DUMP OVER ========\n");
 }

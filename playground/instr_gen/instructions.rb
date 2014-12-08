@@ -68,6 +68,8 @@ instructions = {
 	h.puts
 	h.puts '#ifndef _INSTRUCTIONS_GENERATED_H'
 	h.puts '#define _INSTRUCTIONS_GENERATED_H'
+	h.puts
+	h.puts "char *stringifyInstructionPtr(InstrFuncPtr ptr);"
 
 	c.puts '#include "instructions_generated.h"'
 	c.puts 'extern Stack stack;'
@@ -375,6 +377,27 @@ c.puts '
 	end
 
 	c.puts "};"
+
+	c.puts "#include \"instructions_regular.h\""
+	c.puts "char *stringifyInstructionPtr(InstrFuncPtr ptr) {"
+	func_table.each_with_index do |(key,value),index|
+		c.puts "		if(*ptr == #{value}) return \"#{value}\";"
+	end
+	regular_instructions = %w(
+		Instr_READLN_LS Instr_READLN_LD Instr_READLN_LI
+		Instr_READLN_GS Instr_READLN_GD Instr_READLN_GI
+		Instr_WRITE
+		Instr_MOV_GS Instr_MOV_GD Instr_MOV_GI Instr_MOV_GB
+		Instr_PUSH_C Instr_PUSH_LS Instr_PUSH_LD Instr_PUSH_LI Instr_PUSH_LB
+		Instr_PUSH_GS Instr_PUSH_GD Instr_PUSH_GI Instr_PUSH_GB
+		Instr_CALL Instr_CALL_LENGTH Instr_CALL_COPY Instr_CALL_FIND Instr_CALL_SORT
+		Instr_JMP_T Instr_JMP_F Instr_JMP Instr_HALT)
+	regular_instructions.each do |i|
+		c.puts "	if(*ptr == #{i}) return \"#{i}\";"
+	end
+	c.puts "	return \"NaN\";"
+	c.puts "}"
+
 	h.puts
 
 	h.puts '#endif'
