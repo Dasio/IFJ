@@ -72,6 +72,7 @@ void die() {
 	implodeMemory();
 	int exit_code = 9;
 	if(getError()) {
+		printError();
 		exit_code = getReturnError();
 	}
 

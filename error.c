@@ -101,6 +101,9 @@ void printError()
 		case ERR_DivisionByZero:
 			printErrorDetails("You can't divide by zero !");
 			break;
+		case ERR_UnitializedAccess:
+			printErrorDetails("Uninitialized acces.");
+			break;
 		case ERR_ReadBool:
 			printErrorDetails("Cant't read input into bool variable");
 			break;
