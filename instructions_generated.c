@@ -7461,6 +7461,7 @@ char *stringifyInstructionPtr(InstrFuncPtr ptr) {
 	if(*ptr == Instr_PUSHX_GD) return "Instr_PUSHX_GD";
 	if(*ptr == Instr_PUSHX_GI) return "Instr_PUSHX_GI";
 	if(*ptr == Instr_PUSHX_GB) return "Instr_PUSHX_GB";
+	if(*ptr == Instr_RET) return "Instr_RET";
 	if(*ptr == Instr_CALL) return "Instr_CALL";
 	if(*ptr == Instr_CALL_LENGTH) return "Instr_CALL_LENGTH";
 	if(*ptr == Instr_CALL_COPY) return "Instr_CALL_COPY";
