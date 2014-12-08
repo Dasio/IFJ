@@ -79,9 +79,9 @@ int *GetFormula(String *find)
  */
 
 // get length of string and call QuickSortRecursive function
-void QuickSort(char arr[])
+void QuickSort(String *string)
 {
-	QuickSortRecursive(arr, strlen(arr)-1);
+	QuickSortRecursive(string->data, string->length);
 }
 
 //QuickSort which use recursive function

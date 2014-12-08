@@ -38,9 +38,8 @@ int *GetFormula(String *find);
  * Get length of arr and call QuickSortRecursive
  * @param arr array to sort
  */
-void QuickSort(char arr[]);
+void QuickSort(String *string);
 
-void QuickSortNonRecursive(char []);
 void QuickSortRecursive(char *, int);
 
 // Return hash depend on char* in range of (uint)length

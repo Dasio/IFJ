@@ -11,8 +11,11 @@ START_TEST_SUITE(IALTest)
 	TEST_EXPR("FindString: \"abc\" IS in \"abababcs\" at index 5 (indexing from 1)",(FindString(&text, &find) == 5));
 
 	char test[56] = "bshoensajgfryfgvjyutkopoiuqwerzxcvmnbvasdfglkjhfnjvzklz";
-	QuickSort(test);
-	TEST_EXPR("QuickSort (Recursive): true order", strcmp(test, "aabbcdeeffffggghhijjjjkkkllmnnnooopqrrssstuuvvvvwxyyzzz") == 0);
+	String str;
+	str.length = 55;
+	str.data = test;
+	QuickSort(&str);
+	TEST_EXPR("QuickSort (Recursive): true order", strcmp(str.data, "aabbcdeeffffggghhijjjjkkkllmnnnooopqrrssstuuvvvvwxyyzzz") == 0);
 
 END_TEST_SUITE
 
