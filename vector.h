@@ -45,10 +45,10 @@ ____ == type of vector
 
 struct Vector{
 	/** Allocated elements, including uninitialized */
-	uint32_t capacity;
+	uint64_t capacity;
 
 	/** Used elements */
-	uint32_t used;
+	uint64_t used;
 
 	/** Pointer to beginning of array */
 	void *array;

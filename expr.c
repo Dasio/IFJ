@@ -869,6 +869,9 @@ static inline void reduce_handle_function(THandle handle)
 
 	a.offset = id->index;
 
+	if (id->stateFunc == FS_Declared)
+		uint64_tVectorAppend(id->adressVector, tape->used);
+
 	// generate CALL instruction
 	switch (a.offset)
 	{
