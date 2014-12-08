@@ -501,7 +501,6 @@ void Instr_PUSHX_LS(Instruction *i) {
 	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
 
 	operand.data_type = i->src_1.data_type;
-	operand.var_type = CONST;
 	operand.str = local_src->str;
 	operand.initialized = true;
 
@@ -521,7 +520,6 @@ void Instr_PUSHX_LD(Instruction *i) {
 	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
 
 	operand.data_type = i->src_1.data_type;
-	operand.var_type = CONST;
 	operand.double_ = local_src->double_;
 	operand.initialized = true;
 
@@ -541,7 +539,6 @@ void Instr_PUSHX_LI(Instruction *i) {
 	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
 
 	operand.data_type = i->src_1.data_type;
-	operand.var_type = CONST;
 	operand.int_ = local_src->int_;
 	operand.initialized = true;
 
@@ -562,7 +559,6 @@ void Instr_PUSHX_LB(Instruction *i) {
 	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
 
 	operand.data_type = i->src_1.data_type;
-	operand.var_type = CONST;
 	operand.bool_ = local_src->bool_;
 	operand.initialized = true;
 
@@ -582,7 +578,6 @@ void Instr_PUSHX_GS(Instruction *i) {
 	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
 
 	operand.data_type = i->src_1.data_type;
-	operand.var_type = CONST;
 	operand.str = global_src->str;
 	operand.initialized = true;
 
@@ -606,7 +601,6 @@ void Instr_PUSHX_GD(Instruction *i) {
 	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
 
 	operand.data_type = i->src_1.data_type;
-	operand.var_type = CONST;
 	operand.double_ = global_src->double_;
 	operand.initialized = true;
 
@@ -626,7 +620,6 @@ void Instr_PUSHX_GI(Instruction *i) {
 	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
 
 	operand.data_type = i->src_1.data_type;
-	operand.var_type = CONST;
 	operand.int_ = global_src->int_;
 	operand.initialized = true;
 
@@ -650,7 +643,6 @@ void Instr_PUSHX_GB(Instruction *i) {
 	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
 
 	operand.data_type = i->src_1.data_type;
-	operand.var_type = CONST;
 	operand.bool_ = global_src->bool_;
 	operand.initialized = true;
 
@@ -687,6 +679,11 @@ void Instr_CALL(Instruction *i) {
 void Instr_CALL_LENGTH(Instruction *i) {
 
 	(void) i;	// dummy conversion
+	StackData *op = vectorAt(stack.vect, stack.SP);
+	uint32_t len = op->str->length;
+	(--op)->int_ = len;
+
+	stack.SP--;
 }
 
 
@@ -696,54 +693,9 @@ void Instr_CALL_COPY(Instruction *i) {
 
 	(void) i;	// dummy conversion
 	StackData *op = vectorAt(stack.vect, stack.SP);
-	String *s = NULL;
-	int32_t pos = 0;
-	int32_t n = 0;
-
-	switch(op->var_type)
-	{
-		case LOCAL:
-			s = vectorAt(stack.vect, stack.BP + op->offset)->str;
-			break;
-		case GLOBAL:
-			s = vectorAt(stack.vect, op->offset)->str;
-			break;
-		case CONST:
-			s = op->str;
-			break;
-		default:
-			break;
-	}
-
-	switch((--op)->var_type)
-	{
-		case LOCAL:
-			pos = vectorAt(stack.vect, stack.BP + op->offset)->int_;
-			break;
-		case GLOBAL:
-			pos = vectorAt(stack.vect, op->offset)->int_;
-			break;
-		case CONST:
-			pos = op->int_;
-			break;
-		default:
-			break;
-	}
-
-	switch((--op)->var_type)
-	{
-		case LOCAL:
-			n = vectorAt(stack.vect, stack.BP + op->offset)->int_;
-			break;
-		case GLOBAL:
-			n = vectorAt(stack.vect, op->offset)->int_;
-			break;
-		case CONST:
-			n = op->int_;
-			break;
-		default:
-			break;
-	}
+	String *s = op->str;
+	int32_t pos = (--op)->int_;
+	int32_t n = (--op)->int_;
 
 	String *str = mem_alloc(sizeof(String));
 	*str = initStringSize(n+1);
