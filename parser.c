@@ -153,7 +153,7 @@ void var_def(uint8_t next)
 				break;
 		}
 		generateInstruction(PUSH,&a,&b);
-		fprintf(stderr,"PUSH a.offset = %ld b.offset= %ld b.data_type= %d\n",a.offset,b.offset,b.data_type);
+		fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
 	}
 	if(getError())
 		return;
@@ -413,7 +413,7 @@ uint32_t term_list()
 					break;
 			}
 		}
-		fprintf(stderr,"PUSH a.offset = %ld b.offset= %ld b.data_type= %d\n",a.offset,b.offset,b.data_type);
+		fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
 		generateInstruction(PUSH, &a, &b);
 		// Skip comma and move to next argument
 		current -= 2;
