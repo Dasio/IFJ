@@ -157,6 +157,7 @@ Symbol *SymbolAdd(Context *funCont, SymbolType type, char *name, Context *symbol
 	newItem->data.name = name;
 	newItem->data.funCont = symbolContext;
 	newItem->data.stateFunc = FS_Undefined;
+	newItem->data.adressVector = NULL;
 	if(type == T_FunPointer)
 		funCont->locCount--;
 	uint32_t index = GetHash(name, funCont->locSize);
