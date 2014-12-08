@@ -132,26 +132,9 @@ void var_def(uint8_t next)
 	{
 		a.sp_inc = 1;
 		a.offset = (*activeOffset)++;
-		b.var_type = GLOBAL;
-		b.offset = symbol->index;
-		switch(symbolType)
-		{
-			case T_String:
-				b.data_type = STRING;
-				break;
-			case T_double:
-				b.data_type = DOUBLE;
-				break;
-			case T_int:
-				b.data_type = INT;
-				break;
-			case T_bool:
-				b.data_type = BOOL;
-				break;
-			//FUNC?
-			default:
-				break;
-		}
+		b.var_type = CONST;
+		b.initialized = false;
+		b.data_type = STRING; //doesnt matter
 		generateInstruction(PUSH,&a,&b);
 		fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
 	}
