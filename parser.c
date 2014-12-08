@@ -28,6 +28,7 @@ void parse(TokenVector *tokvect)
 	b.initialized = 0;
 	b.var_type = CONST;
 	generateInstruction(PUSH, &a, &b);
+	mainOffset = 1;
 
 	program();
 	if(!getError())
@@ -125,7 +126,35 @@ void var_def(uint8_t next)
 		return;
 	}
 	// Add variable to symbol table
-	SymbolAdd(activeContext, symbolType, name, NULL, NULL);
+	Symbol *symbol = SymbolAdd(activeContext, symbolType, name, NULL, NULL);
+	// Global
+	if(activeContext == mainContext)
+	{
+		a.sp_inc = 1;
+		a.offset = (*activeOffset)++;
+		b.var_type = GLOBAL;
+		b.offset = symbol->index;
+		switch(symbolType)
+		{
+			case T_String:
+				b.data_type = STRING;
+				break;
+			case T_double:
+				b.data_type = DOUBLE;
+				break;
+			case T_int:
+				b.data_type = INT;
+				break;
+			case T_bool:
+				b.data_type = BOOL;
+				break;
+			//FUNC?
+			default:
+				break;
+		}
+		generateInstruction(PUSH,&a,&b);
+		fprintf(stderr,"PUSH a.offset = %ld b.offset= %ld b.data_type= %d\n",a.offset,b.offset,b.data_type);
+	}
 	if(getError())
 		return;
 	var_def(1);
@@ -229,7 +258,7 @@ void forward(SymbolType returnType)
 		var_declr();
 		if(getError())
 			return;
-
+		*activeOffset = activeContext->locCount + 2;
 		compound_stmt(1);
 		if(getError())
 			return;
@@ -341,7 +370,7 @@ uint32_t term_list()
 				return 0;
 			b.var_type = scope==Global ? GLOBAL : LOCAL;
 			b.offset = symbol->index;
-			switch(current->type)
+			switch(symbol->type)
 			{
 				case T_String:
 					b.data_type = STRING;
@@ -362,7 +391,7 @@ uint32_t term_list()
 		else
 		{
 			b.var_type = CONST;
-			switch(token->type)
+			switch(current->type)
 			{
 				case TT_string:
 					b.data_type = STRING;
@@ -384,7 +413,7 @@ uint32_t term_list()
 					break;
 			}
 		}
-		printf("PUSH a.offset = %ld b.offset= %ld\n",a.offset,b.offset);
+		fprintf(stderr,"PUSH a.offset = %ld b.offset= %ld b.data_type= %d\n",a.offset,b.offset,b.data_type);
 		generateInstruction(PUSH, &a, &b);
 		// Skip comma and move to next argument
 		current -= 2;
@@ -421,9 +450,7 @@ uint8_t terms(uint8_t next)
 }
 void compound_stmt(uint8_t semicolon)
 {
-	*activeOffset = activeContext->locCount;
-	if(activeOffset == &funcOffset)
-		*activeOffset += 2;
+	fprintf(stderr,"Active %ld\n",*activeOffset);
 	if(token->type != TT_keyword || token->keyword_token != Key_begin)
 	{
 		setError(ERR_Syntax);
@@ -750,6 +777,10 @@ void readln()
 	a.var_type = scope==Global ? GLOBAL : LOCAL;
 	a.offset = symbol->index;
 	generateInstruction(READLN,&a,&b);
+	if(activeOffset == &funcOffset)
+		*activeOffset = activeContext->locCount + 2;
+	else
+		*activeOffset = activeContext->locCount - 4;
 }
 
 void write()
@@ -758,6 +789,10 @@ void write()
 	uint32_t count = term_list();
 	a.int_ = count;
 	generateInstruction(WRITE,&a,&b);
+	/*if(activeOffset == &mainOffset)
+		*activeOffset = activeContext->locCount-4;
+	else
+		*activeOffset = activeContext->locCount+2;*/
 
 }
 

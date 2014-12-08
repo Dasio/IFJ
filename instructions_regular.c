@@ -231,11 +231,10 @@ void Instr_READLN_GI(Instruction *i) {
 
 // WRITE 1    number of arguments - first operand
 void Instr_WRITE(Instruction *i) {
-
 	StackData *op = vectorAt(stack.vect, stack.SP);
-
 	for (int x = 0; x < i->dst.int_; x++)
 	{
+		fprintf(stderr,"Write, data = %d\n",op->data_type);
 		switch(op->var_type)
 		{
 			case LOCAL:
@@ -289,7 +288,10 @@ void Instr_WRITE(Instruction *i) {
 						printf("%d", op->int_);
 						break;
 					case BOOL:
-						printf("%d", op->bool_);
+						if(op->bool_)
+							printf("TRUE");
+						else
+							printf("FALSE");
 						break;
 					default:
 						break;
