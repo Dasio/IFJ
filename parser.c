@@ -12,6 +12,7 @@ static int64_t mainOffset;
 static int64_t funcOffset;
 static int64_t *activeOffset;
 static Operand a,b;
+bool genStart = false;
 uint8_t inGST = 0;
 int32_t argIndex;
 
@@ -429,12 +430,13 @@ void compound_stmt(uint8_t semicolon)
 		setError(ERR_Syntax);
 		return;
 	}
-	if(activeContext == mainContext)
+	if(activeContext == mainContext && !genStart)
 	{
+		genStart = true;
 		IP = tape->used;
 		a.sp_inc = 1;
 		a.offset = 0;
-		b.initialized = 0;
+		b.initialized = false;
 		b.var_type = CONST;
 		generateInstruction(PUSH, &a, &b);
 
