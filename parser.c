@@ -780,7 +780,7 @@ void readln()
 	if(activeOffset == &funcOffset)
 		*activeOffset = activeContext->locCount + 2;
 	else
-		*activeOffset = activeContext->locCount - 4;
+		*activeOffset = activeContext->locCount;
 }
 
 void write()
@@ -789,10 +789,10 @@ void write()
 	uint32_t count = term_list();
 	a.int_ = count;
 	generateInstruction(WRITE,&a,&b);
-	/*if(activeOffset == &mainOffset)
-		*activeOffset = activeContext->locCount-4;
+	if(activeOffset == &mainOffset)
+		*activeOffset = activeContext->locCount;
 	else
-		*activeOffset = activeContext->locCount+2;*/
+		*activeOffset = activeContext->locCount+2;
 
 }
 
