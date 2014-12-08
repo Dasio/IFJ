@@ -234,7 +234,7 @@ void Instr_WRITE(Instruction *i) {
 	StackData *op = vectorAt(stack.vect, stack.SP);
 	for (int x = 0; x < i->dst.int_; x++)
 	{
-		fprintf(stderr,"Write, data = %d\n",op->data_type);
+		//fprintf(stderr,"Write, data = %d\n",op->data_type);
 
 		switch(op->data_type)
 		{

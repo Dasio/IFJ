@@ -298,7 +298,7 @@ AFTER_REDUCE:
 		b.initialized = true;
 		a.sp_inc = 1;
 		a.offset = MY_OFFSET++;
-		fprintf(stderr,"EXPR_PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
+		//fprintf(stderr,"EXPR_PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
 		generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
 	}
 	else if (last->instr == Instr_CALL)

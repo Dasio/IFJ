@@ -1,5 +1,5 @@
 var a:integer;
 begin
 a := 20;
-write(a,'abc')
+write(a,'abc'#10'')
 end.

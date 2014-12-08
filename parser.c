@@ -27,7 +27,7 @@ void parse(TokenVector *tokvect)
 	a.offset=0;
 	b.initialized = 0;
 	b.var_type = CONST;
-	fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
+	//fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
 	generateInstruction(PUSH, &a, &b);
 	mainOffset = 1;
 
@@ -136,7 +136,7 @@ void var_def(uint8_t next)
 		b.var_type = CONST;
 		b.initialized = false;
 		b.data_type = STRING; //doesnt matter
-		fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
+		//fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
 		generateInstruction(PUSH,&a,&b);
 	}
 	if(getError())
@@ -397,7 +397,7 @@ uint32_t term_list()
 					break;
 			}
 		}
-		fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
+		//fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
 		generateInstruction(PUSHX, &a, &b);
 		// Skip comma and move to next argument
 		current -= 2;
@@ -434,7 +434,7 @@ uint8_t terms(uint8_t next)
 }
 void compound_stmt(uint8_t semicolon)
 {
-	fprintf(stderr,"Active %ld\n",*activeOffset);
+	//fprintf(stderr,"Active %ld\n",*activeOffset);
 	if(token->type != TT_keyword || token->keyword_token != Key_begin)
 	{
 		setError(ERR_Syntax);
@@ -744,7 +744,7 @@ void readln()
 	}
 	a.var_type = scope;
 	a.offset = symbol->index;
-	fprintf(stderr,"READLN a.var_type = %u, a.offset = %ld\n",a.var_type,a.offset);
+	//fprintf(stderr,"READLN a.var_type = %u, a.offset = %ld\n",a.var_type,a.offset);
 	generateInstruction(READLN,&a,&b);
 	if(activeOffset == &mainOffset)
 		*activeOffset = activeContext->locCount + 1;
@@ -943,6 +943,5 @@ Symbol *findVarOrFunc(char *name, VariableType *scope)
 		return id;
 	}
 	*scope = activeContext == mainContext ? GLOBAL : LOCAL;
-	printf("%s %u\n",name,*scope);
 	return id;
 }
