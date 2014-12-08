@@ -366,34 +366,7 @@ void Instr_MOV_GB(Instruction *i) {
 ////////////////////////////////////////////////////////////////////////
 
 // PUSH 12    [CLG][SDIB] len SRC
-void Instr_PUSH_CS(Instruction *i) {
-
-	operand = i->src_1;
-
-	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
-
-	stack.SP = stack.SP + i->dst.sp_inc;
-}
-
-void Instr_PUSH_CD(Instruction *i) {
-
-	operand = i->src_1;
-
-	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
-
-	stack.SP = stack.SP + i->dst.sp_inc;
-}
-
-void Instr_PUSH_CI(Instruction *i) {
-
-	operand = i->src_1;
-
-	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
-
-	stack.SP = stack.SP + i->dst.sp_inc;
-}
-
-void Instr_PUSH_CB(Instruction *i) {
+void Instr_PUSH_C(Instruction *i) {
 
 	operand = i->src_1;
 

@@ -85,23 +85,7 @@ void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
 					}
 					break;
 				case CONST:
-					switch(b->data_type)
-					{
-						case STRING:
-							i_ptr = Instr_PUSH_CS;
-							break;
-						case DOUBLE:
-							i_ptr = Instr_PUSH_CD;
-							break;
-						case INT:
-							i_ptr = Instr_PUSH_CI;
-							break;
-						case BOOL:
-							i_ptr = Instr_PUSH_CB;
-							break;
-						default:
-							break;
-					}
+					i_ptr = Instr_PUSH_C;
 					break;
 				default:
 					break;

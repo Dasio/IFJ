@@ -851,7 +851,6 @@ static inline void reduce_handle_function(THandle handle)
 	b.initialized = false;
 	a.sp_inc = 1;
 	a.offset = MY_OFFSET++;
-
 	generateInstruction(PUSH, &a, &b); // b = pushed operand
 
 	for (uint32_t i = 0; i < context->argCount; i++) // push arguments in reversed order

@@ -26,10 +26,7 @@
 	void Instr_MOV_GB(Instruction *i);
 
 	// PUSH 12    [CLG][SDIB] only SRC
-	void Instr_PUSH_CS(Instruction *i);
-	void Instr_PUSH_CD(Instruction *i);
-	void Instr_PUSH_CI(Instruction *i);
-	void Instr_PUSH_CB(Instruction *i);
+	void Instr_PUSH_C(Instruction *i);
 	void Instr_PUSH_LS(Instruction *i);
 	void Instr_PUSH_LD(Instruction *i);
 	void Instr_PUSH_LI(Instruction *i);
