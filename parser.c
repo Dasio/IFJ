@@ -384,6 +384,7 @@ uint32_t term_list()
 					break;
 			}
 		}
+		printf("PUSH a.offset = %ld b.offset= %ld\n",a.offset),b.offset);
 		generateInstruction(PUSH, &a, &b);
 		// Skip comma and move to next argument
 		current -= 2;
@@ -420,7 +421,9 @@ uint8_t terms(uint8_t next)
 }
 void compound_stmt(uint8_t semicolon)
 {
-	*activeOffset = activeContext->locCount + 2;
+	*activeOffset = activeContext->locCount;
+	if(activeOffset == &funcOffset)
+		*activeOffset += 2;
 	if(token->type != TT_keyword || token->keyword_token != Key_begin)
 	{
 		setError(ERR_Syntax);
@@ -515,7 +518,7 @@ uint8_t stmt(uint8_t empty)
 			// INST global=mov, local=prepisovat predchadzajucu instrukciou
 			if(scope == Global)
 			{
-				b.offset = id->index;
+				a.offset = id->index;
 				switch(id->type)
 				{
 					case T_String:
