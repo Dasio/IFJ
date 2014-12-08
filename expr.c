@@ -833,7 +833,7 @@ static inline void reduce_handle_function(THandle handle)
 			setError(ERR_TypeCompatibilityArg);
 			return;
 		}
-		if (context->argCount > 1 && (++temp)->token->type != TT_comma)
+		if (i != context->argCount - 1 && (++temp)->token->type != TT_comma)
 		{
 			setError(ERR_Reduction);
 			return;
