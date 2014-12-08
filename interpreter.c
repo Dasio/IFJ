@@ -240,10 +240,14 @@ void dumpTape() {
 	uint32_t tape_length = tape->used;
 	Instruction *first = InstructionVectorFirst(tape);
 
-	fprintf(stderr, "TAPE DUMP: ============\n");
+	fprintf(stderr, "============================\n");
+	fprintf(stderr, "TAPE:   \t \tSP Inc");
+	fprintf(stderr, "\n");
 	for(uint32_t i = 0; i < tape_length; i++) {
 		Instruction *inst = first+i;
-		fprintf(stderr, "%d - %s\n", i, stringifyInstructionPtr(inst->instr));
+		fprintf(stderr, "%d\t%s\t", i, stringifyInstructionPtr(inst->instr));
+		fprintf(stderr, "%d", inst->dst.sp_inc);
+		fprintf(stderr, "\n");
 	}
 	fprintf(stderr, "TAPE DUMP OVER ========\n");
 }
