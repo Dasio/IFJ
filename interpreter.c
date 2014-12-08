@@ -186,8 +186,8 @@ void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
 			}
 			break;
 		case READLN:
-			if (a->var_type == LOCAL) {
-				switch(b->data_type)
+			if (a->var_type == GLOBAL) {
+				switch(a->data_type)
 				{
 					case STRING:
 						i_ptr = Instr_READLN_GS;
@@ -202,8 +202,8 @@ void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
 						break;
 				}
 			}
-			if (a->var_type == GLOBAL) {
-				switch(b->data_type)
+			if (a->var_type == LOCAL) {
+				switch(a->data_type)
 				{
 					case STRING:
 						i_ptr = Instr_READLN_LS;

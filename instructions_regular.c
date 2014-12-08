@@ -42,7 +42,6 @@ void Instr_READLN_LS(Instruction *i) {
 	}
 
 	mem_ptradd(str->data);
-
 	operand.str = str;
 	operand.initialized = true;
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
@@ -74,7 +73,7 @@ void Instr_READLN_LD(Instruction *i) {
 
 	d = strtod(str->data,&error);
 
-	mem_ptradd(str->data);
+	destroyString(str);
 
 	if(*error != 0)
 	{
@@ -112,7 +111,7 @@ void Instr_READLN_LI(Instruction *i) {
 
 	n = strtol(str->data,&error,10);
 
-	mem_ptradd(str->data);
+	destroyString(str);
 
 	if(*error != 0)
 	{
@@ -178,7 +177,8 @@ void Instr_READLN_GD(Instruction *i) {
 
 	d = strtod(str->data,&error);
 
-	mem_ptradd(str->data);
+	destroyString(str);
+
 	if(*error != 0)
 	{
 		setError(ERR_ReadInput);
@@ -215,7 +215,7 @@ void Instr_READLN_GI(Instruction *i) {
 
 	n = strtol(str->data,&error,10);
 
-	mem_ptradd(str->data);
+	destroyString(str);
 
 	if(*error != 0)
 	{

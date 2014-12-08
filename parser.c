@@ -744,6 +744,7 @@ void readln()
 	}
 	a.var_type = scope;
 	a.offset = symbol->index;
+	fprintf(stderr,"READLN a.var_type = %u, a.offset = %ld\n",a.var_type,a.offset);
 	generateInstruction(READLN,&a,&b);
 	if(activeOffset == &mainOffset)
 		*activeOffset = activeContext->locCount + 1;
