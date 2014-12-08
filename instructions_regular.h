@@ -25,7 +25,7 @@
 	void Instr_MOV_GI(Instruction *i);
 	void Instr_MOV_GB(Instruction *i);
 
-	// PUSH 12    [CLG][SDIB] only SRC
+	// PUSH 9    [CLG][SDIB] only SRC
 	void Instr_PUSH_C(Instruction *i);
 	void Instr_PUSH_LS(Instruction *i);
 	void Instr_PUSH_LD(Instruction *i);
@@ -36,20 +36,30 @@
 	void Instr_PUSH_GI(Instruction *i);
 	void Instr_PUSH_GB(Instruction *i);
 
+	// PUSHX 8
+	void Instr_PUSHX_LS(Instruction *i);
+	void Instr_PUSHX_LD(Instruction *i);
+	void Instr_PUSHX_LI(Instruction *i);
+	void Instr_PUSHX_LB(Instruction *i);
+	void Instr_PUSHX_GS(Instruction *i);
+	void Instr_PUSHX_GD(Instruction *i);
+	void Instr_PUSHX_GI(Instruction *i);
+	void Instr_PUSHX_GB(Instruction *i);
+
 	// CALL ... Address - first operand, locals_count - second operand
-	void Instr_CALL();
+	void Instr_CALL(Instruction *i);
 
 	// CALL_LENGTH
-	void Instr_CALL_LENGTH();
+	void Instr_CALL_LENGTH(Instruction *i);
 
 	// CALL_COPY
-	void Instr_CALL_COPY();
+	void Instr_CALL_COPY(Instruction *i);
 
 	// CALL_FIND
-	void Instr_CALL_FIND();
+	void Instr_CALL_FIND(Instruction *i);
 
 	// CALL_SORT
-	void Instr_CALL_SORT();
+	void Instr_CALL_SORT(Instruction *i);
 
 	// RET ... arg_count in i->dst.int_
 	void Instr_RET(Instruction *i);

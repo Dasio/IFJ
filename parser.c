@@ -27,6 +27,7 @@ void parse(TokenVector *tokvect)
 	a.offset=0;
 	b.initialized = 0;
 	b.var_type = CONST;
+	fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
 	generateInstruction(PUSH, &a, &b);
 	mainOffset = 1;
 
@@ -135,8 +136,8 @@ void var_def(uint8_t next)
 		b.var_type = CONST;
 		b.initialized = false;
 		b.data_type = STRING; //doesnt matter
-		generateInstruction(PUSH,&a,&b);
 		fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
+		generateInstruction(PUSH,&a,&b);
 	}
 	if(getError())
 		return;
@@ -397,7 +398,7 @@ uint32_t term_list()
 			}
 		}
 		fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
-		generateInstruction(PUSH, &a, &b);
+		generateInstruction(PUSHX, &a, &b);
 		// Skip comma and move to next argument
 		current -= 2;
 	}
@@ -529,23 +530,7 @@ uint8_t stmt(uint8_t empty)
 			if(scope == GLOBAL)
 			{
 				a.offset = id->index;
-				switch(id->type)
-				{
-					case T_String:
-						b.data_type = STRING;
-						break;
-					case T_double:
-						b.data_type = DOUBLE;
-						break;
-					case T_int:
-						b.data_type = INT;
-						break;
-					case T_bool:
-						b.data_type = BOOL;
-						break;
-					default:
-						break;
-				}
+				b.data_type = exprType;
 				generateInstruction(MOV,&a,&b);
 			}
 			// Local
@@ -760,10 +745,10 @@ void readln()
 	a.var_type = scope;
 	a.offset = symbol->index;
 	generateInstruction(READLN,&a,&b);
-	if(activeOffset == &funcOffset)
-		*activeOffset = activeContext->locCount + 2;
+	if(activeOffset == &mainOffset)
+		*activeOffset = activeContext->locCount + 1;
 	else
-		*activeOffset = activeContext->locCount;
+		*activeOffset = activeContext->locCount + 2;
 }
 
 void write()
@@ -773,9 +758,9 @@ void write()
 	a.int_ = count;
 	generateInstruction(WRITE,&a,&b);
 	if(activeOffset == &mainOffset)
-		*activeOffset = activeContext->locCount;
+		*activeOffset = activeContext->locCount + 1;
 	else
-		*activeOffset = activeContext->locCount+2;
+		*activeOffset = activeContext->locCount + 2;
 
 }
 

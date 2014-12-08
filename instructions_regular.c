@@ -235,77 +235,23 @@ void Instr_WRITE(Instruction *i) {
 	for (int x = 0; x < i->dst.int_; x++)
 	{
 		fprintf(stderr,"Write, data = %d\n",op->data_type);
-		switch(op->var_type)
+
+		switch(op->data_type)
 		{
-			case LOCAL:
-				if(vectorAt(stack.vect, stack.BP + op->offset)->initialized == false) {
-					setError(ERR_UnitializedAccess);
-					die();
-					return;
-				}
-				switch(op->data_type)
-				{
-					case STRING:
-						printf("%s", vectorAt(stack.vect, stack.BP + op->offset)->str->data);
-						break;
-					case DOUBLE:
-						printf("%g", vectorAt(stack.vect, stack.BP + op->offset)->double_);
-						break;
-					case INT:
-						printf("%d", vectorAt(stack.vect, stack.BP + op->offset)->int_);
-						break;
-					case BOOL:
-						printf("%d", vectorAt(stack.vect, stack.BP + op->offset)->bool_);
-						break;
-					default:
-						break;
-				}
+			case STRING:
+				printf("%s", op->str->data);
 				break;
-			case GLOBAL:
-				if(vectorAt(stack.vect, op->offset)->initialized == false) {
-					setError(ERR_UnitializedAccess);
-					die();
-					return;
-				}
-				switch(op->data_type)
-				{
-					case STRING:
-						printf("%s", vectorAt(stack.vect, op->offset)->str->data);
-						break;
-					case DOUBLE:
-						printf("%g", vectorAt(stack.vect, op->offset)->double_);
-						break;
-					case INT:
-						printf("%d", vectorAt(stack.vect, op->offset)->int_);
-						break;
-					case BOOL:
-						printf("%d", vectorAt(stack.vect, op->offset)->bool_);
-						break;
-					default:
-						break;
-				}
+			case DOUBLE:
+				printf("%g", op->double_);
 				break;
-			case CONST:
-				switch(op->data_type)
-				{
-					case STRING:
-						printf("%s", op->str->data);
-						break;
-					case DOUBLE:
-						printf("%g", op->double_);
-						break;
-					case INT:
-						printf("%d", op->int_);
-						break;
-					case BOOL:
-						if(op->bool_)
-							printf("TRUE");
-						else
-							printf("FALSE");
-						break;
-					default:
-						break;
-				}
+			case INT:
+				printf("%d", op->int_);
+				break;
+			case BOOL:
+				if(op->bool_)
+					printf("TRUE");
+				else
+					printf("FALSE");
 				break;
 			default:
 				break;
@@ -346,9 +292,13 @@ void Instr_MOV_GI(Instruction *i) {
 	operand.int_ = vectorAt(stack.vect, stack.SP)->int_;
 	operand.initialized = true;
 
+	fprintf(stderr, "MOV GI: %d\n", operand.int_);
+
 	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
 
 	stack.SP--;
+
+	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 void Instr_MOV_GB(Instruction *i) {
@@ -370,12 +320,22 @@ void Instr_PUSH_C(Instruction *i) {
 
 	operand = i->src_1;
 
+	fprintf(stderr, "PUSH const: %d\n", i->src_1.int_);
+
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
 	stack.SP = stack.SP + i->dst.sp_inc;
+
+	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 void Instr_PUSH_LS(Instruction *i) {
+
+	if(vectorAt(stack.vect, stack.BP + i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
 
 	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
 
@@ -389,6 +349,12 @@ void Instr_PUSH_LS(Instruction *i) {
 
 void Instr_PUSH_LD(Instruction *i) {
 
+	if(vectorAt(stack.vect, stack.BP + i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
+
 	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
 
 	operand.double_ = local_src->double_;
@@ -401,10 +367,17 @@ void Instr_PUSH_LD(Instruction *i) {
 
 void Instr_PUSH_LI(Instruction *i) {
 
+	if(vectorAt(stack.vect, stack.BP + i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
+
 	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
 
 	operand.int_ = local_src->int_;
 	operand.initialized = true;
+
 
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
@@ -412,6 +385,12 @@ void Instr_PUSH_LI(Instruction *i) {
 }
 
 void Instr_PUSH_LB(Instruction *i) {
+
+	if(vectorAt(stack.vect, stack.BP + i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
 
 	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
 
@@ -425,17 +404,33 @@ void Instr_PUSH_LB(Instruction *i) {
 
 void Instr_PUSH_GS(Instruction *i) {
 
+	if(vectorAt(stack.vect, i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
+
 	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
 
 	operand.str = global_src->str;
 	operand.initialized = true;
 
+	fprintf(stderr, "PUSH GS: %s\n", global_src->str->data);
+
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
 	stack.SP = stack.SP + i->dst.sp_inc;
+
+	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 void Instr_PUSH_GD(Instruction *i) {
+
+	if(vectorAt(stack.vect, i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
 
 	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
 
@@ -449,9 +444,37 @@ void Instr_PUSH_GD(Instruction *i) {
 
 void Instr_PUSH_GI(Instruction *i) {
 
+	if(vectorAt(stack.vect, i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
+
 	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
 
 	operand.int_ = global_src->int_;
+	operand.initialized = true;
+
+	fprintf(stderr, "PUSH GI: %d\n", global_src->int_);
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+
+	fprintf(stderr, "SP:  %lu\n", stack.SP);
+}
+
+void Instr_PUSH_GB(Instruction *i) {
+
+	if(vectorAt(stack.vect, i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
+
+	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
+
+	operand.bool_ = global_src->bool_;
 	operand.initialized = true;
 
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
@@ -459,10 +482,171 @@ void Instr_PUSH_GI(Instruction *i) {
 	stack.SP = stack.SP + i->dst.sp_inc;
 }
 
-void Instr_PUSH_GB(Instruction *i) {
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
+void Instr_PUSHX_LS(Instruction *i) {
+
+	if(vectorAt(stack.vect, stack.BP + i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
+
+	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
+
+	operand.data_type = i->src_1.data_type;
+	operand.var_type = CONST;
+	operand.str = local_src->str;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
+
+void Instr_PUSHX_LD(Instruction *i) {
+
+	if(vectorAt(stack.vect, stack.BP + i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
+
+	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
+
+	operand.data_type = i->src_1.data_type;
+	operand.var_type = CONST;
+	operand.double_ = local_src->double_;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
+
+void Instr_PUSHX_LI(Instruction *i) {
+
+	if(vectorAt(stack.vect, stack.BP + i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
+
+	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
+
+	operand.data_type = i->src_1.data_type;
+	operand.var_type = CONST;
+	operand.int_ = local_src->int_;
+	operand.initialized = true;
+
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
+
+void Instr_PUSHX_LB(Instruction *i) {
+
+	if(vectorAt(stack.vect, stack.BP + i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
+
+	StackData *local_src = vectorAt(stack.vect, stack.BP + i->src_1.offset);
+
+	operand.data_type = i->src_1.data_type;
+	operand.var_type = CONST;
+	operand.bool_ = local_src->bool_;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
+
+void Instr_PUSHX_GS(Instruction *i) {
+
+	if(vectorAt(stack.vect, i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
 
 	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
 
+	operand.data_type = i->src_1.data_type;
+	operand.var_type = CONST;
+	operand.str = global_src->str;
+	operand.initialized = true;
+
+	fprintf(stderr, "PUSH GS: %s\n", global_src->str->data);
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+
+	fprintf(stderr, "SP:  %lu\n", stack.SP);
+}
+
+void Instr_PUSHX_GD(Instruction *i) {
+
+	if(vectorAt(stack.vect, i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
+
+	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
+
+	operand.data_type = i->src_1.data_type;
+	operand.var_type = CONST;
+	operand.double_ = global_src->double_;
+	operand.initialized = true;
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+}
+
+void Instr_PUSHX_GI(Instruction *i) {
+
+	if(vectorAt(stack.vect, i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
+
+	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
+
+	operand.data_type = i->src_1.data_type;
+	operand.var_type = CONST;
+	operand.int_ = global_src->int_;
+	operand.initialized = true;
+
+	fprintf(stderr, "PUSH GI: %d\n", global_src->int_);
+
+	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
+
+	stack.SP = stack.SP + i->dst.sp_inc;
+
+	fprintf(stderr, "SP:  %lu\n", stack.SP);
+}
+
+void Instr_PUSHX_GB(Instruction *i) {
+
+	if(vectorAt(stack.vect, i->src_1.offset)->initialized == false) {
+		setError(ERR_UnitializedAccess);
+		die();
+		return;
+	}
+
+	StackData *global_src = vectorAt(stack.vect, i->src_1.offset);
+
+	operand.data_type = i->src_1.data_type;
+	operand.var_type = CONST;
 	operand.bool_ = global_src->bool_;
 	operand.initialized = true;
 
@@ -496,15 +680,17 @@ void Instr_CALL(Instruction *i) {
 
 
 // CALL_LENGTH
-void Instr_CALL_LENGTH() {
+void Instr_CALL_LENGTH(Instruction *i) {
 
+	(void) i;	// dummy conversion
 }
 
 
 
 // CALL_COPY
-void Instr_CALL_COPY() {
+void Instr_CALL_COPY(Instruction *i) {
 
+	(void) i;	// dummy conversion
 	StackData *op = vectorAt(stack.vect, stack.SP);
 	String *s = NULL;
 	int32_t pos = 0;
@@ -513,19 +699,9 @@ void Instr_CALL_COPY() {
 	switch(op->var_type)
 	{
 		case LOCAL:
-			if(vectorAt(stack.vect, stack.BP + op->offset)->initialized == false) {
-				setError(ERR_UnitializedAccess);
-				die();
-				return;
-			}
 			s = vectorAt(stack.vect, stack.BP + op->offset)->str;
 			break;
 		case GLOBAL:
-			if(vectorAt(stack.vect, op->offset)->initialized == false) {
-				setError(ERR_UnitializedAccess);
-				die();
-				return;
-			}
 			s = vectorAt(stack.vect, op->offset)->str;
 			break;
 		case CONST:
@@ -538,19 +714,9 @@ void Instr_CALL_COPY() {
 	switch((--op)->var_type)
 	{
 		case LOCAL:
-			if(vectorAt(stack.vect, stack.BP + op->offset)->initialized == false) {
-				setError(ERR_UnitializedAccess);
-				die();
-				return;
-			}
 			pos = vectorAt(stack.vect, stack.BP + op->offset)->int_;
 			break;
 		case GLOBAL:
-			if(vectorAt(stack.vect, op->offset)->initialized == false) {
-				setError(ERR_UnitializedAccess);
-				die();
-				return;
-			}
 			pos = vectorAt(stack.vect, op->offset)->int_;
 			break;
 		case CONST:
@@ -563,19 +729,9 @@ void Instr_CALL_COPY() {
 	switch((--op)->var_type)
 	{
 		case LOCAL:
-			if(vectorAt(stack.vect, stack.BP + op->offset)->initialized == false) {
-				setError(ERR_UnitializedAccess);
-				die();
-				return;
-			}
 			n = vectorAt(stack.vect, stack.BP + op->offset)->int_;
 			break;
 		case GLOBAL:
-			if(vectorAt(stack.vect, op->offset)->initialized == false) {
-				setError(ERR_UnitializedAccess);
-				die();
-				return;
-			}
 			n = vectorAt(stack.vect, op->offset)->int_;
 			break;
 		case CONST:
@@ -615,13 +771,15 @@ void Instr_CALL_COPY() {
 
 
 // CALL_FIND
-void Instr_CALL_FIND() {
+void Instr_CALL_FIND(Instruction *i) {
 
+	(void) i;	// dummy conversion
 }
 
 // CALL_SORT
-void Instr_CALL_SORT() {
+void Instr_CALL_SORT(Instruction *i) {
 
+	(void) i;	// dummy conversion
 }
 
 

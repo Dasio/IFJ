@@ -221,7 +221,7 @@ DataType expr()
 	return_value_data_type = EXPR_ERROR;
 	//assert(activeContext);
 	if (activeContext == mainContext)
-		MY_OFFSET = activeContext->locCount;
+		MY_OFFSET = activeContext->locCount + 1;
 	else
 		MY_OFFSET = activeContext->locCount + 2;
 
@@ -298,6 +298,7 @@ AFTER_REDUCE:
 		b.initialized = true;
 		a.sp_inc = 1;
 		a.offset = MY_OFFSET++;
+		fprintf(stderr,"EXPR_PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
 		generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
 	}
 	else if (last->instr == Instr_CALL)
@@ -853,17 +854,35 @@ static inline void reduce_handle_function(THandle handle)
 	a.offset = MY_OFFSET++;
 	generateInstruction(PUSH, &a, &b); // b = pushed operand
 
-	for (uint32_t i = 0; i < context->argCount; i++) // push arguments in reversed order
+	if (id->index >= 0)	 // normal functions
 	{
-		temp--;
+		for (uint32_t i = 0; i < context->argCount; i++) // push arguments in reversed order
+		{
+			temp--;
 
-		b = temp->E;
-		b.initialized = true;
-		a.sp_inc = 1;
-		a.offset = MY_OFFSET++;
-		generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
+			b = temp->E;
+			b.initialized = true;
+			a.sp_inc = 1;
+			a.offset = MY_OFFSET++;
+			generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
 
-		temp--;
+			temp--;
+		}
+	}
+	else // built-in functions
+	{
+		for (uint32_t i = 0; i < context->argCount; i++) // push arguments in reversed order
+		{
+			temp--;
+
+			b = temp->E;
+			b.initialized = true;
+			a.sp_inc = 1;
+			a.offset = MY_OFFSET++;
+			generateInstruction(PUSHX, &a, &b); // b = pushed operand, a = local dst
+
+			temp--;
+		}
 	}
 
 	a.offset = id->index;

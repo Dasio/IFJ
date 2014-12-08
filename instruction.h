@@ -69,7 +69,8 @@
 		READLN, //  6 [LG][SDI]  only DST
 		WRITE,//  1 dst.int_ ... arg_count
 		MOV,    //  4 [G][SDIB]   only DST
-		PUSH,   // 12 [CLG][SDIB] only SRC
+		PUSH,   // 9 C+[LG][SDIB] only SRC
+		PUSHX,	// 8 [LG][SDIB] only SRC
 		CALL,   //  1 [ADDR], [locals_count]
 		CALL_LENGTH,
 		CALL_COPY, // completed

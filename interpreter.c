@@ -91,6 +91,54 @@ void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
 					break;
 			}
 			break;
+		case PUSHX:
+			switch(b->var_type)
+			{
+				case LOCAL:
+					switch(b->data_type)
+					{
+						case STRING:
+							i_ptr = Instr_PUSHX_LS;
+							break;
+						case DOUBLE:
+							i_ptr = Instr_PUSHX_LD;
+							break;
+						case INT:
+							i_ptr = Instr_PUSHX_LI;
+							break;
+						case BOOL:
+							i_ptr = Instr_PUSHX_LB;
+							break;
+						default:
+							break;
+					}
+					break;
+				case GLOBAL:
+					switch(b->data_type)
+					{
+						case STRING:
+							i_ptr = Instr_PUSHX_GS;
+							break;
+						case DOUBLE:
+							i_ptr = Instr_PUSHX_GD;
+							break;
+						case INT:
+							i_ptr = Instr_PUSHX_GI;
+							break;
+						case BOOL:
+							i_ptr = Instr_PUSHX_GB;
+							break;
+						default:
+							break;
+					}
+					break;
+				case CONST:
+					i_ptr = Instr_PUSH_C;
+					break;
+				default:
+					break;
+			}
+			break;
 		case JMP_T:
 			i_ptr = Instr_JMP_T;
 			break;
