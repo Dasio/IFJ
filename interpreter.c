@@ -261,8 +261,10 @@ void runInterpretation() {
 	while(true) {
 		Instruction *i = first + IP;
 		(i->instr)(i);
-		//printf("%s\n", stringifyInstructionPtr(i->instr));
-		//dumpStack();
+		fprintf(stderr, "============================\n");
+		fprintf(stderr, "|%s\n", stringifyInstructionPtr(i->instr));
+		dumpStack();
+		fprintf(stderr, "\n\n");
 		IP++;
 	}
 }

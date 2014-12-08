@@ -276,13 +276,9 @@ void Instr_MOV_GS(Instruction *i) {
 	operand.str = vectorAt(stack.vect, stack.SP)->str;
 	operand.initialized = true;
 
-	fprintf(stderr, "MOV GS: %s\n", operand.str->data);
-
 	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
 
 	stack.SP--;
-
-	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 void Instr_MOV_GD(Instruction *i) {
@@ -290,13 +286,9 @@ void Instr_MOV_GD(Instruction *i) {
 	operand.double_ = vectorAt(stack.vect, stack.SP)->double_;
 	operand.initialized = true;
 
-	fprintf(stderr, "MOV GD: %g\n", operand.double_);
-
 	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
 
 	stack.SP--;
-
-	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 void Instr_MOV_GI(Instruction *i) {
@@ -304,13 +296,9 @@ void Instr_MOV_GI(Instruction *i) {
 	operand.int_ = vectorAt(stack.vect, stack.SP)->int_;
 	operand.initialized = true;
 
-	fprintf(stderr, "MOV GI: %d\n", operand.int_);
-
 	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
 
 	stack.SP--;
-
-	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 void Instr_MOV_GB(Instruction *i) {
@@ -318,13 +306,9 @@ void Instr_MOV_GB(Instruction *i) {
 	operand.bool_ = vectorAt(stack.vect, stack.SP)->bool_;
 	operand.initialized = true;
 
-	fprintf(stderr, "MOV GB: %d\n", operand.bool_);
-
 	StackDataVectorAtSet(stack.vect, i->dst.offset, operand);
 
 	stack.SP--;
-
-	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -336,13 +320,9 @@ void Instr_PUSH_C(Instruction *i) {
 
 	operand = i->src_1;
 
-	fprintf(stderr, "PUSH const: %d\n", i->src_1.int_);
-
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
 	stack.SP = stack.SP + i->dst.sp_inc;
-
-	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 void Instr_PUSH_LS(Instruction *i) {
@@ -431,13 +411,9 @@ void Instr_PUSH_GS(Instruction *i) {
 	operand.str = global_src->str;
 	operand.initialized = true;
 
-	fprintf(stderr, "PUSH GS: %s\n", global_src->str->data);
-
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
 	stack.SP = stack.SP + i->dst.sp_inc;
-
-	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 void Instr_PUSH_GD(Instruction *i) {
@@ -471,13 +447,9 @@ void Instr_PUSH_GI(Instruction *i) {
 	operand.int_ = global_src->int_;
 	operand.initialized = true;
 
-	fprintf(stderr, "PUSH GI: %d\n", global_src->int_);
-
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
 	stack.SP = stack.SP + i->dst.sp_inc;
-
-	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 void Instr_PUSH_GB(Instruction *i) {
@@ -593,13 +565,9 @@ void Instr_PUSHX_GS(Instruction *i) {
 	operand.str = global_src->str;
 	operand.initialized = true;
 
-	fprintf(stderr, "PUSH GS: %s\n", global_src->str->data);
-
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
 	stack.SP = stack.SP + i->dst.sp_inc;
-
-	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 void Instr_PUSHX_GD(Instruction *i) {
@@ -635,13 +603,9 @@ void Instr_PUSHX_GI(Instruction *i) {
 	operand.int_ = global_src->int_;
 	operand.initialized = true;
 
-	fprintf(stderr, "PUSH GI: %d\n", global_src->int_);
-
 	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);
 
 	stack.SP = stack.SP + i->dst.sp_inc;
-
-	fprintf(stderr, "SP:  %lu\n", stack.SP);
 }
 
 void Instr_PUSHX_GB(Instruction *i) {

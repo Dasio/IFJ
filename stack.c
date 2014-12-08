@@ -14,7 +14,7 @@ void dumpStack() {
 	fprintf(stderr, "============================\n");
 	fprintf(stderr, "STACK:");
 	fprintf(stderr, "\n");
-	for(uint32_t i = 0; i < stack_length; i++) {
+	for(uint32_t i = 0; i <= stack_length; i++) {
 		StackData *s = first+i;
 		fprintf(stderr, "%d\t", i);
 		fprintf(stderr, "%c ", data_type_translation[s->data_type]);
@@ -22,7 +22,7 @@ void dumpStack() {
 		fprintf(stderr, "%d ",  s->initialized);
 		fprintf(stderr, "\n");
 	}
-	fprintf(stderr, "==== BP: %lu === SP: %lu ===\n", stack.BP, stack.SP);
+	fprintf(stderr, "   BP: %lu \n   SP: %lu\n", stack.BP, stack.SP);
 }
 
 GenVectorFunctions(StackData)

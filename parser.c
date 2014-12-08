@@ -233,7 +233,7 @@ void forward(SymbolType returnType)
 		if(getError())
 			return;
 
-		a.int_ = activeContext->argCount;
+		a.int_ = activeContext->argCount + 1;
 		generateInstruction(RET,&a,&b);
 		// Switch back to main context
 		activeContext = mainContext;

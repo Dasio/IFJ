@@ -76,7 +76,7 @@
 		CALL_COPY, // completed
 		CALL_FIND,
 		CALL_SORT,
-		RET,    //  1 dst.int_ == arg_count
+		RET,    //  1 dst.int_ == <arg_count + 1>
 		JMP_T,  //  1 dst.offset == ADDR
 		JMP_F,  //  1 dst.offset == ADDR
 		JMP,    //  1 dst.offset == ADDR
