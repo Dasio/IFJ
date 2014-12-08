@@ -16,9 +16,12 @@ void dumpStack() {
 	fprintf(stderr, "\n");
 	for(uint32_t i = 0; i < stack_length; i++) {
 		StackData *s = first+i;
-		fprintf(stderr, "%d\t\t", i);
-		fprintf(stderr, "%c\t", data_type_translation[s->data_type]);
-		fprintf(stderr, "%c\n",  var_type_translation[s->var_type]);
+		fprintf(stderr, "%d\t", i);
+		fprintf(stderr, "%c", data_type_translation[s->data_type]);
+		fprintf(stderr, "%c ",  var_type_translation[s->var_type]);
+		fprintf(stderr, "%f ",  s->double_);
+		fprintf(stderr, "%d ",  s->int_);
+		fprintf(stderr, "%d",  s->bool_);
 		fprintf(stderr, "\n");
 	}
 	fprintf(stderr, "==== BP: %lu === SP: %lu ===\n", stack.BP, stack.SP);
