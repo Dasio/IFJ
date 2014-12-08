@@ -61,7 +61,7 @@
 	// CALL_SORT
 	void Instr_CALL_SORT(Instruction *i);
 
-	// RET ... arg_count in i->dst.int_
+	// RET ... <arg_count + 1> in i->dst.int_
 	void Instr_RET(Instruction *i);
 
 	// JMP_T ... ADDR in i->dst.offset

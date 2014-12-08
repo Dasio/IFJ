@@ -746,7 +746,7 @@ void Instr_RET(Instruction *i) {
 	stack.BP = BP_ptr->offset;
 	IP = (++BP_ptr)->offset;
 
-	stack.SP -= i->dst.int_; // args_count
+	stack.SP -= i->dst.int_; // args_count + 1
 }
 
 // JMP_T
