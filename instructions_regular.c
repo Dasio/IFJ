@@ -31,8 +31,8 @@ void Instr_READLN_LS(Instruction *i) {
 	{
 		if(isspace(c) && begin)
 		{
-			while((c=getchar()) != '\n' && c != EOF);
-			break;
+			while(isspace(c=getchar()));
+			appendCharToString(str,c);
 		}
 		else
 		{
@@ -55,25 +55,26 @@ void Instr_READLN_LD(Instruction *i) {
 	int c;
 	double d;
 
-	String *str = mem_alloc(sizeof(String));
-	*str = initEmptyString();
+	String str = initEmptyString();
 	while((c=getchar()) != EOF)
 	{
 		if(isspace(c) && start)
 		{
+			if(c == '\n' || c == EOF)
+				break;
 			while((c=getchar()) != '\n' && c != EOF);
 			break;
 		}
 		else if(!isspace(c))
 		{
 			start=true;
-			appendCharToString(str,c);
+			appendCharToString(&str,c);
 		}
 	}
 
-	d = strtod(str->data,&error);
+	d = strtod(str.data,&error);
 
-	destroyString(str);
+	destroyString(&str);
 
 	if(*error != 0)
 	{
@@ -93,25 +94,26 @@ void Instr_READLN_LI(Instruction *i) {
 	int c;
 	int n;
 
-	String *str = mem_alloc(sizeof(String));
-	*str = initEmptyString();
+	String str = initEmptyString();
 	while((c=getchar()) != EOF)
 	{
 		if(isspace(c) && start)
 		{
+			if(c == '\n' || c == EOF)
+				break;
 			while((c=getchar()) != '\n' && c != EOF);
 			break;
 		}
 		else if(!isspace(c))
 		{
 			start=true;
-			appendCharToString(str,c);
+			appendCharToString(&str,c);
 		}
 	}
 
-	n = strtol(str->data,&error,10);
+	n = strtol(str.data,&error,10);
 
-	destroyString(str);
+	destroyString(&str);
 
 	if(*error != 0)
 	{
@@ -135,8 +137,8 @@ void Instr_READLN_GS(Instruction *i) {
 	{
 		if(isspace(c) && begin)
 		{
-			while((c=getchar()) != '\n' && c != EOF);
-			break;
+			while(isspace(c=getchar()));
+			appendCharToString(str,c);
 		}
 		else
 		{
@@ -159,25 +161,26 @@ void Instr_READLN_GD(Instruction *i) {
 	int c;
 	double d;
 
-	String *str = mem_alloc(sizeof(String));
-	*str = initEmptyString();
+	String str = initEmptyString();
 	while((c=getchar()) != EOF)
 	{
 		if(isspace(c) && start)
 		{
+			if(c == '\n' || c == EOF)
+				break;
 			while((c=getchar()) != '\n' && c != EOF);
 			break;
 		}
 		else if(!isspace(c))
 		{
 			start=true;
-			appendCharToString(str,c);
+			appendCharToString(&str,c);
 		}
 	}
 
-	d = strtod(str->data,&error);
+	d = strtod(str.data,&error);
 
-	destroyString(str);
+	destroyString(&str);
 
 	if(*error != 0)
 	{
@@ -197,25 +200,26 @@ void Instr_READLN_GI(Instruction *i) {
 	int c;
 	int n;
 
-	String *str = mem_alloc(sizeof(String));
-	*str = initEmptyString();
+	String str = initEmptyString();
 	while((c=getchar()) != EOF)
 	{
 		if(isspace(c) && start)
 		{
+			if(c == '\n' || c == EOF)
+				break;
 			while((c=getchar()) != '\n' && c != EOF);
 			break;
 		}
 		else if(!isspace(c))
 		{
 			start=true;
-			appendCharToString(str,c);
+			appendCharToString(&str,c);
 		}
 	}
 
-	n = strtol(str->data,&error,10);
+	n = strtol(str.data,&error,10);
 
-	destroyString(str);
+	destroyString(&str);
 
 	if(*error != 0)
 	{

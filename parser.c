@@ -821,6 +821,7 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 			{
 				//@todo Adresss Vector
 				funcSymbol->stateFunc = FS_Defined;
+
 			}
 		}
 		else
@@ -832,11 +833,16 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 	Symbol *returnSymbol = SymbolFind(funcContext,funcSymbol->name);
 	if(getError())
 		return;
+	if(funcState == FS_Declared)
+	{
+		funcSymbol->adressVector = uint64_tVectorInit(256);
+	}
 	returnSymbol->type = returnType;
 	funcContext->returnType = returnType;
 	funcContext->locCount--;
+	funcSymbol->index = tape->used - 1;
 	funcSymbol->stateFunc = funcState;
-	funcSymbol->index = -funcContext->argCount - 1;
+	returnSymbol->index = -funcContext->argCount - 1;
 }
 void addArgToFunc(SymbolType type, char *name)
 {
