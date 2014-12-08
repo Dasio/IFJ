@@ -600,7 +600,7 @@ uint8_t stmt(uint8_t empty)
 					// gen instruction JMP_FALSE while1
 					generateInstruction(JMP_F,&a,&b);
 					Instruction *while1 = InstructionVectorLast(tape);
-					uint32_t while1_index = tape->used;
+					uint32_t while1_index = tape->used - 1;
 					if(token->type != TT_keyword || token->keyword_token != Key_do)
 					{
 						setError(ERR_Syntax);
@@ -613,7 +613,8 @@ uint8_t stmt(uint8_t empty)
 					// update inst while1 with vectorsize+1
 					a.offset = while1_index;
 					generateInstruction(JMP,&a,&b);
-					while1->dst.offset = tape->used;
+					while1->dst.offset = tape->used - 1;
+					fprintf(stderr,"w1=%d w2=%ld\n",while1_index,while1->dst.offset);
 					if(getError())
 						return 0;
 					break;
