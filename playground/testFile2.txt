@@ -1,9 +1,5 @@
+var a:integer;
 begin
-begin
-a := 20
-end ;
-begin
-a := 20+20 ;
-b := 20
-end
-end
+readln(a);
+write(a)
+end.
