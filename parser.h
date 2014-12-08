@@ -8,12 +8,6 @@
 #include "expr.h"
 #include "instruction.h"
 
-typedef enum
-{
-    Local,
-    Global
-} Scope;
-
 void parse(TokenVector *tokvect);
 void program();
 void var_declr();
@@ -89,7 +83,7 @@ void addBuiltInFunctions();
  * @param  scope 0-global, 1-local
  * @return      Pointer to symbol or NULL if not found
  */
-Symbol *findVarOrFunc(char *name,Scope *scope);
+Symbol *findVarOrFunc(char *name,VariableType *scope);
 
 static inline SymbolType keywordToSymbol (KeywordTokenType key)
 {

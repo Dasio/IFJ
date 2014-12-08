@@ -126,7 +126,7 @@ void var_def(uint8_t next)
 		return;
 	}
 	// Add variable to symbol table
-	Symbol *symbol = SymbolAdd(activeContext, symbolType, name, NULL, NULL);
+	SymbolAdd(activeContext, symbolType, name, NULL, NULL);
 	// Global
 	if(activeContext == mainContext)
 	{
@@ -328,7 +328,7 @@ void params_def(uint8_t next)
 }
 uint32_t term_list()
 {
-	Scope scope;
+	VariableType scope;
 	Symbol *symbol = NULL;
 	uint32_t count = 0;
 	token++;
@@ -351,7 +351,7 @@ uint32_t term_list()
 			symbol = findVarOrFunc(current->str.data,&scope);
 			if(getError())
 				return 0;
-			b.var_type = scope==Global ? GLOBAL : LOCAL;
+			b.var_type = scope;
 			b.offset = symbol->index;
 			switch(symbol->type)
 			{
@@ -496,7 +496,7 @@ void stmt_empty()
 uint8_t stmt(uint8_t empty)
 {
 	uint8_t epsilon = 0;
-	Scope scope;
+	VariableType scope;
 	Symbol *id = NULL;
 	DataType exprType;
 	Instruction *instruction;
@@ -526,7 +526,7 @@ uint8_t stmt(uint8_t empty)
 				return 0;
 			}
 			// INST global=mov, local=prepisovat predchadzajucu instrukciou
-			if(scope == Global)
+			if(scope == GLOBAL)
 			{
 				a.offset = id->index;
 				switch(id->type)
@@ -714,7 +714,7 @@ uint8_t if_n(Instruction *if1, Instruction *if2)
 
 void readln()
 {
-	Scope scope;
+	VariableType scope;
 	// keyword readln already loaded from STMT
 	token++;
 	if(token->type != TT_leftBrace)
@@ -757,7 +757,7 @@ void readln()
 		default:
 			break;
 	}
-	a.var_type = scope==Global ? GLOBAL : LOCAL;
+	a.var_type = scope;
 	a.offset = symbol->index;
 	generateInstruction(READLN,&a,&b);
 	if(activeOffset == &funcOffset)
@@ -934,7 +934,7 @@ void addBuiltInFunctions()
 
 	funcContext = NULL;
 }
-Symbol *findVarOrFunc(char *name, Scope *scope)
+Symbol *findVarOrFunc(char *name, VariableType *scope)
 {
 	Symbol *id = SymbolFind(activeContext,name);
 	if(id == NULL)
@@ -953,11 +953,10 @@ Symbol *findVarOrFunc(char *name, Scope *scope)
 			setError(ERR_BuiltFuncAsID);
 			return NULL;
 		}
-		if(scope)
-			*scope = Global;
+		*scope = GLOBAL;
 		return id;
 	}
-	if(scope)
-			*scope = Local;
+	*scope = activeContext == mainContext ? GLOBAL : LOCAL;
+	printf("%s %u\n",name,*scope);
 	return id;
 }
