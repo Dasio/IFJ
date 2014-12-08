@@ -384,7 +384,7 @@ uint32_t term_list()
 					break;
 			}
 		}
-		printf("PUSH a.offset = %ld b.offset= %ld\n",a.offset),b.offset);
+		printf("PUSH a.offset = %ld b.offset= %ld\n",a.offset,b.offset);
 		generateInstruction(PUSH, &a, &b);
 		// Skip comma and move to next argument
 		current -= 2;
