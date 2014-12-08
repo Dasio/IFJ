@@ -203,8 +203,10 @@ instructions.each do |name, regex|
 
 		if proto[0] == "L"
 			src1     = "local_src1->"+types[proto[2]].to_s
+			src1_raw = "local_src1"
 		elsif proto[0] == "G"
 			src1     = "global_src1->"+types[proto[2]].to_s
+			src1_raw = "global_src1"
 		elsif proto[0] == "C"
 			src1     = "*constant_src_1_"+proto[2]
 			src1_raw = "constant_src_1_"+proto[2]
@@ -212,8 +214,10 @@ instructions.each do |name, regex|
 
 		if proto[1] == "L"
 			src2     = "local_src2->"+types[proto[3]].to_s
+			src2_raw = "local_src2"
 		elsif proto[1] == "G"
 			src2     = "global_src2->"+types[proto[3]].to_s
+			src2_raw = "global_src2"
 		elsif proto[1] == "C"
 			src2     = "*constant_src_2_"+proto[3]
 			src2_raw = "constant_src_2_"+proto[3]
@@ -221,7 +225,7 @@ instructions.each do |name, regex|
 
 		# Uninitialized access protection
 		if proto[0] != "C"
-			c.puts "	if(i->src_1.initialized == false) {"
+			c.puts "	if(#{src1_raw}->initialized == false) {"
 			c.puts "		setError(ERR_UnitializedAccess);"
 			c.puts "		die();"
 			c.puts "		return;"
@@ -229,7 +233,7 @@ instructions.each do |name, regex|
 		end
 
 		if proto[1] != "C" && name != :neg && name != :not
-			c.puts "	if(i->src_2.initialized == false) {"
+			c.puts "	if(#{src2_raw}->initialized == false) {"
 			c.puts "		setError(ERR_UnitializedAccess);"
 			c.puts "		die();"
 			c.puts "		return;"

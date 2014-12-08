@@ -40,7 +40,7 @@ static Operand operand;
 void Instr_NEG_LxIx(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LxIx
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -55,7 +55,7 @@ void Instr_NEG_LxIx(Instruction *i) {
 void Instr_NEG_LxDx(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LxDx
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -70,7 +70,7 @@ void Instr_NEG_LxDx(Instruction *i) {
 void Instr_NEG_GxIx(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GxIx
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -85,7 +85,7 @@ void Instr_NEG_GxIx(Instruction *i) {
 void Instr_NEG_GxDx(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GxDx
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -100,7 +100,7 @@ void Instr_NEG_GxDx(Instruction *i) {
 void Instr_NOT_LxBx(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LxBx
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -115,7 +115,7 @@ void Instr_NOT_LxBx(Instruction *i) {
 void Instr_NOT_GxBx(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GxBx
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -130,7 +130,7 @@ void Instr_NOT_GxBx(Instruction *i) {
 void Instr_MUL_CLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLII
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -145,7 +145,7 @@ void Instr_MUL_CLII(Instruction *i) {
 void Instr_MUL_CLID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLID
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -160,7 +160,7 @@ void Instr_MUL_CLID(Instruction *i) {
 void Instr_MUL_CLDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDI
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -175,7 +175,7 @@ void Instr_MUL_CLDI(Instruction *i) {
 void Instr_MUL_CLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDD
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -190,7 +190,7 @@ void Instr_MUL_CLDD(Instruction *i) {
 void Instr_MUL_CGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGII
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -205,7 +205,7 @@ void Instr_MUL_CGII(Instruction *i) {
 void Instr_MUL_CGID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGID
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -220,7 +220,7 @@ void Instr_MUL_CGID(Instruction *i) {
 void Instr_MUL_CGDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDI
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -235,7 +235,7 @@ void Instr_MUL_CGDI(Instruction *i) {
 void Instr_MUL_CGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDD
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -250,7 +250,7 @@ void Instr_MUL_CGDD(Instruction *i) {
 void Instr_MUL_LCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -265,7 +265,7 @@ void Instr_MUL_LCII(Instruction *i) {
 void Instr_MUL_LCID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCID
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -280,7 +280,7 @@ void Instr_MUL_LCID(Instruction *i) {
 void Instr_MUL_LCDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDI
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -295,7 +295,7 @@ void Instr_MUL_LCDI(Instruction *i) {
 void Instr_MUL_LCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -310,12 +310,12 @@ void Instr_MUL_LCDD(Instruction *i) {
 void Instr_MUL_LLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -330,12 +330,12 @@ void Instr_MUL_LLII(Instruction *i) {
 void Instr_MUL_LLID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLID
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -350,12 +350,12 @@ void Instr_MUL_LLID(Instruction *i) {
 void Instr_MUL_LLDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDI
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -370,12 +370,12 @@ void Instr_MUL_LLDI(Instruction *i) {
 void Instr_MUL_LLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -390,12 +390,12 @@ void Instr_MUL_LLDD(Instruction *i) {
 void Instr_MUL_LGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -410,12 +410,12 @@ void Instr_MUL_LGII(Instruction *i) {
 void Instr_MUL_LGID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGID
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -430,12 +430,12 @@ void Instr_MUL_LGID(Instruction *i) {
 void Instr_MUL_LGDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDI
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -450,12 +450,12 @@ void Instr_MUL_LGDI(Instruction *i) {
 void Instr_MUL_LGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -470,7 +470,7 @@ void Instr_MUL_LGDD(Instruction *i) {
 void Instr_MUL_GCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -485,7 +485,7 @@ void Instr_MUL_GCII(Instruction *i) {
 void Instr_MUL_GCID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCID
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -500,7 +500,7 @@ void Instr_MUL_GCID(Instruction *i) {
 void Instr_MUL_GCDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDI
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -515,7 +515,7 @@ void Instr_MUL_GCDI(Instruction *i) {
 void Instr_MUL_GCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -530,12 +530,12 @@ void Instr_MUL_GCDD(Instruction *i) {
 void Instr_MUL_GLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -550,12 +550,12 @@ void Instr_MUL_GLII(Instruction *i) {
 void Instr_MUL_GLID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLID
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -570,12 +570,12 @@ void Instr_MUL_GLID(Instruction *i) {
 void Instr_MUL_GLDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDI
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -590,12 +590,12 @@ void Instr_MUL_GLDI(Instruction *i) {
 void Instr_MUL_GLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -610,12 +610,12 @@ void Instr_MUL_GLDD(Instruction *i) {
 void Instr_MUL_GGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -630,12 +630,12 @@ void Instr_MUL_GGII(Instruction *i) {
 void Instr_MUL_GGID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGID
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -650,12 +650,12 @@ void Instr_MUL_GGID(Instruction *i) {
 void Instr_MUL_GGDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDI
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -670,12 +670,12 @@ void Instr_MUL_GGDI(Instruction *i) {
 void Instr_MUL_GGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -690,7 +690,7 @@ void Instr_MUL_GGDD(Instruction *i) {
 void Instr_DIV_CLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLII
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -711,7 +711,7 @@ void Instr_DIV_CLII(Instruction *i) {
 void Instr_DIV_CLID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLID
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -732,7 +732,7 @@ void Instr_DIV_CLID(Instruction *i) {
 void Instr_DIV_CLDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDI
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -753,7 +753,7 @@ void Instr_DIV_CLDI(Instruction *i) {
 void Instr_DIV_CLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDD
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -774,7 +774,7 @@ void Instr_DIV_CLDD(Instruction *i) {
 void Instr_DIV_CGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGII
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -795,7 +795,7 @@ void Instr_DIV_CGII(Instruction *i) {
 void Instr_DIV_CGID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGID
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -816,7 +816,7 @@ void Instr_DIV_CGID(Instruction *i) {
 void Instr_DIV_CGDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDI
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -837,7 +837,7 @@ void Instr_DIV_CGDI(Instruction *i) {
 void Instr_DIV_CGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDD
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -858,7 +858,7 @@ void Instr_DIV_CGDD(Instruction *i) {
 void Instr_DIV_LCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -879,7 +879,7 @@ void Instr_DIV_LCII(Instruction *i) {
 void Instr_DIV_LCID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCID
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -900,7 +900,7 @@ void Instr_DIV_LCID(Instruction *i) {
 void Instr_DIV_LCDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDI
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -921,7 +921,7 @@ void Instr_DIV_LCDI(Instruction *i) {
 void Instr_DIV_LCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -942,12 +942,12 @@ void Instr_DIV_LCDD(Instruction *i) {
 void Instr_DIV_LLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -968,12 +968,12 @@ void Instr_DIV_LLII(Instruction *i) {
 void Instr_DIV_LLID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLID
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -994,12 +994,12 @@ void Instr_DIV_LLID(Instruction *i) {
 void Instr_DIV_LLDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDI
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1020,12 +1020,12 @@ void Instr_DIV_LLDI(Instruction *i) {
 void Instr_DIV_LLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1046,12 +1046,12 @@ void Instr_DIV_LLDD(Instruction *i) {
 void Instr_DIV_LGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1072,12 +1072,12 @@ void Instr_DIV_LGII(Instruction *i) {
 void Instr_DIV_LGID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGID
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1098,12 +1098,12 @@ void Instr_DIV_LGID(Instruction *i) {
 void Instr_DIV_LGDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDI
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1124,12 +1124,12 @@ void Instr_DIV_LGDI(Instruction *i) {
 void Instr_DIV_LGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1150,7 +1150,7 @@ void Instr_DIV_LGDD(Instruction *i) {
 void Instr_DIV_GCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1171,7 +1171,7 @@ void Instr_DIV_GCII(Instruction *i) {
 void Instr_DIV_GCID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCID
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1192,7 +1192,7 @@ void Instr_DIV_GCID(Instruction *i) {
 void Instr_DIV_GCDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDI
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1213,7 +1213,7 @@ void Instr_DIV_GCDI(Instruction *i) {
 void Instr_DIV_GCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1234,12 +1234,12 @@ void Instr_DIV_GCDD(Instruction *i) {
 void Instr_DIV_GLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1260,12 +1260,12 @@ void Instr_DIV_GLII(Instruction *i) {
 void Instr_DIV_GLID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLID
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1286,12 +1286,12 @@ void Instr_DIV_GLID(Instruction *i) {
 void Instr_DIV_GLDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDI
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1312,12 +1312,12 @@ void Instr_DIV_GLDI(Instruction *i) {
 void Instr_DIV_GLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1338,12 +1338,12 @@ void Instr_DIV_GLDD(Instruction *i) {
 void Instr_DIV_GGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1364,12 +1364,12 @@ void Instr_DIV_GGII(Instruction *i) {
 void Instr_DIV_GGID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGID
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1390,12 +1390,12 @@ void Instr_DIV_GGID(Instruction *i) {
 void Instr_DIV_GGDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDI
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1416,12 +1416,12 @@ void Instr_DIV_GGDI(Instruction *i) {
 void Instr_DIV_GGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1442,7 +1442,7 @@ void Instr_DIV_GGDD(Instruction *i) {
 void Instr_AND_CLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLBB
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1457,7 +1457,7 @@ void Instr_AND_CLBB(Instruction *i) {
 void Instr_AND_CGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGBB
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1472,7 +1472,7 @@ void Instr_AND_CGBB(Instruction *i) {
 void Instr_AND_LCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1487,12 +1487,12 @@ void Instr_AND_LCBB(Instruction *i) {
 void Instr_AND_LLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1507,12 +1507,12 @@ void Instr_AND_LLBB(Instruction *i) {
 void Instr_AND_LGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1527,7 +1527,7 @@ void Instr_AND_LGBB(Instruction *i) {
 void Instr_AND_GCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1542,12 +1542,12 @@ void Instr_AND_GCBB(Instruction *i) {
 void Instr_AND_GLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1562,12 +1562,12 @@ void Instr_AND_GLBB(Instruction *i) {
 void Instr_AND_GGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1582,7 +1582,7 @@ void Instr_AND_GGBB(Instruction *i) {
 void Instr_ADD_CLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLII
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1597,7 +1597,7 @@ void Instr_ADD_CLII(Instruction *i) {
 void Instr_ADD_CLID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLID
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1612,7 +1612,7 @@ void Instr_ADD_CLID(Instruction *i) {
 void Instr_ADD_CLDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDI
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1627,7 +1627,7 @@ void Instr_ADD_CLDI(Instruction *i) {
 void Instr_ADD_CLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDD
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1642,7 +1642,7 @@ void Instr_ADD_CLDD(Instruction *i) {
 void Instr_ADD_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1657,7 +1657,7 @@ void Instr_ADD_CLSS(Instruction *i) {
 void Instr_ADD_CGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGII
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1672,7 +1672,7 @@ void Instr_ADD_CGII(Instruction *i) {
 void Instr_ADD_CGID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGID
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1687,7 +1687,7 @@ void Instr_ADD_CGID(Instruction *i) {
 void Instr_ADD_CGDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDI
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1702,7 +1702,7 @@ void Instr_ADD_CGDI(Instruction *i) {
 void Instr_ADD_CGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDD
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1717,7 +1717,7 @@ void Instr_ADD_CGDD(Instruction *i) {
 void Instr_ADD_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1732,7 +1732,7 @@ void Instr_ADD_CGSS(Instruction *i) {
 void Instr_ADD_LCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1747,7 +1747,7 @@ void Instr_ADD_LCII(Instruction *i) {
 void Instr_ADD_LCID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCID
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1762,7 +1762,7 @@ void Instr_ADD_LCID(Instruction *i) {
 void Instr_ADD_LCDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDI
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1777,7 +1777,7 @@ void Instr_ADD_LCDI(Instruction *i) {
 void Instr_ADD_LCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1792,7 +1792,7 @@ void Instr_ADD_LCDD(Instruction *i) {
 void Instr_ADD_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1807,12 +1807,12 @@ void Instr_ADD_LCSS(Instruction *i) {
 void Instr_ADD_LLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1827,12 +1827,12 @@ void Instr_ADD_LLII(Instruction *i) {
 void Instr_ADD_LLID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLID
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1847,12 +1847,12 @@ void Instr_ADD_LLID(Instruction *i) {
 void Instr_ADD_LLDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDI
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1867,12 +1867,12 @@ void Instr_ADD_LLDI(Instruction *i) {
 void Instr_ADD_LLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1887,12 +1887,12 @@ void Instr_ADD_LLDD(Instruction *i) {
 void Instr_ADD_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1907,12 +1907,12 @@ void Instr_ADD_LLSS(Instruction *i) {
 void Instr_ADD_LGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1927,12 +1927,12 @@ void Instr_ADD_LGII(Instruction *i) {
 void Instr_ADD_LGID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGID
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1947,12 +1947,12 @@ void Instr_ADD_LGID(Instruction *i) {
 void Instr_ADD_LGDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDI
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1967,12 +1967,12 @@ void Instr_ADD_LGDI(Instruction *i) {
 void Instr_ADD_LGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -1987,12 +1987,12 @@ void Instr_ADD_LGDD(Instruction *i) {
 void Instr_ADD_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2007,7 +2007,7 @@ void Instr_ADD_LGSS(Instruction *i) {
 void Instr_ADD_GCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2022,7 +2022,7 @@ void Instr_ADD_GCII(Instruction *i) {
 void Instr_ADD_GCID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCID
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2037,7 +2037,7 @@ void Instr_ADD_GCID(Instruction *i) {
 void Instr_ADD_GCDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDI
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2052,7 +2052,7 @@ void Instr_ADD_GCDI(Instruction *i) {
 void Instr_ADD_GCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2067,7 +2067,7 @@ void Instr_ADD_GCDD(Instruction *i) {
 void Instr_ADD_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2082,12 +2082,12 @@ void Instr_ADD_GCSS(Instruction *i) {
 void Instr_ADD_GLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2102,12 +2102,12 @@ void Instr_ADD_GLII(Instruction *i) {
 void Instr_ADD_GLID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLID
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2122,12 +2122,12 @@ void Instr_ADD_GLID(Instruction *i) {
 void Instr_ADD_GLDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDI
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2142,12 +2142,12 @@ void Instr_ADD_GLDI(Instruction *i) {
 void Instr_ADD_GLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2162,12 +2162,12 @@ void Instr_ADD_GLDD(Instruction *i) {
 void Instr_ADD_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2182,12 +2182,12 @@ void Instr_ADD_GLSS(Instruction *i) {
 void Instr_ADD_GGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2202,12 +2202,12 @@ void Instr_ADD_GGII(Instruction *i) {
 void Instr_ADD_GGID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGID
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2222,12 +2222,12 @@ void Instr_ADD_GGID(Instruction *i) {
 void Instr_ADD_GGDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDI
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2242,12 +2242,12 @@ void Instr_ADD_GGDI(Instruction *i) {
 void Instr_ADD_GGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2262,12 +2262,12 @@ void Instr_ADD_GGDD(Instruction *i) {
 void Instr_ADD_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2282,7 +2282,7 @@ void Instr_ADD_GGSS(Instruction *i) {
 void Instr_SUB_CLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLII
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2297,7 +2297,7 @@ void Instr_SUB_CLII(Instruction *i) {
 void Instr_SUB_CLID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLID
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2312,7 +2312,7 @@ void Instr_SUB_CLID(Instruction *i) {
 void Instr_SUB_CLDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDI
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2327,7 +2327,7 @@ void Instr_SUB_CLDI(Instruction *i) {
 void Instr_SUB_CLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDD
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2342,7 +2342,7 @@ void Instr_SUB_CLDD(Instruction *i) {
 void Instr_SUB_CGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGII
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2357,7 +2357,7 @@ void Instr_SUB_CGII(Instruction *i) {
 void Instr_SUB_CGID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGID
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2372,7 +2372,7 @@ void Instr_SUB_CGID(Instruction *i) {
 void Instr_SUB_CGDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDI
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2387,7 +2387,7 @@ void Instr_SUB_CGDI(Instruction *i) {
 void Instr_SUB_CGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDD
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2402,7 +2402,7 @@ void Instr_SUB_CGDD(Instruction *i) {
 void Instr_SUB_LCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2417,7 +2417,7 @@ void Instr_SUB_LCII(Instruction *i) {
 void Instr_SUB_LCID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCID
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2432,7 +2432,7 @@ void Instr_SUB_LCID(Instruction *i) {
 void Instr_SUB_LCDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDI
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2447,7 +2447,7 @@ void Instr_SUB_LCDI(Instruction *i) {
 void Instr_SUB_LCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2462,12 +2462,12 @@ void Instr_SUB_LCDD(Instruction *i) {
 void Instr_SUB_LLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2482,12 +2482,12 @@ void Instr_SUB_LLII(Instruction *i) {
 void Instr_SUB_LLID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLID
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2502,12 +2502,12 @@ void Instr_SUB_LLID(Instruction *i) {
 void Instr_SUB_LLDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDI
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2522,12 +2522,12 @@ void Instr_SUB_LLDI(Instruction *i) {
 void Instr_SUB_LLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2542,12 +2542,12 @@ void Instr_SUB_LLDD(Instruction *i) {
 void Instr_SUB_LGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2562,12 +2562,12 @@ void Instr_SUB_LGII(Instruction *i) {
 void Instr_SUB_LGID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGID
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2582,12 +2582,12 @@ void Instr_SUB_LGID(Instruction *i) {
 void Instr_SUB_LGDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDI
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2602,12 +2602,12 @@ void Instr_SUB_LGDI(Instruction *i) {
 void Instr_SUB_LGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2622,7 +2622,7 @@ void Instr_SUB_LGDD(Instruction *i) {
 void Instr_SUB_GCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2637,7 +2637,7 @@ void Instr_SUB_GCII(Instruction *i) {
 void Instr_SUB_GCID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCID
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2652,7 +2652,7 @@ void Instr_SUB_GCID(Instruction *i) {
 void Instr_SUB_GCDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDI
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2667,7 +2667,7 @@ void Instr_SUB_GCDI(Instruction *i) {
 void Instr_SUB_GCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2682,12 +2682,12 @@ void Instr_SUB_GCDD(Instruction *i) {
 void Instr_SUB_GLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2702,12 +2702,12 @@ void Instr_SUB_GLII(Instruction *i) {
 void Instr_SUB_GLID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLID
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2722,12 +2722,12 @@ void Instr_SUB_GLID(Instruction *i) {
 void Instr_SUB_GLDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDI
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2742,12 +2742,12 @@ void Instr_SUB_GLDI(Instruction *i) {
 void Instr_SUB_GLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2762,12 +2762,12 @@ void Instr_SUB_GLDD(Instruction *i) {
 void Instr_SUB_GGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2782,12 +2782,12 @@ void Instr_SUB_GGII(Instruction *i) {
 void Instr_SUB_GGID(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGID
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2802,12 +2802,12 @@ void Instr_SUB_GGID(Instruction *i) {
 void Instr_SUB_GGDI(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDI
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2822,12 +2822,12 @@ void Instr_SUB_GGDI(Instruction *i) {
 void Instr_SUB_GGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2842,7 +2842,7 @@ void Instr_SUB_GGDD(Instruction *i) {
 void Instr_OR_CLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLBB
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2857,7 +2857,7 @@ void Instr_OR_CLBB(Instruction *i) {
 void Instr_OR_CGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGBB
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2872,7 +2872,7 @@ void Instr_OR_CGBB(Instruction *i) {
 void Instr_OR_LCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2887,12 +2887,12 @@ void Instr_OR_LCBB(Instruction *i) {
 void Instr_OR_LLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2907,12 +2907,12 @@ void Instr_OR_LLBB(Instruction *i) {
 void Instr_OR_LGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2927,7 +2927,7 @@ void Instr_OR_LGBB(Instruction *i) {
 void Instr_OR_GCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2942,12 +2942,12 @@ void Instr_OR_GCBB(Instruction *i) {
 void Instr_OR_GLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2962,12 +2962,12 @@ void Instr_OR_GLBB(Instruction *i) {
 void Instr_OR_GGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2982,7 +2982,7 @@ void Instr_OR_GGBB(Instruction *i) {
 void Instr_XOR_CLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLBB
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -2997,7 +2997,7 @@ void Instr_XOR_CLBB(Instruction *i) {
 void Instr_XOR_CGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGBB
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3012,7 +3012,7 @@ void Instr_XOR_CGBB(Instruction *i) {
 void Instr_XOR_LCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3027,12 +3027,12 @@ void Instr_XOR_LCBB(Instruction *i) {
 void Instr_XOR_LLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3047,12 +3047,12 @@ void Instr_XOR_LLBB(Instruction *i) {
 void Instr_XOR_LGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3067,7 +3067,7 @@ void Instr_XOR_LGBB(Instruction *i) {
 void Instr_XOR_GCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3082,12 +3082,12 @@ void Instr_XOR_GCBB(Instruction *i) {
 void Instr_XOR_GLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3102,12 +3102,12 @@ void Instr_XOR_GLBB(Instruction *i) {
 void Instr_XOR_GGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3122,7 +3122,7 @@ void Instr_XOR_GGBB(Instruction *i) {
 void Instr_L_CLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLII
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3137,7 +3137,7 @@ void Instr_L_CLII(Instruction *i) {
 void Instr_L_CLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDD
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3152,7 +3152,7 @@ void Instr_L_CLDD(Instruction *i) {
 void Instr_L_CLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLBB
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3167,7 +3167,7 @@ void Instr_L_CLBB(Instruction *i) {
 void Instr_L_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3184,7 +3184,7 @@ void Instr_L_CLSS(Instruction *i) {
 void Instr_L_CGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGII
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3199,7 +3199,7 @@ void Instr_L_CGII(Instruction *i) {
 void Instr_L_CGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDD
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3214,7 +3214,7 @@ void Instr_L_CGDD(Instruction *i) {
 void Instr_L_CGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGBB
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3229,7 +3229,7 @@ void Instr_L_CGBB(Instruction *i) {
 void Instr_L_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3246,7 +3246,7 @@ void Instr_L_CGSS(Instruction *i) {
 void Instr_L_LCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3261,7 +3261,7 @@ void Instr_L_LCII(Instruction *i) {
 void Instr_L_LCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3276,7 +3276,7 @@ void Instr_L_LCDD(Instruction *i) {
 void Instr_L_LCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3291,7 +3291,7 @@ void Instr_L_LCBB(Instruction *i) {
 void Instr_L_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3308,12 +3308,12 @@ void Instr_L_LCSS(Instruction *i) {
 void Instr_L_LLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3328,12 +3328,12 @@ void Instr_L_LLII(Instruction *i) {
 void Instr_L_LLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3348,12 +3348,12 @@ void Instr_L_LLDD(Instruction *i) {
 void Instr_L_LLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3368,12 +3368,12 @@ void Instr_L_LLBB(Instruction *i) {
 void Instr_L_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3390,12 +3390,12 @@ void Instr_L_LLSS(Instruction *i) {
 void Instr_L_LGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3410,12 +3410,12 @@ void Instr_L_LGII(Instruction *i) {
 void Instr_L_LGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3430,12 +3430,12 @@ void Instr_L_LGDD(Instruction *i) {
 void Instr_L_LGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3450,12 +3450,12 @@ void Instr_L_LGBB(Instruction *i) {
 void Instr_L_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3472,7 +3472,7 @@ void Instr_L_LGSS(Instruction *i) {
 void Instr_L_GCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3487,7 +3487,7 @@ void Instr_L_GCII(Instruction *i) {
 void Instr_L_GCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3502,7 +3502,7 @@ void Instr_L_GCDD(Instruction *i) {
 void Instr_L_GCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3517,7 +3517,7 @@ void Instr_L_GCBB(Instruction *i) {
 void Instr_L_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3534,12 +3534,12 @@ void Instr_L_GCSS(Instruction *i) {
 void Instr_L_GLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3554,12 +3554,12 @@ void Instr_L_GLII(Instruction *i) {
 void Instr_L_GLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3574,12 +3574,12 @@ void Instr_L_GLDD(Instruction *i) {
 void Instr_L_GLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3594,12 +3594,12 @@ void Instr_L_GLBB(Instruction *i) {
 void Instr_L_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3616,12 +3616,12 @@ void Instr_L_GLSS(Instruction *i) {
 void Instr_L_GGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3636,12 +3636,12 @@ void Instr_L_GGII(Instruction *i) {
 void Instr_L_GGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3656,12 +3656,12 @@ void Instr_L_GGDD(Instruction *i) {
 void Instr_L_GGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3676,12 +3676,12 @@ void Instr_L_GGBB(Instruction *i) {
 void Instr_L_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3698,7 +3698,7 @@ void Instr_L_GGSS(Instruction *i) {
 void Instr_G_CLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLII
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3713,7 +3713,7 @@ void Instr_G_CLII(Instruction *i) {
 void Instr_G_CLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDD
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3728,7 +3728,7 @@ void Instr_G_CLDD(Instruction *i) {
 void Instr_G_CLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLBB
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3743,7 +3743,7 @@ void Instr_G_CLBB(Instruction *i) {
 void Instr_G_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3760,7 +3760,7 @@ void Instr_G_CLSS(Instruction *i) {
 void Instr_G_CGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGII
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3775,7 +3775,7 @@ void Instr_G_CGII(Instruction *i) {
 void Instr_G_CGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDD
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3790,7 +3790,7 @@ void Instr_G_CGDD(Instruction *i) {
 void Instr_G_CGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGBB
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3805,7 +3805,7 @@ void Instr_G_CGBB(Instruction *i) {
 void Instr_G_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3822,7 +3822,7 @@ void Instr_G_CGSS(Instruction *i) {
 void Instr_G_LCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3837,7 +3837,7 @@ void Instr_G_LCII(Instruction *i) {
 void Instr_G_LCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3852,7 +3852,7 @@ void Instr_G_LCDD(Instruction *i) {
 void Instr_G_LCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3867,7 +3867,7 @@ void Instr_G_LCBB(Instruction *i) {
 void Instr_G_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3884,12 +3884,12 @@ void Instr_G_LCSS(Instruction *i) {
 void Instr_G_LLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3904,12 +3904,12 @@ void Instr_G_LLII(Instruction *i) {
 void Instr_G_LLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3924,12 +3924,12 @@ void Instr_G_LLDD(Instruction *i) {
 void Instr_G_LLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3944,12 +3944,12 @@ void Instr_G_LLBB(Instruction *i) {
 void Instr_G_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3966,12 +3966,12 @@ void Instr_G_LLSS(Instruction *i) {
 void Instr_G_LGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -3986,12 +3986,12 @@ void Instr_G_LGII(Instruction *i) {
 void Instr_G_LGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4006,12 +4006,12 @@ void Instr_G_LGDD(Instruction *i) {
 void Instr_G_LGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4026,12 +4026,12 @@ void Instr_G_LGBB(Instruction *i) {
 void Instr_G_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4048,7 +4048,7 @@ void Instr_G_LGSS(Instruction *i) {
 void Instr_G_GCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4063,7 +4063,7 @@ void Instr_G_GCII(Instruction *i) {
 void Instr_G_GCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4078,7 +4078,7 @@ void Instr_G_GCDD(Instruction *i) {
 void Instr_G_GCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4093,7 +4093,7 @@ void Instr_G_GCBB(Instruction *i) {
 void Instr_G_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4110,12 +4110,12 @@ void Instr_G_GCSS(Instruction *i) {
 void Instr_G_GLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4130,12 +4130,12 @@ void Instr_G_GLII(Instruction *i) {
 void Instr_G_GLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4150,12 +4150,12 @@ void Instr_G_GLDD(Instruction *i) {
 void Instr_G_GLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4170,12 +4170,12 @@ void Instr_G_GLBB(Instruction *i) {
 void Instr_G_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4192,12 +4192,12 @@ void Instr_G_GLSS(Instruction *i) {
 void Instr_G_GGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4212,12 +4212,12 @@ void Instr_G_GGII(Instruction *i) {
 void Instr_G_GGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4232,12 +4232,12 @@ void Instr_G_GGDD(Instruction *i) {
 void Instr_G_GGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4252,12 +4252,12 @@ void Instr_G_GGBB(Instruction *i) {
 void Instr_G_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4274,7 +4274,7 @@ void Instr_G_GGSS(Instruction *i) {
 void Instr_LE_CLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLII
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4289,7 +4289,7 @@ void Instr_LE_CLII(Instruction *i) {
 void Instr_LE_CLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDD
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4304,7 +4304,7 @@ void Instr_LE_CLDD(Instruction *i) {
 void Instr_LE_CLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLBB
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4319,7 +4319,7 @@ void Instr_LE_CLBB(Instruction *i) {
 void Instr_LE_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4336,7 +4336,7 @@ void Instr_LE_CLSS(Instruction *i) {
 void Instr_LE_CGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGII
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4351,7 +4351,7 @@ void Instr_LE_CGII(Instruction *i) {
 void Instr_LE_CGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDD
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4366,7 +4366,7 @@ void Instr_LE_CGDD(Instruction *i) {
 void Instr_LE_CGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGBB
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4381,7 +4381,7 @@ void Instr_LE_CGBB(Instruction *i) {
 void Instr_LE_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4398,7 +4398,7 @@ void Instr_LE_CGSS(Instruction *i) {
 void Instr_LE_LCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4413,7 +4413,7 @@ void Instr_LE_LCII(Instruction *i) {
 void Instr_LE_LCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4428,7 +4428,7 @@ void Instr_LE_LCDD(Instruction *i) {
 void Instr_LE_LCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4443,7 +4443,7 @@ void Instr_LE_LCBB(Instruction *i) {
 void Instr_LE_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4460,12 +4460,12 @@ void Instr_LE_LCSS(Instruction *i) {
 void Instr_LE_LLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4480,12 +4480,12 @@ void Instr_LE_LLII(Instruction *i) {
 void Instr_LE_LLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4500,12 +4500,12 @@ void Instr_LE_LLDD(Instruction *i) {
 void Instr_LE_LLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4520,12 +4520,12 @@ void Instr_LE_LLBB(Instruction *i) {
 void Instr_LE_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4542,12 +4542,12 @@ void Instr_LE_LLSS(Instruction *i) {
 void Instr_LE_LGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4562,12 +4562,12 @@ void Instr_LE_LGII(Instruction *i) {
 void Instr_LE_LGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4582,12 +4582,12 @@ void Instr_LE_LGDD(Instruction *i) {
 void Instr_LE_LGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4602,12 +4602,12 @@ void Instr_LE_LGBB(Instruction *i) {
 void Instr_LE_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4624,7 +4624,7 @@ void Instr_LE_LGSS(Instruction *i) {
 void Instr_LE_GCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4639,7 +4639,7 @@ void Instr_LE_GCII(Instruction *i) {
 void Instr_LE_GCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4654,7 +4654,7 @@ void Instr_LE_GCDD(Instruction *i) {
 void Instr_LE_GCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4669,7 +4669,7 @@ void Instr_LE_GCBB(Instruction *i) {
 void Instr_LE_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4686,12 +4686,12 @@ void Instr_LE_GCSS(Instruction *i) {
 void Instr_LE_GLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4706,12 +4706,12 @@ void Instr_LE_GLII(Instruction *i) {
 void Instr_LE_GLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4726,12 +4726,12 @@ void Instr_LE_GLDD(Instruction *i) {
 void Instr_LE_GLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4746,12 +4746,12 @@ void Instr_LE_GLBB(Instruction *i) {
 void Instr_LE_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4768,12 +4768,12 @@ void Instr_LE_GLSS(Instruction *i) {
 void Instr_LE_GGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4788,12 +4788,12 @@ void Instr_LE_GGII(Instruction *i) {
 void Instr_LE_GGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4808,12 +4808,12 @@ void Instr_LE_GGDD(Instruction *i) {
 void Instr_LE_GGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4828,12 +4828,12 @@ void Instr_LE_GGBB(Instruction *i) {
 void Instr_LE_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4850,7 +4850,7 @@ void Instr_LE_GGSS(Instruction *i) {
 void Instr_GE_CLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLII
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4865,7 +4865,7 @@ void Instr_GE_CLII(Instruction *i) {
 void Instr_GE_CLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDD
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4880,7 +4880,7 @@ void Instr_GE_CLDD(Instruction *i) {
 void Instr_GE_CLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLBB
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4895,7 +4895,7 @@ void Instr_GE_CLBB(Instruction *i) {
 void Instr_GE_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4912,7 +4912,7 @@ void Instr_GE_CLSS(Instruction *i) {
 void Instr_GE_CGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGII
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4927,7 +4927,7 @@ void Instr_GE_CGII(Instruction *i) {
 void Instr_GE_CGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDD
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4942,7 +4942,7 @@ void Instr_GE_CGDD(Instruction *i) {
 void Instr_GE_CGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGBB
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4957,7 +4957,7 @@ void Instr_GE_CGBB(Instruction *i) {
 void Instr_GE_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4974,7 +4974,7 @@ void Instr_GE_CGSS(Instruction *i) {
 void Instr_GE_LCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -4989,7 +4989,7 @@ void Instr_GE_LCII(Instruction *i) {
 void Instr_GE_LCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5004,7 +5004,7 @@ void Instr_GE_LCDD(Instruction *i) {
 void Instr_GE_LCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5019,7 +5019,7 @@ void Instr_GE_LCBB(Instruction *i) {
 void Instr_GE_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5036,12 +5036,12 @@ void Instr_GE_LCSS(Instruction *i) {
 void Instr_GE_LLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5056,12 +5056,12 @@ void Instr_GE_LLII(Instruction *i) {
 void Instr_GE_LLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5076,12 +5076,12 @@ void Instr_GE_LLDD(Instruction *i) {
 void Instr_GE_LLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5096,12 +5096,12 @@ void Instr_GE_LLBB(Instruction *i) {
 void Instr_GE_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5118,12 +5118,12 @@ void Instr_GE_LLSS(Instruction *i) {
 void Instr_GE_LGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5138,12 +5138,12 @@ void Instr_GE_LGII(Instruction *i) {
 void Instr_GE_LGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5158,12 +5158,12 @@ void Instr_GE_LGDD(Instruction *i) {
 void Instr_GE_LGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5178,12 +5178,12 @@ void Instr_GE_LGBB(Instruction *i) {
 void Instr_GE_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5200,7 +5200,7 @@ void Instr_GE_LGSS(Instruction *i) {
 void Instr_GE_GCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5215,7 +5215,7 @@ void Instr_GE_GCII(Instruction *i) {
 void Instr_GE_GCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5230,7 +5230,7 @@ void Instr_GE_GCDD(Instruction *i) {
 void Instr_GE_GCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5245,7 +5245,7 @@ void Instr_GE_GCBB(Instruction *i) {
 void Instr_GE_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5262,12 +5262,12 @@ void Instr_GE_GCSS(Instruction *i) {
 void Instr_GE_GLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5282,12 +5282,12 @@ void Instr_GE_GLII(Instruction *i) {
 void Instr_GE_GLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5302,12 +5302,12 @@ void Instr_GE_GLDD(Instruction *i) {
 void Instr_GE_GLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5322,12 +5322,12 @@ void Instr_GE_GLBB(Instruction *i) {
 void Instr_GE_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5344,12 +5344,12 @@ void Instr_GE_GLSS(Instruction *i) {
 void Instr_GE_GGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5364,12 +5364,12 @@ void Instr_GE_GGII(Instruction *i) {
 void Instr_GE_GGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5384,12 +5384,12 @@ void Instr_GE_GGDD(Instruction *i) {
 void Instr_GE_GGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5404,12 +5404,12 @@ void Instr_GE_GGBB(Instruction *i) {
 void Instr_GE_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5426,7 +5426,7 @@ void Instr_GE_GGSS(Instruction *i) {
 void Instr_EQ_CLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLII
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5441,7 +5441,7 @@ void Instr_EQ_CLII(Instruction *i) {
 void Instr_EQ_CLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDD
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5456,7 +5456,7 @@ void Instr_EQ_CLDD(Instruction *i) {
 void Instr_EQ_CLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLBB
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5471,7 +5471,7 @@ void Instr_EQ_CLBB(Instruction *i) {
 void Instr_EQ_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5488,7 +5488,7 @@ void Instr_EQ_CLSS(Instruction *i) {
 void Instr_EQ_CGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGII
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5503,7 +5503,7 @@ void Instr_EQ_CGII(Instruction *i) {
 void Instr_EQ_CGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDD
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5518,7 +5518,7 @@ void Instr_EQ_CGDD(Instruction *i) {
 void Instr_EQ_CGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGBB
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5533,7 +5533,7 @@ void Instr_EQ_CGBB(Instruction *i) {
 void Instr_EQ_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5550,7 +5550,7 @@ void Instr_EQ_CGSS(Instruction *i) {
 void Instr_EQ_LCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5565,7 +5565,7 @@ void Instr_EQ_LCII(Instruction *i) {
 void Instr_EQ_LCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5580,7 +5580,7 @@ void Instr_EQ_LCDD(Instruction *i) {
 void Instr_EQ_LCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5595,7 +5595,7 @@ void Instr_EQ_LCBB(Instruction *i) {
 void Instr_EQ_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5612,12 +5612,12 @@ void Instr_EQ_LCSS(Instruction *i) {
 void Instr_EQ_LLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5632,12 +5632,12 @@ void Instr_EQ_LLII(Instruction *i) {
 void Instr_EQ_LLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5652,12 +5652,12 @@ void Instr_EQ_LLDD(Instruction *i) {
 void Instr_EQ_LLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5672,12 +5672,12 @@ void Instr_EQ_LLBB(Instruction *i) {
 void Instr_EQ_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5694,12 +5694,12 @@ void Instr_EQ_LLSS(Instruction *i) {
 void Instr_EQ_LGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5714,12 +5714,12 @@ void Instr_EQ_LGII(Instruction *i) {
 void Instr_EQ_LGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5734,12 +5734,12 @@ void Instr_EQ_LGDD(Instruction *i) {
 void Instr_EQ_LGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5754,12 +5754,12 @@ void Instr_EQ_LGBB(Instruction *i) {
 void Instr_EQ_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5776,7 +5776,7 @@ void Instr_EQ_LGSS(Instruction *i) {
 void Instr_EQ_GCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5791,7 +5791,7 @@ void Instr_EQ_GCII(Instruction *i) {
 void Instr_EQ_GCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5806,7 +5806,7 @@ void Instr_EQ_GCDD(Instruction *i) {
 void Instr_EQ_GCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5821,7 +5821,7 @@ void Instr_EQ_GCBB(Instruction *i) {
 void Instr_EQ_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5838,12 +5838,12 @@ void Instr_EQ_GCSS(Instruction *i) {
 void Instr_EQ_GLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5858,12 +5858,12 @@ void Instr_EQ_GLII(Instruction *i) {
 void Instr_EQ_GLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5878,12 +5878,12 @@ void Instr_EQ_GLDD(Instruction *i) {
 void Instr_EQ_GLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5898,12 +5898,12 @@ void Instr_EQ_GLBB(Instruction *i) {
 void Instr_EQ_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5920,12 +5920,12 @@ void Instr_EQ_GLSS(Instruction *i) {
 void Instr_EQ_GGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5940,12 +5940,12 @@ void Instr_EQ_GGII(Instruction *i) {
 void Instr_EQ_GGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5960,12 +5960,12 @@ void Instr_EQ_GGDD(Instruction *i) {
 void Instr_EQ_GGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -5980,12 +5980,12 @@ void Instr_EQ_GGBB(Instruction *i) {
 void Instr_EQ_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6002,7 +6002,7 @@ void Instr_EQ_GGSS(Instruction *i) {
 void Instr_NE_CLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLII
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6017,7 +6017,7 @@ void Instr_NE_CLII(Instruction *i) {
 void Instr_NE_CLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLDD
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6032,7 +6032,7 @@ void Instr_NE_CLDD(Instruction *i) {
 void Instr_NE_CLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLBB
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6047,7 +6047,7 @@ void Instr_NE_CLBB(Instruction *i) {
 void Instr_NE_CLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CLSS
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6064,7 +6064,7 @@ void Instr_NE_CLSS(Instruction *i) {
 void Instr_NE_CGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGII
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6079,7 +6079,7 @@ void Instr_NE_CGII(Instruction *i) {
 void Instr_NE_CGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGDD
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6094,7 +6094,7 @@ void Instr_NE_CGDD(Instruction *i) {
 void Instr_NE_CGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGBB
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6109,7 +6109,7 @@ void Instr_NE_CGBB(Instruction *i) {
 void Instr_NE_CGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//CGSS
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6126,7 +6126,7 @@ void Instr_NE_CGSS(Instruction *i) {
 void Instr_NE_LCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6141,7 +6141,7 @@ void Instr_NE_LCII(Instruction *i) {
 void Instr_NE_LCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6156,7 +6156,7 @@ void Instr_NE_LCDD(Instruction *i) {
 void Instr_NE_LCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6171,7 +6171,7 @@ void Instr_NE_LCBB(Instruction *i) {
 void Instr_NE_LCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LCSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6188,12 +6188,12 @@ void Instr_NE_LCSS(Instruction *i) {
 void Instr_NE_LLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6208,12 +6208,12 @@ void Instr_NE_LLII(Instruction *i) {
 void Instr_NE_LLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6228,12 +6228,12 @@ void Instr_NE_LLDD(Instruction *i) {
 void Instr_NE_LLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6248,12 +6248,12 @@ void Instr_NE_LLBB(Instruction *i) {
 void Instr_NE_LLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LLSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6270,12 +6270,12 @@ void Instr_NE_LLSS(Instruction *i) {
 void Instr_NE_LGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGII
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6290,12 +6290,12 @@ void Instr_NE_LGII(Instruction *i) {
 void Instr_NE_LGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGDD
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6310,12 +6310,12 @@ void Instr_NE_LGDD(Instruction *i) {
 void Instr_NE_LGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGBB
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6330,12 +6330,12 @@ void Instr_NE_LGBB(Instruction *i) {
 void Instr_NE_LGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//LGSS
-	if(i->src_1.initialized == false) {
+	if(local_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6352,7 +6352,7 @@ void Instr_NE_LGSS(Instruction *i) {
 void Instr_NE_GCII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6367,7 +6367,7 @@ void Instr_NE_GCII(Instruction *i) {
 void Instr_NE_GCDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6382,7 +6382,7 @@ void Instr_NE_GCDD(Instruction *i) {
 void Instr_NE_GCBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6397,7 +6397,7 @@ void Instr_NE_GCBB(Instruction *i) {
 void Instr_NE_GCSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GCSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6414,12 +6414,12 @@ void Instr_NE_GCSS(Instruction *i) {
 void Instr_NE_GLII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6434,12 +6434,12 @@ void Instr_NE_GLII(Instruction *i) {
 void Instr_NE_GLDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6454,12 +6454,12 @@ void Instr_NE_GLDD(Instruction *i) {
 void Instr_NE_GLBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6474,12 +6474,12 @@ void Instr_NE_GLBB(Instruction *i) {
 void Instr_NE_GLSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GLSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(local_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6496,12 +6496,12 @@ void Instr_NE_GLSS(Instruction *i) {
 void Instr_NE_GGII(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGII
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6516,12 +6516,12 @@ void Instr_NE_GGII(Instruction *i) {
 void Instr_NE_GGDD(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGDD
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6536,12 +6536,12 @@ void Instr_NE_GGDD(Instruction *i) {
 void Instr_NE_GGBB(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGBB
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
@@ -6556,12 +6556,12 @@ void Instr_NE_GGBB(Instruction *i) {
 void Instr_NE_GGSS(Instruction *i) {
 	extract_data() // Macro for unrolling pointers
 	//GGSS
-	if(i->src_1.initialized == false) {
+	if(global_src1->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
 	}
-	if(i->src_2.initialized == false) {
+	if(global_src2->initialized == false) {
 		setError(ERR_UnitializedAccess);
 		die();
 		return;
