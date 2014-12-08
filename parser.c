@@ -28,11 +28,7 @@ void parse(TokenVector *tokvect)
 
 	program();
 	if(!getError())
-	{
-
-
 		generateInstruction(HALT,&a,&b);
-	}
 	// Cleanup
 
 	FreeContext(mainContext);
@@ -822,6 +818,13 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 				//@todo Adresss Vector
 				funcSymbol->stateFunc = FS_Defined;
 
+				uint64_t *address = uint64_tVectorFirst(funcSymbol->adressVector);
+				for (uint64_t i = 0; i < funcSymbol->adressVector->used; i++)
+				{
+					Instruction *instr = InstructionVectorAt(tape, *address);
+					instr->dst.offset = tape->used - 1;
+				}
+				uint64_tVectorFree(funcSymbol->adressVector);
 			}
 		}
 		else
