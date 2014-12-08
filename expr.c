@@ -220,7 +220,10 @@ DataType expr()
 	bool end_of_eval = true;
 	return_value_data_type = EXPR_ERROR;
 	//assert(activeContext);
-	MY_OFFSET = activeContext->locCount + 2;
+	if (activeContext == mainContext)
+		MY_OFFSET = activeContext->locCount;
+	else
+		MY_OFFSET = activeContext->locCount + 2;
 
 	token++;
 

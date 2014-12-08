@@ -7,6 +7,6 @@ begin
     b1 := tRuE;
     b2 := FaLsE;
 
-    write(b1,'  ', b2,'  ',c1)
+    write(b1, b2,c1)
 
 end.
