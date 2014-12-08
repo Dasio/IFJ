@@ -249,7 +249,7 @@ void dumpTape() {
 		fprintf(stderr, "%d", inst->dst.sp_inc);
 		fprintf(stderr, "\n");
 	}
-	fprintf(stderr, "TAPE DUMP OVER ========\n");
+	fprintf(stderr, "TAPE DUMP OVER === IP: %lu ==\n", IP);
 }
 
 void runInterpretation() {
