@@ -46,7 +46,7 @@ instructions = {
 	mul: /[CLG][CLG][ID][ID]/,
 	div: /[CLG][CLG][ID][ID]/,
 	and: /[CLG][CLG]BB/,
-	add: /[CLG][CLG]([ID][ID]|SS)/,
+	add: /[CLG][CLG](II|DD|ID|DI|SS)/,
 	sub: /[CLG][CLG][ID][ID]/,
 	or:  /[CLG][CLG]BB/,
 	xor: /[CLG][CLG]BB/,
@@ -132,24 +132,62 @@ instructions.each do |name, regex|
 	prototypes[name].each do |proto|
 		function_name = "Instr_#{name.upcase}_#{proto}"
 
-		# Neg/Not exception
-		if (name == :neg && proto !~ /[LG]x[ID]x/) || (name == :not && proto !~ /[LG]x[B]x/)
-			if proto =~ /x/
-				next
-			end
-			id = instruction_codes[name] << 8 |
-			 conversion[:var_type][proto[0]] << 6 |
-		     conversion[:var_type][proto[1]] << 4 |
-		     conversion[:data_type][proto[2]] << 2 |
-		     conversion[:data_type][proto[3]]
+		# # Neg/Not exception
+		# if name == :neg || name == :not
 
-		    proto_orig = proto.dup
-		    proto[1] = "x"
-		    proto[3] = "x"
-		    function_name = "Instr_#{name.upcase}_#{proto} /* #{proto_orig} */"
-		    func_table[id] = function_name
-		    next
+		# 	if proto !~ /x/
+		# 		id = instruction_codes[name] << 8 |
+		# 		 conversion[:var_type][proto[0]] << 6 |
+		# 	     conversion[:var_type][proto[1]] << 4 |
+		# 	     conversion[:data_type][proto[2]] << 2 |
+		# 	     conversion[:data_type][proto[3]]
+
+		# 	    proto_orig = proto.dup
+		# 	    proto[1] = "x"
+		# 	    proto[3] = "x"
+		# 	    function_name = "Instr_#{name.upcase}_#{proto} /* #{proto_orig} */"
+		# 	    func_table[id] = function_name
+		# 	end
+
+		# else
+		# 	# if proto =~ /x/
+		# 	# 	next
+		# 	# end
+		# end
+		if name == :neg || name == :not
+		 	if not (proto[1] == "x" && proto[3] == "x")
+		 		next if proto =~ /x/
+
+				id = instruction_codes[name] << 8 |
+					 conversion[:var_type][proto[0]] << 6 |
+				     conversion[:var_type][proto[1]] << 4 |
+				     conversion[:data_type][proto[2]] << 2 |
+				     conversion[:data_type][proto[3]]
+				puts "#{proto} - #{id}"
+
+				func_table[id] = function_name
+
+		 		next
+		 	end
 		end
+
+		# if (name == :neg && proto !~ /[LG]x[ID]x/) || (name == :not && proto !~ /[LG]x[B]x/)
+		# 	if proto =~ /x/
+		# 		next
+		# 	end
+		# 	id = instruction_codes[name] << 8 |
+		# 	 conversion[:var_type][proto[0]] << 6 |
+		#      conversion[:var_type][proto[1]] << 4 |
+		#      conversion[:data_type][proto[2]] << 2 |
+		#      conversion[:data_type][proto[3]]
+
+		#     proto_orig = proto.dup
+		#     proto[1] = "x"
+		#     proto[3] = "x"
+		#     function_name = "Instr_#{name.upcase}_#{proto} /* #{proto_orig} */"
+		#     func_table[id] = function_name
+		#     next
+		# end
 
 
 		implemented = false
@@ -373,6 +411,10 @@ c.puts '
 	c.puts "const InstrFuncPtr instruction_table[#{func_size+1}] = {"
 
 	func_table.each_with_index do |(key,value),index|
+		if value =~ /NEG/ || value =~ /NOT/
+			value[-1] = "x"
+			value[-3] = "x"
+		end
 		c.puts "	[#{key}] = #{value},"
 	end
 
@@ -390,6 +432,8 @@ c.puts '
 		Instr_MOV_GS Instr_MOV_GD Instr_MOV_GI Instr_MOV_GB
 		Instr_PUSH_C Instr_PUSH_LS Instr_PUSH_LD Instr_PUSH_LI Instr_PUSH_LB
 		Instr_PUSH_GS Instr_PUSH_GD Instr_PUSH_GI Instr_PUSH_GB
+		Instr_PUSHX_LS Instr_PUSHX_LD Instr_PUSHX_LI Instr_PUSHX_LB
+		Instr_PUSHX_GS Instr_PUSHX_GD Instr_PUSHX_GI Instr_PUSHX_GB
 		Instr_CALL Instr_CALL_LENGTH Instr_CALL_COPY Instr_CALL_FIND Instr_CALL_SORT
 		Instr_JMP_T Instr_JMP_F Instr_JMP Instr_HALT)
 	regular_instructions.each do |i|
