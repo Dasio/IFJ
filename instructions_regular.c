@@ -742,12 +742,35 @@ void Instr_CALL_COPY(Instruction *i) {
 void Instr_CALL_FIND(Instruction *i) {
 
 	(void) i;	// dummy conversion
+	StackData *op = vectorAt(stack.vect, stack.SP);
+	String *s = op->str;
+	String *string = (--op)->str;
+	int n = FindString(s,string);
+
+	(--op)->int_ = n;
+
+	stack.SP -= 2;
+
 }
 
 // CALL_SORT
 void Instr_CALL_SORT(Instruction *i) {
 
 	(void) i;	// dummy conversion
+	StackData *op = vectorAt(stack.vect, stack.SP);
+	String *s = op->str;
+	String *str = mem_alloc(sizeof(String));
+	*str = initStringSize(s->length);
+	// Make copy
+	memcpy(str->data,s->data,s->length);
+	QuickSort(str);
+
+	mem_ptradd(str->data);
+	(--op)->str = str;
+	op->initialized = true;
+
+	stack.SP--;
+
 }
 
 
