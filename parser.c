@@ -25,6 +25,7 @@ void parse(TokenVector *tokvect)
 	token = TokenVectorFirst(tokenVector);
 	addBuiltInFunctions();
 	mainOffset = 1;
+	generateInstruction(HALT,&a,&b);
 
 	program();
 	if(!getError())
