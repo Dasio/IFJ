@@ -29,7 +29,6 @@ static inline void find_top_most_term(ExprTokenVector *expr_token_vector);
 static inline int index_handle_start(ExprTokenVector *expr_token_vector);
 static inline bool check_id_function(Symbol *identifier);
 static inline bool check_unary_minus(ExprTokenVector *expr_vector);
-static inline void print_type_table(int operator);
 void ExprTokenVectorPrint(ExprTokenVector *expr_token);
 void ExprTokenPrint(ExprToken *expr_token);
 
@@ -826,7 +825,7 @@ static inline void reduce_handle_function(THandle handle)
 	Context *context = id->funCont;
 	return_value_data_type = (DataType) context->returnType;
 
-	for (uint32_t i = 0; i < context->argCount; i++) // check arguments
+	for (int32_t i = 0; i < context->argCount; i++) // check arguments
 	{
 		if (temp->E.data_type != context->arg[i]->type)
 		{
@@ -856,7 +855,7 @@ static inline void reduce_handle_function(THandle handle)
 
 	if (id->index >= 0)	 // normal functions
 	{
-		for (uint32_t i = 0; i < context->argCount; i++) // push arguments in reversed order
+		for (int32_t i = 0; i < context->argCount; i++) // push arguments in reversed order
 		{
 			temp--;
 
@@ -871,7 +870,7 @@ static inline void reduce_handle_function(THandle handle)
 	}
 	else // built-in functions
 	{
-		for (uint32_t i = 0; i < context->argCount; i++) // push arguments in reversed order
+		for (int32_t i = 0; i < context->argCount; i++) // push arguments in reversed order
 		{
 			temp--;
 
@@ -1080,19 +1079,6 @@ static inline bool check_unary_minus(ExprTokenVector *expr_vector)
 
 	return true;
 }
-
-static inline void print_type_table(int operator)
-{
-	for (int i = 0; i < 4; i++)
-	{
-		for (int x = 0; x < 4; x++)
-		{
-			printf("%d ", type_table[operator][i][x]);
-		}
-		printf("\n");
-	}
-}
-
 
 void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector)
 {

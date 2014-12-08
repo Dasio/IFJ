@@ -9,7 +9,7 @@ extern int instr_counter;
 /**
  * Pointer to instruction tape at beginning
  */
-uint64_t IP = 0;
+int64_t IP = 0;
 
 Stack stack = {.SP = -1, .BP = 0};
 
@@ -261,6 +261,8 @@ void runInterpretation() {
 	while(true) {
 		Instruction *i = first + IP;
 		(i->instr)(i);
+		//printf("%s\n", stringifyInstructionPtr(i->instr));
+		//dumpStack();
 		IP++;
 	}
 }

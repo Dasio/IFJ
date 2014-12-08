@@ -12,7 +12,7 @@ Scanner scannerMain;
 
 extern void *mem_alloc(size_t len);
 extern Stack stack;
-extern uint64_t IP;
+extern int64_t IP;
 
 static StackData operand;
 static StackData empty = { .initialized=false };

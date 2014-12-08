@@ -7,13 +7,13 @@ Context *funcContext;
 Context *activeContext;
 Symbol *funcSymbol;
 extern InstructionVector *tape;
-extern uint64_t IP;
+extern int64_t IP;
 static int64_t mainOffset;
 static int64_t funcOffset;
 static int64_t *activeOffset;
 static Operand a,b;
 uint8_t inGST = 0;
-uint32_t argIndex;
+int32_t argIndex;
 
 void parse(TokenVector *tokvect)
 {
@@ -442,7 +442,7 @@ void compound_stmt(uint8_t semicolon)
 		b.var_type = CONST;
 		b.initialized = false;
 		b.data_type = STRING; //doesnt matter
-		for(uint32_t i=0;i<mainContext->locCount;i++)
+		for(int32_t i=0;i<mainContext->locCount;i++)
 		{
 			a.offset = (*activeOffset)++;
 			generateInstruction(PUSH,&a,&b);
@@ -880,7 +880,7 @@ void checkFuncDefinitions()
 {
 	SymbolList *item;
 	SymbolList **table = mainContext->locTable;
-	for(uint32_t index = 0; index<mainContext->locSize; index++)
+	for(int32_t index = 0; index<mainContext->locSize; index++)
 	{
 		item = table[index];
 		for(; item != NULL; item=item->next)

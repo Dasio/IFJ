@@ -18,8 +18,8 @@
 
 	typedef struct
 	{
-		uint64_t SP;
-		uint64_t BP;
+		int64_t SP;
+		int64_t BP;
 		StackDataVector *vect;
 	} Stack;
 

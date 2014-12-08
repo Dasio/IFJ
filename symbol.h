@@ -39,13 +39,13 @@ typedef struct
 {
 	Symbol **arg; /**< array of arguments, points to symbol in Hash */
 	//Symbol *ret_value; /**< pointer to symbol with return value of function */
-	uint32_t argCount;
-	uint32_t argMax;
+	int32_t argCount;
+	int32_t argMax;
 
 	SymbolList **locTable;	/**< Hash of all symbols in this Context */
-	uint32_t locSize;	/**< size of HashTable */
-	uint32_t locCount;	/**< number of LOCAL/GLOBAL variables */
-	uint32_t instrucIndex; /**< index of start in Instruction Tape */
+	int32_t locSize;	/**< size of HashTable */
+	int32_t locCount;	/**< number of LOCAL/GLOBAL variables */
+	int32_t instrucIndex; /**< index of start in Instruction Tape */
 	SymbolType returnType; /**< Type of return value */
 }Context;
 

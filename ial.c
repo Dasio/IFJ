@@ -175,7 +175,7 @@ bool ResizeHashTable(Context *funCont, uint32_t NewSize)
 	SymbolList *item;
 	uint32_t x;
 
-	for (uint32_t i = 0; i < funCont->locSize; ++i)
+	for (int32_t i = 0; i < funCont->locSize; ++i)
 	{
 		item = funCont->locTable[i];
 		for(; item != NULL; item=item->next)
@@ -199,7 +199,7 @@ void ContextLocTableFree(Context *t)
 	if (t->locTable == NULL) return;
 	SymbolList *item = NULL;
 	SymbolList *temp = NULL;
-	for (unsigned long i = 0; i < t->locSize; i++)
+	for (int32_t i = 0; i < t->locSize; i++)
 	{
 		if (t->locTable[i]==NULL)
 			continue;
