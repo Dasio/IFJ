@@ -24,9 +24,9 @@ void parse(TokenVector *tokvect)
 	token = TokenVectorFirst(tokenVector);
 	addBuiltInFunctions();
 	a.sp_inc = 1;
-	a.offset=(*activeOffset)++;
+	a.offset=0;
 	b.initialized = 0;
-	b.var_type = LOCAL;
+	b.var_type = CONST;
 	generateInstruction(PUSH, &a, &b);
 
 	program();
