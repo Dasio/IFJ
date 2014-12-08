@@ -680,20 +680,21 @@ uint8_t if_n(Instruction *if1, Instruction *if2)
 
 	if(token->type != TT_keyword || token->keyword_token != Key_else)
 	{
-		if1->dst.offset = tape->used;
 		InstructionVectorPop(tape);
+		if1->dst.offset = tape->used - 1;
 		return 1;
 	}
 	// keyword 'else' loaded
 	token++;
 	// update instruction if1 with vectorsize+1
-	if1->dst.offset = tape->used;
+
+	if1->dst.offset = tape->used - 1;
 	// Compound_stmt expect loaded next token
 	compound_stmt(0);
 	// update instruction if2 with vectorsize+1
 	if(getError())
 		return 0;
-	if2->dst.offset = tape->used;
+	if2->dst.offset = tape->used - 1;
 	return 0;
 }
 
