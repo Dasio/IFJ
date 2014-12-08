@@ -238,6 +238,11 @@ void Instr_WRITE(Instruction *i) {
 		switch(op->var_type)
 		{
 			case LOCAL:
+				if(vectorAt(stack.vect, stack.BP + op->offset)->initialized == false) {
+					setError(ERR_UnitializedAccess);
+					die();
+					return;
+				}
 				switch(op->data_type)
 				{
 					case STRING:
@@ -257,6 +262,11 @@ void Instr_WRITE(Instruction *i) {
 				}
 				break;
 			case GLOBAL:
+				if(vectorAt(stack.vect, op->offset)->initialized == false) {
+					setError(ERR_UnitializedAccess);
+					die();
+					return;
+				}
 				switch(op->data_type)
 				{
 					case STRING:
@@ -530,9 +540,19 @@ void Instr_CALL_COPY() {
 	switch(op->var_type)
 	{
 		case LOCAL:
+			if(vectorAt(stack.vect, stack.BP + op->offset)->initialized == false) {
+				setError(ERR_UnitializedAccess);
+				die();
+				return;
+			}
 			s = vectorAt(stack.vect, stack.BP + op->offset)->str;
 			break;
 		case GLOBAL:
+			if(vectorAt(stack.vect, op->offset)->initialized == false) {
+				setError(ERR_UnitializedAccess);
+				die();
+				return;
+			}
 			s = vectorAt(stack.vect, op->offset)->str;
 			break;
 		case CONST:
@@ -545,9 +565,19 @@ void Instr_CALL_COPY() {
 	switch((--op)->var_type)
 	{
 		case LOCAL:
+			if(vectorAt(stack.vect, stack.BP + op->offset)->initialized == false) {
+				setError(ERR_UnitializedAccess);
+				die();
+				return;
+			}
 			pos = vectorAt(stack.vect, stack.BP + op->offset)->int_;
 			break;
 		case GLOBAL:
+			if(vectorAt(stack.vect, op->offset)->initialized == false) {
+				setError(ERR_UnitializedAccess);
+				die();
+				return;
+			}
 			pos = vectorAt(stack.vect, op->offset)->int_;
 			break;
 		case CONST:
@@ -560,9 +590,19 @@ void Instr_CALL_COPY() {
 	switch((--op)->var_type)
 	{
 		case LOCAL:
+			if(vectorAt(stack.vect, stack.BP + op->offset)->initialized == false) {
+				setError(ERR_UnitializedAccess);
+				die();
+				return;
+			}
 			n = vectorAt(stack.vect, stack.BP + op->offset)->int_;
 			break;
 		case GLOBAL:
+			if(vectorAt(stack.vect, op->offset)->initialized == false) {
+				setError(ERR_UnitializedAccess);
+				die();
+				return;
+			}
 			n = vectorAt(stack.vect, op->offset)->int_;
 			break;
 		case CONST:

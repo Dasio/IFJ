@@ -44,7 +44,7 @@ typedef struct
 
 	SymbolList **locTable;	/**< Hash of all symbols in this Context */
 	uint32_t locSize;	/**< size of HashTable */
-	uint32_t locCount;	/**< number of LOCAL variables */
+	uint32_t locCount;	/**< number of LOCAL/GLOBAL variables */
 	uint32_t instrucIndex; /**< index of start in Instruction Tape */
 	SymbolType returnType; /**< Type of return value */
 }Context;
