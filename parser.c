@@ -7,6 +7,7 @@ Context *funcContext;
 Context *activeContext;
 Symbol *funcSymbol;
 extern InstructionVector *tape;
+extern uint64_t IP;
 static int64_t mainOffset;
 static int64_t funcOffset;
 static int64_t *activeOffset;
@@ -23,17 +24,15 @@ void parse(TokenVector *tokvect)
 	activeOffset = &mainOffset;
 	token = TokenVectorFirst(tokenVector);
 	addBuiltInFunctions();
-	a.sp_inc = 1;
-	a.offset=0;
-	b.initialized = 0;
-	b.var_type = CONST;
-	//fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
-	generateInstruction(PUSH, &a, &b);
 	mainOffset = 1;
 
 	program();
 	if(!getError())
+	{
+
+
 		generateInstruction(HALT,&a,&b);
+	}
 	// Cleanup
 
 	FreeContext(mainContext);
@@ -128,17 +127,7 @@ void var_def(uint8_t next)
 	}
 	// Add variable to symbol table
 	SymbolAdd(activeContext, symbolType, name, NULL, NULL);
-	// Global
-	if(activeContext == mainContext)
-	{
-		a.sp_inc = 1;
-		a.offset = (*activeOffset)++;
-		b.var_type = CONST;
-		b.initialized = false;
-		b.data_type = STRING; //doesnt matter
-		//fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
-		generateInstruction(PUSH,&a,&b);
-	}
+
 	if(getError())
 		return;
 	var_def(1);
@@ -440,6 +429,25 @@ void compound_stmt(uint8_t semicolon)
 		setError(ERR_Syntax);
 		return;
 	}
+	if(activeContext == mainContext)
+	{
+		IP = tape->used;
+		a.sp_inc = 1;
+		a.offset = 0;
+		b.initialized = 0;
+		b.var_type = CONST;
+		generateInstruction(PUSH, &a, &b);
+
+		a.sp_inc = 1;
+		b.var_type = CONST;
+		b.initialized = false;
+		b.data_type = STRING; //doesnt matter
+		for(uint32_t i=0;i<mainContext->locCount;i++)
+		{
+			a.offset = (*activeOffset)++;
+			generateInstruction(PUSH,&a,&b);
+		}
+	}
 	stmt_empty();
 	if(getError())
 		return;
@@ -501,7 +509,7 @@ uint8_t stmt(uint8_t empty)
 	Symbol *id = NULL;
 	DataType exprType;
 	Instruction *instruction;
-	uint32_t repeat1;
+	uint64_t repeat1;
 	// IF wasnt called from stmt_empty(), need to load next token
 	if(!empty) token++;
 	switch(token->type)
@@ -609,7 +617,7 @@ uint8_t stmt(uint8_t empty)
 					break;
 				case Key_repeat:
 					// save vectorsize = repeat1
-					repeat1 = tape->used;
+					repeat1 = tape->used - 1;
 					stmt(0);
 					if(getError())
 						return 0;
