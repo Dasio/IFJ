@@ -926,8 +926,8 @@ void addBuiltInFunctions()
 
 	// find(s : string; search : string) : integer
 	funcContext = InitContext();
-	symbol->index = -3;
 	symbol = SymbolAdd(mainContext, T_FunPointer, "find", funcContext, NULL);
+	symbol->index = -3;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_int;
 	SymbolAdd(funcContext, T_int, "find", NULL, NULL);
