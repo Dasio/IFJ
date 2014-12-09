@@ -827,13 +827,13 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 				//@todo Adresss Vector
 				funcSymbol->stateFunc = FS_Defined;
 
-				uint64_t *address = uint64_tVectorFirst(funcSymbol->adressVector);
-				for (uint64_t i = 0; i < funcSymbol->adressVector->used; i++)
+				int64_t *address = int64_tVectorFirst(funcSymbol->adressVector);
+				for (int64_t i = 0; i < funcSymbol->adressVector->used; i++)
 				{
 					Instruction *instr = InstructionVectorAt(tape, *address);
 					instr->dst.offset = tape->used - 1;
 				}
-				uint64_tVectorFree(funcSymbol->adressVector);
+				int64_tVectorFree(funcSymbol->adressVector);
 			}
 		}
 		else
@@ -847,7 +847,7 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 		return;
 	if(funcState == FS_Declared)
 	{
-		funcSymbol->adressVector = uint64_tVectorInit(256);
+		funcSymbol->adressVector = int64_tVectorInit(256);
 	}
 	returnSymbol->type = returnType;
 	funcContext->returnType = returnType;

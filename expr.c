@@ -887,7 +887,7 @@ static inline void reduce_handle_function(THandle handle)
 	a.offset = id->index;
 
 	if (id->stateFunc == FS_Declared)
-		uint64_tVectorAppend(id->adressVector, tape->used);
+		int64_tVectorAppend(id->adressVector, tape->used);
 
 	// generate CALL instruction
 	switch (a.offset)
@@ -1086,7 +1086,7 @@ void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector)
 	//printf("\n");
 	ExprToken *expr_token = NULL;
 
-	for (uint32_t i = 0; i < expr_token_vector->used; i++)
+	for (int64_t i = 0; i < expr_token_vector->used; i++)
 	{
 		expr_token = ExprTokenVectorAt(expr_token_vector, i);
 		if (expr_token->type == NONTERM)

@@ -2,5 +2,5 @@
 
 GenVectorFunctions(int)
 GenVectorFunctionsValues(int)
-GenVectorFunctions(uint64_t)
-GenVectorFunctionsValues(uint64_t)
+GenVectorFunctions(int64_t)
+GenVectorFunctionsValues(int64_t)

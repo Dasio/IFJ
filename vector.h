@@ -45,10 +45,10 @@ ____ == type of vector
 
 struct Vector{
 	/** Allocated elements, including uninitialized */
-	uint64_t capacity;
+	int64_t capacity;
 
 	/** Used elements */
-	uint64_t used;
+	int64_t used;
 
 	/** Pointer to beginning of array */
 	void *array;
@@ -62,7 +62,7 @@ struct Vector{
 	/** Initialized vector with initial_size*/					\
 	/** if zero, uses default (8) */							\
 	/** error if malloc failed: return NULL */ 					\
-	type##Vector * type##VectorInit(uint32_t initial_size); 	\
+	type##Vector * type##VectorInit(int64_t initial_size); 	\
 	\
 	/** Add Value to end of vector - ERR_Allocation */			\
 	/** error if realloc failed: return 0 */					\
@@ -70,7 +70,7 @@ struct Vector{
 	\
 	/** Reserve space in Vector */								\
 	/** error if malloc failed: return 0 */						\
-	bool type##VectorPushMore(type##Vector *Vect, uint32_t);	\
+	bool type##VectorPushMore(type##Vector *Vect, int64_t);	\
 	\
 	/** Return pointer to POP Value */							\
 	/** error if empty: return NULL */							\
@@ -78,15 +78,15 @@ struct Vector{
 	\
 	/** delete more items */									\
 	/** error if not enought values: return NULL & set error */	\
-	type *type##VectorPopMore(type##Vector *Vect, uint32_t);	\
+	type *type##VectorPopMore(type##Vector *Vect, int64_t);	\
 	\
 	/** delete more items */									\
 	/** error if not enought values: return NULL */				\
-	void type##VectorAtSet(type##Vector *Vect, uint32_t, type);	\
+	void type##VectorAtSet(type##Vector *Vect, int64_t, type);	\
 	\
 	/** delete more items */									\
 	/** error if not enought values: return NULL */				\
-	type *type##VectorAt(type##Vector *Vect, uint32_t);			\
+	type *type##VectorAt(type##Vector *Vect, int64_t);			\
 	\
 	/** Return pointer to first Value */						\
 	/** error if empty: return NULL */							\
@@ -105,7 +105,7 @@ struct Vector{
 	\
 	/** Return index Value */									\
 	/** error if empty: return 0 + setError */					\
-	type type##VectorAtValue(type##Vector *Vect, uint32_t);		\
+	type type##VectorAtValue(type##Vector *Vect, int64_t);		\
 	\
 	/** Return last Value */									\
 	/** error if empty: return 0 + setError */					\
@@ -135,7 +135,7 @@ struct Vector{
  *
  */
 #define GenVectorFunctions(type) 											\
-	type##Vector * type##VectorInit(uint32_t initial_size) {				\
+	type##Vector * type##VectorInit(int64_t initial_size) {					\
 		if(initial_size == 0)												\
 			initial_size = VECTOR_DEFAULT_SIZE;								\
 		type##Vector *Vect = malloc(sizeof(type##Vector));					\
@@ -166,7 +166,7 @@ struct Vector{
 		Vect->used++;														\
 		return 1;															\
 	}																		\
-	bool type##VectorPushMore(type##Vector *Vect, uint32_t number) {		\
+	bool type##VectorPushMore(type##Vector *Vect, int64_t number) {		\
 		while(Vect->capacity < Vect->used+number)							\
 		{																	\
 			Vect->capacity *= 2;												\
@@ -183,12 +183,12 @@ struct Vector{
 		Vect->used--; /* Mark last value as invalid and return its address*/\
 		return (type*)Vect->array + Vect->used;								\
 	}																		\
-	type *type##VectorPopMore(type##Vector *Vect, uint32_t number) {		\
+	type *type##VectorPopMore(type##Vector *Vect, int64_t number) {		\
 		if(Vect->used < number) { setError(ERR_OutOfRange) return NULL; }				\
 		Vect->used -= number; /* Mark last X value as invalid and return last address*/ \
 		return (type*)Vect->array + Vect->used;											\
 	}																			\
-	void type##VectorAtSet(type##Vector *Vect, uint32_t index, type value) {	\
+	void type##VectorAtSet(type##Vector *Vect, int64_t index, type value) {	\
 		if(index >= Vect->used)													\
 		{																	\
 			if(index >= Vect->capacity)										\
@@ -203,7 +203,7 @@ struct Vector{
 		tmp = (type*)Vect->array + index;									\
 		*tmp = value;														\
 	}																		\
-	type *type##VectorAt(type##Vector *Vect, uint32_t index) {				\
+	type *type##VectorAt(type##Vector *Vect, int64_t index) {				\
 		if(index >= Vect->used) return NULL;								\
 		return (type*)Vect->array + index;									\
 	}																		\
@@ -234,7 +234,7 @@ struct Vector{
 		type *r = (type*)Vect->array + Vect->used;							\
 		return *r;															\
 	}																		\
-	type type##VectorAtValue(type##Vector *Vect, uint32_t index) {			\
+	type type##VectorAtValue(type##Vector *Vect, int64_t index) {			\
 		if(index >= Vect->used)												\
 		{																	\
 			setError(ERR_OutOfRange);										\
@@ -264,7 +264,7 @@ struct Vector{
 
 GenVectorPrototypes(int)
 GenVectorPrototypesValues(int)
-GenVectorPrototypes(uint64_t)
-GenVectorPrototypesValues(uint64_t)
+GenVectorPrototypes(int64_t)
+GenVectorPrototypesValues(int64_t)
 
 #endif // VECTOR_H
