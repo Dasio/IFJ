@@ -642,9 +642,9 @@ uint8_t stmt(uint8_t empty)
 						setError(ERR_TypeCompatibility);
 						return 0;
 					}
-					// gen instruction JMP_TRUE to repeat1
+					// gen instruction JMP_FALSE to repeat1
 					a.offset = repeat1;
-					generateInstruction(JMP_T,&a,&b);
+					generateInstruction(JMP_F,&a,&b);
 					token--;
 					break;
 				case Key_begin:
