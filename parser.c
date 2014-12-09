@@ -432,6 +432,7 @@ void compound_stmt(uint8_t semicolon)
 	}
 	if(activeContext == mainContext && !genStart)
 	{
+		funcContext = NULL;
 		genStart = true;
 		IP = tape->used;
 		a.sp_inc = 1;

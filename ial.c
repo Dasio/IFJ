@@ -14,6 +14,9 @@
 		ERR_Allocation if unable to malloc
  */
 
+extern Context *mainContext;
+
+
 int FindString(String *input, String *find)
 {
 	int *Mask = GetFormula(find);
@@ -152,7 +155,10 @@ Symbol *SymbolAdd(Context *funCont, SymbolType type, char *name, Context *symbol
 
 	// fill newItem
 	newItem->data.type = type;
-	newItem->data.index = ++(funCont->locCount); // unique index in stack
+	if (funCont == mainContext) // global variables indexed from 1
+		newItem->data.index = ++(funCont->locCount);
+	else // local variables indexed from 2
+		newItem->data.index = ++(funCont->locCount) + 1;
 	newItem->data.name = name;
 	newItem->data.funCont = symbolContext;
 	newItem->data.stateFunc = FS_Undefined;

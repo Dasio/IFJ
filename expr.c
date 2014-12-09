@@ -305,7 +305,6 @@ AFTER_REDUCE:
 		b.var_type = LOCAL;
 		b.data_type = return_value_data_type;
 		b.offset = MY_OFFSET - 1;
-		b.initialized = true;
 		a.sp_inc = 0;
 		a.offset = MY_OFFSET - 1;
 		generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
