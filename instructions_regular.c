@@ -724,9 +724,10 @@ void Instr_CALL_SORT(Instruction *i) {
 	StackData *op = vectorAt(stack.vect, stack.SP);
 	String *s = op->str;
 	String *str = mem_alloc(sizeof(String));
-	*str = initStringSize(s->length);
+	*str = initStringSize(s->length+1);
 	// Make copy
-	memcpy(str->data,s->data,s->length);
+	memcpy(str->data,s->data,s->length+1);
+	str->length = s->length;
 	QuickSort(str);
 
 	mem_ptradd(str->data);

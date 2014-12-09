@@ -85,11 +85,10 @@ void QuickSort(String *string)
 }
 
 //QuickSort which use recursive function
-void QuickSortRecursive(char *arr, int n)
+void QuickSortRecursive(char *arr, uint32_t n)
 {
 	if(n<=1)
 		return;// if arr include only one number
-
 	char *l=arr, *r=arr+n-1; //prepare index on border of group
 	char p = arr[n/2]; //set pivot (center value)
 

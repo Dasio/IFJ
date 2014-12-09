@@ -40,7 +40,7 @@ int *GetFormula(String *find);
  */
 void QuickSort(String *string);
 
-void QuickSortRecursive(char *, int);
+void QuickSortRecursive(char *, uint32_t);
 
 // Return hash depend on char* in range of (uint)length
 /**
