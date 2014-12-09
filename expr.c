@@ -532,8 +532,8 @@ static inline void reduce_handle_three_tokens(THandle handle)
 		}
 		else	// generating instruction
 		{
-			c = handle.first[0].E;
-			b = handle.first[2].E;
+			b = handle.first[0].E;
+			c = handle.first[2].E;
 			a.sp_inc = 1;
 			a.offset = MY_OFFSET++;
 			generateExprInstruction((InstructionOp)handle.first[1].token->type, &a, &b, &c);

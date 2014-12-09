@@ -239,7 +239,7 @@ void Instr_WRITE(Instruction *i) {
 	for (int x = 0; x < i->dst.int_; x++)
 	{
 		//fprintf(stderr,"Write, data = %d\n",op->data_type);
-
+		//die();
 		switch(op->data_type)
 		{
 			case STRING:
@@ -771,8 +771,6 @@ void Instr_JMP_F(Instruction *i) {
 void Instr_JMP(Instruction *i) {
 
 	IP = i->dst.offset;
-
-	stack.SP--;
 }
 
 // HALT
