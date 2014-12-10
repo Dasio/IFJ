@@ -372,7 +372,7 @@ instructions.each do |name, regex|
 		end
 		#
 		c.puts "	operand.initialized = true;"
-		c.puts "	stack.SP = stack.SP + i->dst.sp_inc;"
+		#c.puts "	stack.SP = stack.SP + i->dst.sp_inc;"
 		c.puts "	StackDataVectorAtSet(stack.vect, stack.BP + i->dst.offset, operand);"
 		if not implemented
 			c.puts
