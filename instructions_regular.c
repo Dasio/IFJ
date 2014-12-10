@@ -74,13 +74,12 @@ void Instr_READLN_LD(Instruction *i) {
 
 	d = strtod(str.data,&error);
 
-	destroyString(&str);
-
 	if(*error != 0)
 	{
 		setError(ERR_ReadInput);
 		die();
 	}
+	destroyString(&str);
 
 	operand.double_ = d;
 	operand.initialized = true;
@@ -113,13 +112,12 @@ void Instr_READLN_LI(Instruction *i) {
 
 	n = strtol(str.data,&error,10);
 
-	destroyString(&str);
-
 	if(*error != 0)
 	{
 		setError(ERR_ReadInput);
 		die();
 	}
+	destroyString(&str);
 
 	operand.int_ = n;
 	operand.initialized = true;
@@ -180,13 +178,12 @@ void Instr_READLN_GD(Instruction *i) {
 
 	d = strtod(str.data,&error);
 
-	destroyString(&str);
-
 	if(*error != 0)
 	{
 		setError(ERR_ReadInput);
 		die();
 	}
+	destroyString(&str);
 
 	operand.double_ = d;
 	operand.initialized = true;
@@ -219,13 +216,12 @@ void Instr_READLN_GI(Instruction *i) {
 
 	n = strtol(str.data,&error,10);
 
-	destroyString(&str);
-
 	if(*error != 0)
 	{
 		setError(ERR_ReadInput);
 		die();
 	}
+	destroyString(&str);
 
 	operand.int_ = n;
 	operand.initialized = true;
