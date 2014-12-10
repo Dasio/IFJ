@@ -1,0 +1,42 @@
+\begin{tabular}{ll}
+PROGRAM                 & $\to$ VAR\_DECLR FUNC COMPOUND\_STMT . \\
+
+VAR\_DECLR               & $\to $ var VAR\_DEF \\
+VAR\_DECLR               & $\to $ $\epsilon$ \\
+VAR\_DEF                 & $\to $ id : type ; VAR\_DEFN \\
+VAR\_DEFN                & $\to $ id : type ; VAR\_DEFN \\
+VAR\_DEFN                & $\to $ $\epsilon$ \\
+
+FUNC                    & $\to $ function id PARAM\_DEF\_LIST : type ; FORWARD FUNC \\
+FUNC                    & $\to $ $\epsilon$ \\
+FORWARD                 & $\to $ forward ; \\
+FORWARD                 & $\to $ VAR\_DECLR COMPOUND\_SEMICOLON\_STMT \\
+
+PARAM\_DEF\_LIST          & $\to $ ( PARAMS\_DEF ) \\
+PARAMS\_DEF              & $\to $ id : type PARAMS\_DEF\_N \\
+PARAMS\_DEF              & $\to $ $\epsilon$ \\
+PARAMS\_DEF\_N            & $\to $ ; id : type PARAMS\_DEF\_N \\
+PARAMS\_DEF\_N            & $\to $ $\epsilon$ \\
+
+TERM\_LIST               & $\to $ ( TERMS ) \\
+TERMS                   & $\to $ term TERMS\_N \\
+TERMS\_N                 & $\to $ , term TERMS\_N \\
+TERMS\_N                 & $\to $ $\epsilon$ \\
+
+COMPOUND\_STMT           & $\to $ begin STMT\_E end \\
+COMPOUND\_SEMICOLON\_STMT & $\to $ COMPOUND\_STMT ; \\
+STMT\_LIST               & $\to $ $\epsilon$ \\
+STMT\_LIST               & $\to $ ; STMT STMT\_LIST \\
+STMT\_E                  & $\to $ STMT STMT\_LIST \\
+STMT\_E                  & $\to $ $\epsilon$ \\
+STMT                    & $\to $ id := EXPR \\
+STMT                    & $\to $ if EXPR then COMPOUND\_STMT IF\_N \\
+STMT                    & $\to $ while EXPR do COMPOUND\_STMT \\
+STMT                    & $\to $ repeat STMT STMT\_LIST until EXPR \\
+STMT                    & $\to $ COMPOUND\_STMT \\
+STMT                    & $\to $ readln ( id ) \\
+STMT                    & $\to $ write TERM\_LIST \\
+
+IF\_N                    & $\to $ else COMPOUND\_STMT \\
+IF\_N                    & $\to $ $\epsilon$
+\end{tabular}

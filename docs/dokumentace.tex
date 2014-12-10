@@ -13,6 +13,8 @@
 \usepackage{verbatim}
 \usepackage{amsmath}
 
+\usepackage[titletoc]{appendix}
+
 % angles
 \usepackage{graphics}
 
@@ -57,7 +59,7 @@
 %http://stackoverflow.com/questions/1788598/how-to-force-two-figures-to-stay-on-the-same-page-in-latex
 \usepackage{float}
 % velikost stranky
-\usepackage[top=3.5cm, left=2.0cm, text={17cm, 24cm}, ignorefoot]{geometry}
+\usepackage[top=3.5cm, left=1.5cm, text={18cm, 24cm}, ignorefoot]{geometry}
 
 \begin{document}
 
@@ -115,39 +117,12 @@
 %
 \section{LL Gramatika} \label{gramatika}
 
+\input{grammar.tex}
+
 %
 \section{Precedenčná tabuľka} \label{precedencna_tabulka}
 
-\newcommand{\la}{\langle}
-\newcommand{\ra}{\rangle}
-\begin{table}[ht]
-\begin{tabular}{c|ccccccccccccccccccccc}
-                & U- & not & * & / & and & + & - & or & xor & $\lang$ & $\rang$ & $\lang$ = & $\rang$ = & = & $\lang$ $\rang$ & ( & ) & f & , & \$ & var \\ \hline
-U-              & H  &  R  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  U-
-not             & R  &  H  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ % not
-*               & S  &  S  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  *
-/               & S  &  S  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  /
-and             & S  &  S  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ % and
-+               & S  &  S  & S & S &  S  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  +
--               & S  &  S  & S & S &  S  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  -
-or              & S  &  S  & S & S &  S  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  or
-xor             & S  &  S  & S & S &  S  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ % xor
-$\lang$         & S  &  S  & S & S &  S  & S & S & S  &  S  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  <
-$\rang$         & S  &  S  & S & S &  S  & S & S & S  &  S  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  >
-$\lang$ =       & S  &  S  & S & S &  S  & S & S & S  &  S  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  <=
-$\rang$ =       & S  &  S  & S & S &  S  & S & S & S  &  S  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  >=
-=               & S  &  S  & S & S &  S  & S & S & S  &  S  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  =
-$\lang$ $\rang$ & S  &  S  & S & S &  S  & S & S & S  &  S  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  <>
-(               & S  &  S  & S & S &  S  & S & S & S  &  S  &   S     &    S    & S  & S  & S & S  & S & H & S & H & E  & S   \\ %  (
-)               & R  &  R  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & E & R & E & R & R  & E   \\ %  )
-f               & E  &  E  & E & E &  E  & E & E & E  &  E  &   E     &    E    & E  & E  & E & E  & H & E & E & E & E  & E   \\ %  f
-,               & S  &  S  & S & S &  S  & S & S & S  &  S  &   S     &    S    & S  & S  & S & S  & S & H & S & H & E  & S   \\ %  ,
-\$              & S  &  S  & S & S &  S  & S & S & S  &  S  &   S     &    S    & S  & S  & S & S  & S & E & S & E & E  & S   \\ %  $
-var             & R  &  R  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & E & R & E & R & R  & E      % var
-\end{tabular}
-\end{table}
-
-
+\input{prec_table.tex}
 
 
 
