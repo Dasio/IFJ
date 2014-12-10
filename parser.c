@@ -319,7 +319,7 @@ void params_def(uint8_t next)
 }
 uint32_t term_list()
 {
-	VariableType scope;
+	VariableType scope = GLOBAL;
 	Symbol *symbol = NULL;
 	uint32_t count = 0;
 	token++;
@@ -508,7 +508,7 @@ void stmt_empty()
 uint8_t stmt(uint8_t empty)
 {
 	uint8_t epsilon = 0;
-	VariableType scope;
+	VariableType scope = GLOBAL;
 	Symbol *id = NULL;
 	DataType exprType;
 	Instruction *instruction;
@@ -714,7 +714,7 @@ uint8_t if_n(Instruction *if1, Instruction *if2)
 
 void readln()
 {
-	VariableType scope;
+	VariableType scope = GLOBAL;
 	// keyword readln already loaded from STMT
 	token++;
 	if(token->type != TT_leftBrace)
