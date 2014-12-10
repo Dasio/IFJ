@@ -29,7 +29,6 @@
 	typedef struct {
 		uint8_t var_type : 2; // GLOBAL / LOCAL / CONST
 		uint8_t data_type: 3; // STRING / DOUBLE / INT / BOOL
-		uint8_t sp_inc : 1;
 
 		bool initialized : 1;
 

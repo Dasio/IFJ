@@ -13,7 +13,7 @@ static ExprToken temp_expr_token;
 static DataType return_value_data_type;
 static ExprToken *top_most_term;
 static Operand a, b, c;
-static int64_t MY_OFFSET;
+int64_t MY_OFFSET;
 int instr_counter;
 
 static void reduce(ExprTokenVector *expr_vector);
@@ -295,19 +295,17 @@ AFTER_REDUCE:
 	{
 		b = (++top_most_term)->E;
 		b.initialized = true;
-		a.sp_inc = 1;
 		a.offset = MY_OFFSET++;
 		//fprintf(stderr,"EXPR_PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
-		generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
+		generateInstruction(PUSH, &a, &b, &c); // b = pushed operand, a = local dst
 	}
 	else if (last->instr == Instr_CALL)
 	{
 		b.var_type = LOCAL;
 		b.data_type = return_value_data_type;
 		b.offset = MY_OFFSET - 1;
-		a.sp_inc = 0;
 		a.offset = MY_OFFSET - 1;
-		generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
+		generateInstruction(PUSH, &a, &b, &c); // b = pushed operand, a = local dst
 	}
 
 	ExprTokenVectorFree(expr_token_vector);
@@ -420,7 +418,6 @@ static inline void reduce_handle_unary_minus(THandle handle)
 		else // LOCAL / GLOBAL
 		{
 			b = temp->E;
-			a.sp_inc = 1;
 			a.offset = MY_OFFSET++;
 			generateExprInstruction(NEG, &a, &b, &c);
 
@@ -477,7 +474,6 @@ static inline void reduce_handle_not(THandle handle)
 		else // LOCAL / GLOBAL
 		{
 			b = temp->E;
-			a.sp_inc = 1;
 			a.offset = MY_OFFSET++;
 			generateExprInstruction(NOT, &a, &b, &c);
 
@@ -533,7 +529,6 @@ static inline void reduce_handle_three_tokens(THandle handle)
 		{
 			b = handle.first[0].E;
 			c = handle.first[2].E;
-			a.sp_inc = 1;
 			a.offset = MY_OFFSET++;
 			generateExprInstruction((InstructionOp)handle.first[1].token->type, &a, &b, &c);
 
@@ -848,9 +843,8 @@ static inline void reduce_handle_function(THandle handle)
 	// reserve place for return value
 	b.var_type = CONST; // for pushing initialized flag
 	b.initialized = false;
-	a.sp_inc = 1;
 	a.offset = MY_OFFSET++;
-	generateInstruction(PUSH, &a, &b); // b = pushed operand
+	generateInstruction(PUSH, &a, &b, &c); // b = pushed operand
 
 	if (id->index >= 0)	 // normal functions
 	{
@@ -860,9 +854,8 @@ static inline void reduce_handle_function(THandle handle)
 
 			b = temp->E;
 			b.initialized = true;
-			a.sp_inc = 1;
 			a.offset = MY_OFFSET++;
-			generateInstruction(PUSH, &a, &b); // b = pushed operand, a = local dst
+			generateInstruction(PUSH, &a, &b, &c); // b = pushed operand, a = local dst
 
 			temp--;
 		}
@@ -875,15 +868,15 @@ static inline void reduce_handle_function(THandle handle)
 
 			b = temp->E;
 			b.initialized = true;
-			a.sp_inc = 1;
 			a.offset = MY_OFFSET++;
-			generateInstruction(PUSHX, &a, &b); // b = pushed operand, a = local dst
+			generateInstruction(PUSHX, &a, &b, &c); // b = pushed operand, a = local dst
 
 			temp--;
 		}
 	}
 
 	a.offset = id->index;
+	c.offset = MY_OFFSET - 1;
 
 	if (id->stateFunc == FS_Declared)
 		int64_tVectorAppend(id->adressVector, tape->used);
@@ -892,20 +885,20 @@ static inline void reduce_handle_function(THandle handle)
 	switch (a.offset)
 	{
 		case -1:
-			generateInstruction(CALL_LENGTH, &a, &b);
+			generateInstruction(CALL_LENGTH, &a, &b, &c);
 			break;
 		case -2:
-			generateInstruction(CALL_COPY, &a, &b);
+			generateInstruction(CALL_COPY, &a, &b, &c);
 			break;
 		case -3:
-			generateInstruction(CALL_FIND, &a, &b);
+			generateInstruction(CALL_FIND, &a, &b, &c);
 			break;
 		case -4:
-			generateInstruction(CALL_SORT, &a, &b);
+			generateInstruction(CALL_SORT, &a, &b, &c);
 			break;
 		default:
 			b.int_ = context->locCount;
-			generateInstruction(CALL, &a, &b);
+			generateInstruction(CALL, &a, &b, &c);
 			break;
 	}
 

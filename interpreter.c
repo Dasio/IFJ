@@ -37,7 +37,7 @@ void generateExprInstruction(InstructionOp op, Operand* a, Operand* b, Operand* 
 	InstructionVectorAppend(tape, i);
 }
 
-void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
+void generateInstruction(InstructionOp op, Operand* a, Operand* b, Operand* c) {
 
 	instr_counter++;
 	InstrFuncPtr i_ptr = NULL;
@@ -230,7 +230,7 @@ void generateInstruction(InstructionOp op, Operand* a, Operand* b) {
 			break;
 	}
 
-	Instruction i = (Instruction) {.instr = i_ptr, .dst = *a, .src_1 = *b};
+	Instruction i = (Instruction) {.instr = i_ptr, .dst = *a, .src_1 = *b, .src_2 = *c};
 	InstructionVectorAppend(tape, i);
 }
 
