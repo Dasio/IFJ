@@ -13,6 +13,41 @@
 \usepackage{verbatim}
 \usepackage{amsmath}
 
+% angles
+\usepackage{graphics}
+
+\newcommand{\langl}{\begin{picture}(4.5,7)
+\put(1.1,2.5){\rotatebox{60}{\line(1,0){5.5}}}
+\put(1.1,2.5){\rotatebox{300}{\line(1,0){5.5}}}
+\end{picture}}
+\newcommand{\rangl}{\begin{picture}(4.5,7)
+\put(.9,2.5){\rotatebox{120}{\line(1,0){5.5}}}
+\put(.9,2.5){\rotatebox{240}{\line(1,0){5.5}}}
+\end{picture}}
+
+\newcommand{\lang}{\begin{picture}(5,7)
+\put(1.1,2.5){\rotatebox{45}{\line(1,0){6.0}}}
+\put(1.1,2.5){\rotatebox{315}{\line(1,0){6.0}}}
+\end{picture}}
+\newcommand{\rang}{\begin{picture}(5,7)
+\put(.1,2.5){\rotatebox{135}{\line(1,0){6.0}}}
+\put(.1,2.5){\rotatebox{225}{\line(1,0){6.0}}}
+\end{picture}} 
+
+% coloring
+\usepackage{xcolor}
+\definecolor{wine-stain}{rgb}{0.5,0,0}
+
+\usepackage{hyperref}
+\hypersetup{%
+    pdfborder = {0 0 0},
+    colorlinks,
+    citecolor=red,
+    filecolor=Darkgreen,
+    linkcolor=wine-stain,
+    urlcolor=cyan!50!black!90
+}
+
 %todo
 \usepackage[colorinlistoftodos,prependcaption]{todonotes}
 
@@ -22,7 +57,7 @@
 %http://stackoverflow.com/questions/1788598/how-to-force-two-figures-to-stay-on-the-same-page-in-latex
 \usepackage{float}
 % velikost stranky
-\usepackage[top=3.5cm, left=2.5cm, text={17cm, 24cm}, ignorefoot]{geometry}
+\usepackage[top=3.5cm, left=2.0cm, text={17cm, 24cm}, ignorefoot]{geometry}
 
 \begin{document}
 
@@ -64,7 +99,7 @@
 \subsection{Interpret}
 
 \subsection{Algoritmy}
-	\todo[inline]{Sem dopíše Tomáš postupy riešenia algoritmov etc.}
+	\todo[inline]{Sem dopíše Tomáš postupy postupy riešenia algoritmov etc.}
 
 \subsection{Práca v tíme}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -72,8 +107,7 @@
 \appendix
 
 \section{Metriky kódu} \label{metriky}
-\paragraph{Počet súborov:} 1 súbor
-\paragraph{Počet riadkov zdrojového textu:} 3407 riadkov
+\paragraph{Počet riadkov zdrojového textu:} 12689 riadkov
 \paragraph{Veľkosť statických dát:} 6147B
 \paragraph{Veľkosť spustiteľného programu:} 13294B
 \todo[inline]{Aktualizovať metriky po dopísani projektu}
@@ -83,5 +117,39 @@
 
 %
 \section{Precedenčná tabuľka} \label{precedencna_tabulka}
+
+\newcommand{\la}{\langle}
+\newcommand{\ra}{\rangle}
+\begin{table}[ht]
+\begin{tabular}{c|ccccccccccccccccccccc}
+                & U- & not & * & / & and & + & - & or & xor & $\lang$ & $\rang$ & $\lang$ = & $\rang$ = & = & $\lang$ $\rang$ & ( & ) & f & , & \$ & var \\ \hline
+U-              & H  &  R  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  U-
+not             & R  &  H  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ % not
+*               & S  &  S  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  *
+/               & S  &  S  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  /
+and             & S  &  S  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ % and
++               & S  &  S  & S & S &  S  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  +
+-               & S  &  S  & S & S &  S  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  -
+or              & S  &  S  & S & S &  S  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  or
+xor             & S  &  S  & S & S &  S  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ % xor
+$\lang$         & S  &  S  & S & S &  S  & S & S & S  &  S  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  <
+$\rang$         & S  &  S  & S & S &  S  & S & S & S  &  S  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  >
+$\lang$ =       & S  &  S  & S & S &  S  & S & S & S  &  S  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  <=
+$\rang$ =       & S  &  S  & S & S &  S  & S & S & S  &  S  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  >=
+=               & S  &  S  & S & S &  S  & S & S & S  &  S  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  =
+$\lang$ $\rang$ & S  &  S  & S & S &  S  & S & S & S  &  S  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  <>
+(               & S  &  S  & S & S &  S  & S & S & S  &  S  &   S     &    S    & S  & S  & S & S  & S & H & S & H & E  & S   \\ %  (
+)               & R  &  R  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & E & R & E & R & R  & E   \\ %  )
+f               & E  &  E  & E & E &  E  & E & E & E  &  E  &   E     &    E    & E  & E  & E & E  & H & E & E & E & E  & E   \\ %  f
+,               & S  &  S  & S & S &  S  & S & S & S  &  S  &   S     &    S    & S  & S  & S & S  & S & H & S & H & E  & S   \\ %  ,
+\$              & S  &  S  & S & S &  S  & S & S & S  &  S  &   S     &    S    & S  & S  & S & S  & S & E & S & E & E  & S   \\ %  $
+var             & R  &  R  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & E & R & E & R & R  & E      % var
+\end{tabular}
+\end{table}
+
+
+
+
+
 
 \end{document}
