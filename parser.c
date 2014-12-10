@@ -801,7 +801,9 @@ void addFunc(char *name)
 	// Was already in GST
 	else
 	{
-		if(funcSymbol->stateFunc == FS_Undefined)
+		funcContext = funcSymbol->funCont;
+		// Builtin functions
+		if(funcSymbol->index < 0 || funcSymbol->stateFunc == FS_Undefined)
 		{
 			setError(ERR_RedefVar);
 			return;
@@ -843,6 +845,10 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 			return;
 		}
 	}
+	Symbol *symbol = SymbolFind(mainContext,funcSymbol->name);
+	if(getError())
+		return;
+	funcContext = symbol->funCont;
 	Symbol *returnSymbol = SymbolFind(funcContext,funcSymbol->name);
 	if(getError())
 		return;
