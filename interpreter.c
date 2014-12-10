@@ -241,13 +241,12 @@ void dumpTape() {
 	Instruction *first = InstructionVectorFirst(tape);
 
 	fprintf(stderr, "============================\n");
-	fprintf(stderr, "TAPE:   \t \tSP Inc      offset");
+	fprintf(stderr, "TAPE:   \t \t      offset");
 	fprintf(stderr, "\n");
 	for(uint32_t i = 0; i < tape_length; i++) {
 		Instruction *inst = first+i;
 		fprintf(stderr, "%d\t%s\t", i, stringifyInstructionPtr(inst->instr));
-		fprintf(stderr, "  %d", inst->dst.sp_inc);
-		fprintf(stderr, " \t      %ld", inst->dst.offset);
+		fprintf(stderr, " \t%ld", inst->dst.offset);
 		fprintf(stderr, "\n");
 	}
 	fprintf(stderr, "TAPE DUMP OVER === IP: %lu ==\n", IP);

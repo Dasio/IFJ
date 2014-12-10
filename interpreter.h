@@ -31,7 +31,7 @@
 	 * @param a  Operand A (Destination A)
 	 * @param b  Operand B (Source B)
 	 */
-	void generateInstruction(InstructionOp op, Operand* a, Operand* b);
+	void generateInstruction(InstructionOp op, Operand* a, Operand* b, Operand* c);
 
 	/**
 	 * Prints content of tape to stderr.
