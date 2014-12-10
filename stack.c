@@ -10,6 +10,7 @@ extern Stack stack;
 
 void dumpStack() {
 #ifndef NDEBUG
+	/*
 	int64_t stack_length = stack.SP;
 	StackData *first = StackDataVectorFirst(stack.vect);
 
@@ -25,6 +26,7 @@ void dumpStack() {
 		DEBUG_PRINT("\n");
 	}
 	DEBUG_PRINT("   BP: %lu \n   SP: %lu\n", stack.BP, stack.SP);
+	*/
 #endif
 }
 

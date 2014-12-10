@@ -571,7 +571,7 @@ void Instr_CALL(Instruction *i) {
 
 	operand.offset = stack.BP;
 	StackDataVectorAtSet(stack.vect, ++offset, operand);
-	stack.BP = stack.SP;
+	stack.BP = offset;
 
 	operand.offset = IP;
 	StackDataVectorAtSet(stack.vect, ++offset, operand);

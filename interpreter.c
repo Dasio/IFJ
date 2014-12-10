@@ -11,7 +11,7 @@ extern int instr_counter;
  */
 int64_t IP = 0;
 
-Stack stack = {.SP = -1, .BP = 0};
+Stack stack = {.BP = 0};
 
 void initInterpret() {
 	stack.vect = StackDataVectorInit(DEFAULT_STACK_SIZE);
@@ -264,12 +264,12 @@ void runInterpretation() {
 		Instruction *i = first + IP;
 		(i->instr)(i);
 		fflush(stdout);
-/*
+
 		fprintf(stderr, "============================\n");
 		fprintf(stderr, "|IP: %ld - %s\n", IP, stringifyInstructionPtr(i->instr));
 		dumpStack();
 		fprintf(stderr, "\n\n");
-*/
+
 		IP++;
 	}
 }
