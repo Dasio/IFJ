@@ -22,23 +22,13 @@ static StackData empty = { .initialized=false };
 // READLN 6   [LG][SDI]  len DST
 void Instr_READLN_LS(Instruction *i) {
 
-	bool begin=true;
 	int c;
 
 	String *str = mem_alloc(sizeof(String));
 	*str = initEmptyString();
 	while((c=getchar()) != EOF && c != '\n')
 	{
-		if(isspace(c) && begin)
-		{
-			while(isspace(c=getchar()));
-			appendCharToString(str,c);
-		}
-		else
-		{
-			begin=false;
-			appendCharToString(str,c);
-		}
+		appendCharToString(str,c);
 	}
 
 	mem_ptradd(str->data);
@@ -126,23 +116,13 @@ void Instr_READLN_LI(Instruction *i) {
 
 void Instr_READLN_GS(Instruction *i) {
 
-	bool begin=true;
 	int c;
 
 	String *str = mem_alloc(sizeof(String));
 	*str = initEmptyString();
 	while((c=getchar()) != EOF && c != '\n')
 	{
-		if(isspace(c) && begin)
-		{
-			while(isspace(c=getchar()));
-			appendCharToString(str,c);
-		}
-		else
-		{
-			begin=false;
-			appendCharToString(str,c);
-		}
+		appendCharToString(str,c);
 	}
 
 	mem_ptradd(str->data);
