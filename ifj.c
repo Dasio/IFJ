@@ -12,8 +12,8 @@ extern Scanner scannerMain;
 int main(int argc, char *argv[]) {
 	// Error code initialized to success
 	int ecode = 0;
-	bool scanner_initialized = false;
-	bool token_vector_initialized = false;
+	scanner_initialized = false;
+	token_vector_initialized = false;
 
 	if(argc <= 1) {
 		setError(ERR_CannotOpenFile);
@@ -46,6 +46,7 @@ int main(int argc, char *argv[]) {
 
 	// Interpretation
 	runInterpretation();
+	dumpStack();
 
 	// Error handling
 err:

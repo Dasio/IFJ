@@ -22,6 +22,12 @@
 
 #define streq(a, b) (strcmp((a), (b)) == 0)
 
+#ifndef NDEBUG
+#define DEBUG_PRINT(...) do{ fprintf( stderr, __VA_ARGS__ ); } while( false )
+#else
+#define DEBUG_PRINT(...) do{ } while ( false )
+#endif
+
 /**
  * Calculates random value from withing range <low, high>
  * @param  low  Lower bound

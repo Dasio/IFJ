@@ -3,26 +3,29 @@
 // From interpreter.c global
 extern Stack stack;
 
-static char data_type_translation[] = { 'S', 'D', 'I', 'B', 'U' };
-
-static char var_type_translation[] = { 'L', 'G', 'C', 'U' };
+#ifndef NDEBUG
+	static const char data_type_translation[] = { 'S', 'D', 'I', 'B', 'U' };
+	static const char var_type_translation[] = { 'L', 'G', 'C', 'U' };
+#endif
 
 void dumpStack() {
+#ifndef NDEBUG
 	int64_t stack_length = stack.SP;
 	StackData *first = StackDataVectorFirst(stack.vect);
 
-	fprintf(stderr, "============================\n");
-	fprintf(stderr, "STACK:");
-	fprintf(stderr, "\n");
+	DEBUG_PRINT("============================\n");
+	DEBUG_PRINT("STACK:");
+	DEBUG_PRINT("\n");
 	for(int64_t i = 0; i <= stack_length; i++) {
 		StackData *s = first+i;
-		fprintf(stderr, "%ld\t", i);
-		fprintf(stderr, "%c ", data_type_translation[s->data_type]);
-		fprintf(stderr, "%c ",  var_type_translation[s->var_type]);
-		fprintf(stderr, "%d ",  s->initialized);
-		fprintf(stderr, "\n");
+		DEBUG_PRINT("%ld\t", i);
+		DEBUG_PRINT("%c ", data_type_translation[s->data_type]);
+		DEBUG_PRINT("%c ",  var_type_translation[s->var_type]);
+		DEBUG_PRINT("%d ",  s->initialized);
+		DEBUG_PRINT("\n");
 	}
-	fprintf(stderr, "   BP: %lu \n   SP: %lu\n", stack.BP, stack.SP);
+	DEBUG_PRINT("   BP: %lu \n   SP: %lu\n", stack.BP, stack.SP);
+#endif
 }
 
 GenVectorFunctions(StackData)

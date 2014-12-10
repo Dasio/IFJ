@@ -426,6 +426,7 @@ c.puts '
 
 	c.puts "#include \"instructions_regular.h\""
 	c.puts "char *stringifyInstructionPtr(InstrFuncPtr ptr) {"
+	c.puts "#ifndef NDEBUG"
 	func_table.each_with_index do |(key,value),index|
 		c.puts "		if(*ptr == #{value}) return \"#{value}\";"
 	end
@@ -444,6 +445,8 @@ c.puts '
 	regular_instructions.each do |i|
 		c.puts "	if(*ptr == #{i}) return \"#{i}\";"
 	end
+	c.puts "#endif"
+	c.puts "	(void) ptr; // Dummy conversion"
 	c.puts "	return \"NaN\";"
 	c.puts "}"
 

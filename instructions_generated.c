@@ -7009,6 +7009,7 @@ const InstrFuncPtr instruction_table[3744] = {
 };
 #include "instructions_regular.h"
 char *stringifyInstructionPtr(InstrFuncPtr ptr) {
+#ifndef NDEBUG
 		if(*ptr == Instr_NEG_LxIx) return "Instr_NEG_LxIx";
 		if(*ptr == Instr_NEG_LxIx) return "Instr_NEG_LxIx";
 		if(*ptr == Instr_NEG_LxIx) return "Instr_NEG_LxIx";
@@ -7471,5 +7472,7 @@ char *stringifyInstructionPtr(InstrFuncPtr ptr) {
 	if(*ptr == Instr_JMP_F) return "Instr_JMP_F";
 	if(*ptr == Instr_JMP) return "Instr_JMP";
 	if(*ptr == Instr_HALT) return "Instr_HALT";
+#endif
+	(void) ptr; // Dummy conversion
 	return "NaN";
 }
