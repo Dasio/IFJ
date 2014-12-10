@@ -6,6 +6,7 @@ var i:integer;
     end;
 
 begin
-	i:=sum(1,2);
-	write(i,''#10'')
+    {i:=1;}
+	i:=sum(12,12);
+	write(''#10'',''#10'',i,''#10'',''#10'')
 end.
