@@ -7,11 +7,12 @@ Context *funcContext;
 Context *activeContext;
 Symbol *funcSymbol;
 extern InstructionVector *tape;
+extern int64_t MY_OFFSET;
 extern int64_t IP;
 static int64_t mainOffset;
 static int64_t funcOffset;
 static int64_t *activeOffset;
-static Operand a,b;
+static Operand a,b,c;
 bool genStart = false;
 uint8_t inGST = 0;
 int32_t argIndex;
@@ -26,11 +27,11 @@ void parse(TokenVector *tokvect)
 	token = TokenVectorFirst(tokenVector);
 	addBuiltInFunctions();
 	mainOffset = 1;
-	generateInstruction(HALT,&a,&b);
+	generateInstruction(HALT, &a ,&b, &c);
 
 	program();
 	if(!getError())
-		generateInstruction(HALT,&a,&b);
+		generateInstruction(HALT, &a, &b, &c);
 	// Cleanup
 
 	FreeContext(mainContext);
@@ -234,8 +235,7 @@ void forward(SymbolType returnType)
 		if(getError())
 			return;
 
-		a.int_ = activeContext->argCount + 1;
-		generateInstruction(RET,&a,&b);
+		generateInstruction(RET, &a, &b, &c);
 		// Switch back to main context
 		activeContext = mainContext;
 		activeOffset = &mainOffset;
@@ -335,7 +335,6 @@ uint32_t term_list()
 	Token *current = token-1;
 	while(current>=first)
 	{
-		a.sp_inc = 1;
 		a.offset = (*activeOffset)++;
 		if(current->type == TT_identifier)
 		{
@@ -388,7 +387,7 @@ uint32_t term_list()
 			}
 		}
 		//fprintf(stderr,"PUSH a.offset = %ld b.var_type = %d b.offset= %ld b.data_type= %d\n",a.offset,b.var_type,b.offset,b.data_type);
-		generateInstruction(PUSHX, &a, &b);
+		generateInstruction(PUSHX, &a, &b, &c);
 		// Skip comma and move to next argument
 		current -= 2;
 	}
@@ -435,20 +434,17 @@ void compound_stmt(uint8_t semicolon)
 		funcContext = NULL;
 		genStart = true;
 		IP = tape->used;
-		a.sp_inc = 1;
 		a.offset = 0;
 		b.initialized = false;
 		b.var_type = CONST;
-		generateInstruction(PUSH, &a, &b);
+		generateInstruction(PUSH, &a, &b, &c);
 
-		a.sp_inc = 1;
 		b.var_type = CONST;
-		b.initialized = false;
 		b.data_type = INT; //doesnt matter
 		for(int32_t i=0;i<mainContext->locCount;i++)
 		{
 			a.offset = (*activeOffset)++;
-			generateInstruction(PUSH,&a,&b);
+			generateInstruction(PUSH, &a, &b, &c);
 		}
 	}
 	stmt_empty();
@@ -512,7 +508,7 @@ uint8_t stmt(uint8_t empty)
 	Symbol *id = NULL;
 	DataType exprType;
 	Instruction *instruction;
-	uint64_t repeat1;
+	int64_t repeat1;
 	// IF wasnt called from stmt_empty(), need to load next token
 	if(!empty) token++;
 	switch(token->type)
@@ -542,14 +538,14 @@ uint8_t stmt(uint8_t empty)
 			{
 				a.offset = id->index;
 				b.data_type = exprType;
-				generateInstruction(MOV,&a,&b);
+				c.offset = MY_OFFSET - 1;
+				generateInstruction(MOV, &a, &b, &c);
 			}
 			// Local
 			else
 			{
 				instruction = InstructionVectorLast(tape);
 				instruction->dst.offset = id->index;
-				instruction->dst.sp_inc = 0;
 			}
 
 			token--;
@@ -574,12 +570,14 @@ uint8_t stmt(uint8_t empty)
 					}
 					// gen instruction if1 JMP_FALSE without adress
 					// compound_stmt expect already loaded token
-					generateInstruction(JMP_F,&a,&b);
+					b.offset = MY_OFFSET - 1;
+					generateInstruction(JMP_F, &a, &b, &c);
 					Instruction *if1 = InstructionVectorLast(tape);
 					token++;
 					compound_stmt(0);
 					//gen empty instruction if2 JMP without adress
-					generateInstruction(JMP,&a,&b);
+					b.offset = MY_OFFSET - 1;
+					generateInstruction(JMP, &a, &b, &c);
 					Instruction *if2 = InstructionVectorLast(tape);
 					if(getError())
 						return 0;
@@ -601,7 +599,8 @@ uint8_t stmt(uint8_t empty)
 						return 0;
 					}
 					// gen instruction JMP_FALSE while1
-					generateInstruction(JMP_F,&a,&b);
+					b.offset = MY_OFFSET - 1;
+					generateInstruction(JMP_F, &a, &b, &c);
 					Instruction *while1 = InstructionVectorLast(tape);
 
 					if(token->type != TT_keyword || token->keyword_token != Key_do)
@@ -615,7 +614,8 @@ uint8_t stmt(uint8_t empty)
 					// gen instruction JMP to while1
 					// update inst while1 with vectorsize+1
 					a.offset = while1_index;
-					generateInstruction(JMP,&a,&b);
+					b.offset = MY_OFFSET - 1;
+					generateInstruction(JMP, &a, &b, &c);
 					while1->dst.offset = tape->used - 1;
 					//fprintf(stderr,"w1=%ld w2=%ld\n",while1_index,while1->dst.offset);
 					if(getError())
@@ -645,7 +645,8 @@ uint8_t stmt(uint8_t empty)
 					}
 					// gen instruction JMP_FALSE to repeat1
 					a.offset = repeat1;
-					generateInstruction(JMP_F,&a,&b);
+					b.offset = MY_OFFSET - 1;
+					generateInstruction(JMP_F, &a, &b, &c);
 					token--;
 					break;
 				case Key_begin:
@@ -760,7 +761,7 @@ void readln()
 	a.var_type = scope;
 	a.offset = symbol->index;
 	//fprintf(stderr,"READLN a.var_type = %u, a.offset = %ld\n",a.var_type,a.offset);
-	generateInstruction(READLN,&a,&b);
+	generateInstruction(READLN, &a, &b, &c);
 	if(activeOffset == &mainOffset)
 		*activeOffset = activeContext->locCount + 1;
 	else
@@ -773,7 +774,7 @@ void write()
 	uint32_t count = term_list();
 	a.int_ = count;
 	b.offset = (*activeOffset) - 1;
-	generateInstruction(WRITE,&a,&b);
+	generateInstruction(WRITE, &a, &b, &c);
 	if(activeOffset == &mainOffset)
 		*activeOffset = activeContext->locCount + 1;
 	else
