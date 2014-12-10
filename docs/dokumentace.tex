@@ -15,6 +15,7 @@
 
 \usepackage[titletoc]{appendix}
 
+\usepackage{tabularx}
 % angles
 \usepackage{graphics}
 
@@ -40,6 +41,12 @@
 \usepackage{xcolor}
 \definecolor{wine-stain}{rgb}{0.5,0,0}
 
+%numbering
+\newcounter{magicrownumbers}
+\newcommand\rownumber{\stepcounter{magicrownumbers}
+  \textbf{\arabic{magicrownumbers}}
+}
+
 \usepackage{hyperref}
 \hypersetup{%
     pdfborder = {0 0 0},
@@ -59,7 +66,7 @@
 %http://stackoverflow.com/questions/1788598/how-to-force-two-figures-to-stay-on-the-same-page-in-latex
 \usepackage{float}
 % velikost stranky
-\usepackage[top=3.5cm, left=1.5cm, text={18cm, 24cm}, ignorefoot]{geometry}
+\usepackage[top=3.5cm, left=2.5cm, text={17cm, 24cm}, ignorefoot]{geometry}
 
 \begin{document}
 

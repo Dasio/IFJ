@@ -1,6 +1,8 @@
 \newcommand{\la}{\langle}
 \newcommand{\ra}{\rangle}
-\begin{table}[h]
+
+\begin{table}[H]
+\scalebox{0.88}{
 \begin{tabular}{c|ccccccccccccccccccccc}
                 & U- \footnotemark[1] & not & * & / & and & + & - & or & xor & $\lang$ & $\rang$ & $\lang$ = & $\rang$ = & = & $\lang$ $\rang$ & ( & ) & f & , & \$ & var \\ \hline
 U- \footnotemark[1]  & H  &  R  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & S & R & S & R & R  & S   \\ %  U-
@@ -25,6 +27,7 @@ f               & E  &  E  & E & E &  E  & E & E & E  &  E  &   E     &    E    
 \$              & S  &  S  & S & S &  S  & S & S & S  &  S  &   S     &    S    & S  & S  & S & S  & S & E & S & E & E  & S   \\ %  $
 var             & R  &  R  & R & R &  R  & R & R & R  &  R  &   R     &    R    & R  & R  & R & R  & E & R & E & R & R  & E      % var
 \end{tabular}
+} %scalebox
 \end{table}
 
 \footnotetext[1]{Unárne mínus}
