@@ -13,6 +13,7 @@ Scanner scannerMain;
 extern void *mem_alloc(size_t len);
 extern Stack stack;
 extern int64_t IP;
+extern InstructionVector *tape;
 
 static StackData operand;
 static StackData empty = { .initialized=false };
@@ -701,6 +702,9 @@ void Instr_HALT(Instruction *i) {
 		destroyTokenVector(tokenVectorMain);
 	if(scanner_initialized)
 		destroyScanner(&scannerMain);
+
+	StackDataVectorFree(stack.vect);
+	InstructionVectorFree(tape);
 
 	implodeMemory();
 	exit(0);
