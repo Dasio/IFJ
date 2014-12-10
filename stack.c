@@ -10,13 +10,13 @@ extern Stack stack;
 
 void dumpStack() {
 #ifndef NDEBUG
-	/*
-	int64_t stack_length = stack.SP;
-	StackData *first = StackDataVectorFirst(stack.vect);
 
-	DEBUG_PRINT("============================\n");
+	//int64_t stack_length = stack.SP;
+	//StackData *first = StackDataVectorFirst(stack.vect);
+
+	//DEBUG_PRINT("============================\n");
 	DEBUG_PRINT("STACK:");
-	DEBUG_PRINT("\n");
+	/*DEBUG_PRINT("\n");
 	for(int64_t i = 0; i <= stack_length; i++) {
 		StackData *s = first+i;
 		DEBUG_PRINT("%ld\t", i);
@@ -24,9 +24,8 @@ void dumpStack() {
 		DEBUG_PRINT("%c ",  var_type_translation[s->var_type]);
 		DEBUG_PRINT("%d ",  s->initialized);
 		DEBUG_PRINT("\n");
-	}
-	DEBUG_PRINT("   BP: %lu \n   SP: %lu\n", stack.BP, stack.SP);
-	*/
+	}*/
+	DEBUG_PRINT("   BP: %ld", stack.BP);
 #endif
 }
 

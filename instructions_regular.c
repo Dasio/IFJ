@@ -567,7 +567,7 @@ void Instr_PUSHX_GB(Instruction *i) {
 // CALL
 void Instr_CALL(Instruction *i) {
 
-	int64_t offset = i->src_2.offset;
+	int64_t offset = stack.BP + i->src_2.offset;
 
 	operand.offset = stack.BP;
 	StackDataVectorAtSet(stack.vect, ++offset, operand);

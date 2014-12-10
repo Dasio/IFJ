@@ -264,12 +264,12 @@ void runInterpretation() {
 		Instruction *i = first + IP;
 		(i->instr)(i);
 		fflush(stdout);
-
+/*
 		fprintf(stderr, "============================\n");
 		fprintf(stderr, "|IP: %ld - %s\n", IP, stringifyInstructionPtr(i->instr));
 		dumpStack();
 		fprintf(stderr, "\n\n");
-
+*/
 		IP++;
 	}
 }

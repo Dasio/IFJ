@@ -875,11 +875,11 @@ static inline void reduce_handle_function(THandle handle)
 		}
 	}
 
-	a.offset = id->index;
-	c.offset = MY_OFFSET - 1;
-
 	if (id->stateFunc == FS_Declared)
 		int64_tVectorAppend(id->adressVector, tape->used);
+
+	a.offset = id->index;
+	c.offset = MY_OFFSET - 1;
 
 	// generate CALL instruction
 	switch (a.offset)
