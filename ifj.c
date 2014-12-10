@@ -46,7 +46,6 @@ int main(int argc, char *argv[]) {
 
 	// Interpretation
 	runInterpretation();
-	dumpStack();
 
 	// Error handling
 err:

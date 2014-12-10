@@ -444,7 +444,7 @@ void compound_stmt(uint8_t semicolon)
 		a.sp_inc = 1;
 		b.var_type = CONST;
 		b.initialized = false;
-		b.data_type = STRING; //doesnt matter
+		b.data_type = INT; //doesnt matter
 		for(int32_t i=0;i<mainContext->locCount;i++)
 		{
 			a.offset = (*activeOffset)++;
@@ -772,6 +772,7 @@ void write()
 	// keyword write already loaded from STMT
 	uint32_t count = term_list();
 	a.int_ = count;
+	b.offset = (*activeOffset) - 1;
 	generateInstruction(WRITE,&a,&b);
 	if(activeOffset == &mainOffset)
 		*activeOffset = activeContext->locCount + 1;

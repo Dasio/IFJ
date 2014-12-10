@@ -209,9 +209,10 @@ void Instr_READLN_GI(Instruction *i) {
 }
 
 
-// WRITE 1    number of arguments - first operand
+// WRITE 1    number of arguments - first operand ...
+//            offset of last pushed argument - second operand
 void Instr_WRITE(Instruction *i) {
-	StackData *op = vectorAt(stack.vect, stack.SP);
+	StackData *op = vectorAt(stack.vect, stack.BP + i->src_1.offset);
 	for (int x = 0; x < i->dst.int_; x++)
 	{
 		//fprintf(stderr,"Write, data = %d\n",op->data_type);
@@ -748,6 +749,12 @@ void Instr_JMP_F(Instruction *i) {
 void Instr_JMP(Instruction *i) {
 
 	IP = i->dst.offset;
+}
+
+// RESET_SP
+void Instr_RESET_SP(Instruction *i) {
+
+	stack.SP = i->dst.offset;
 }
 
 // HALT
