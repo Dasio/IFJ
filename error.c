@@ -23,6 +23,7 @@ static const int returnCodeTable[] = {
 	[ERR_BadDefArg]         = 3,
 	[ERR_NoDefFunc]         = 3,
 	[ERR_BuiltFuncAsID]		= 3,
+	[ERR_VarAsFunc]			= 3,
 	[ERR_ReadBool]			= 4,
 	// Expression
 	[ERR_SyntaxExpr]		= 2,
@@ -106,6 +107,9 @@ void printError()
 			break;
 		case ERR_ReadBool:
 			printErrorDetails("Cant't read input into bool variable");
+			break;
+		case ERR_VarAsFunc:
+			printErrorDetails("Local variable name can't be same as function name");
 			break;
 		case ERR_ReadInput:
 			printErrorDetails("Wrong input");

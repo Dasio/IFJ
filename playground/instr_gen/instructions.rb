@@ -441,7 +441,7 @@ c.puts '
 		Instr_PUSHX_GS Instr_PUSHX_GD Instr_PUSHX_GI Instr_PUSHX_GB
 		Instr_RET
 		Instr_CALL Instr_CALL_LENGTH Instr_CALL_COPY Instr_CALL_FIND Instr_CALL_SORT
-		Instr_JMP_T Instr_JMP_F Instr_JMP Instr_HALT)
+		Instr_JMP_F Instr_JMP Instr_HALT)
 	regular_instructions.each do |i|
 		c.puts "	if(*ptr == #{i}) return \"#{i}\";"
 	end

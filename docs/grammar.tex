@@ -1,46 +1,46 @@
 \begin{table}[H]
 \scalebox{0.88}{
 \begin{tabular}{rll}
-\rownumber: & PROGRAM                 & $\to$ VAR\_DECLR FUNC COMPOUND\_STMT . \\
+\rownumber: & \textit{PROGRAM}                 & $\to$ \textit{VAR\_DECLR FUNC COMPOUND\_STMT} . \\
 
-\rownumber: & VAR\_DECLR               & $\to $ var VAR\_DEF \\
-\rownumber: & VAR\_DECLR               & $\to $ $\epsilon$ \\
-\rownumber: & VAR\_DEF                 & $\to $ id : type ; VAR\_DEFN \\
-\rownumber: & VAR\_DEFN                & $\to $ id : type ; VAR\_DEFN \\
-\rownumber: & VAR\_DEFN                & $\to $ $\epsilon$ \\
+\rownumber: & \textit{VAR\_DECLR}               & $\to $ var \textit{VAR\_DEF} \\
+\rownumber: & \textit{VAR\_DECLR}               & $\to $ $\epsilon$ \\
+\rownumber: & \textit{VAR\_DEF}                 & $\to $ id : type ; \textit{VAR\_DEFN} \\
+\rownumber: & \textit{VAR\_DEFN}                & $\to $ id : type ; \textit{VAR\_DEFN} \\
+\rownumber: & \textit{VAR\_DEFN}                & $\to $ $\epsilon$ \\
 
-\rownumber: & FUNC                    & $\to $ function id PARAM\_DEF\_LIST : type ; FORWARD FUNC \\
-\rownumber: & FUNC                    & $\to $ $\epsilon$ \\
-\rownumber: & FORWARD                 & $\to $ forward ; \\
-\rownumber: & FORWARD                 & $\to $ VAR\_DECLR COMPOUND\_SEMICOLON\_STMT \\
+\rownumber: & \textit{FUNC}                    & $\to $ function id \textit{PARAM\_DEF\_LIST} : type ; \textit{FORWARD FUNC} \\
+\rownumber: & \textit{FUNC}                    & $\to $ $\epsilon$ \\
+\rownumber: & \textit{FORWARD}                 & $\to $ forward ; \\
+\rownumber: & \textit{FORWARD}                 & $\to $ \textit{VAR\_DECLR COMPOUND\_SEMICOLON\_STMT} \\
 
-\rownumber: & PARAM\_DEF\_LIST          & $\to $ ( PARAMS\_DEF ) \\
-\rownumber: & PARAMS\_DEF              & $\to $ id : type PARAMS\_DEF\_N \\
-\rownumber: & PARAMS\_DEF              & $\to $ $\epsilon$ \\
-\rownumber: & PARAMS\_DEF\_N            & $\to $ ; id : type PARAMS\_DEF\_N \\
-\rownumber: & PARAMS\_DEF\_N            & $\to $ $\epsilon$ \\
+\rownumber: & \textit{PARAM\_DEF\_LIST}          & $\to $ ( \textit{PARAMS\_DEF} ) \\
+\rownumber: & \textit{PARAMS\_DEF}              & $\to $ id : type \textit{PARAMS\_DEF\_N} \\
+\rownumber: & \textit{PARAMS\_DEF}              & $\to $ $\epsilon$ \\
+\rownumber: & \textit{PARAMS\_DEF\_N}            & $\to $ ; id : type \textit{PARAMS\_DEF\_N} \\
+\rownumber: & \textit{PARAMS\_DEF\_N}            & $\to $ $\epsilon$ \\
 
-\rownumber: & TERM\_LIST               & $\to $ ( TERMS ) \\
-\rownumber: & TERMS                   & $\to $ term TERMS\_N \\
-\rownumber: & TERMS\_N                 & $\to $ , term TERMS\_N \\
-\rownumber: & TERMS\_N                 & $\to $ $\epsilon$ \\
+\rownumber: & \textit{TERM\_LIST}               & $\to $ ( \textit{TERMS} ) \\
+\rownumber: & \textit{TERMS}                   & $\to $ term \textit{TERMS\_N} \\
+\rownumber: & \textit{TERMS\_N}                 & $\to $ , term \textit{TERMS\_N} \\
+\rownumber: & \textit{TERMS\_N}                 & $\to $ $\epsilon$ \\
 
-\rownumber: & COMPOUND\_STMT           & $\to $ begin STMT\_E end \\
-\rownumber: & COMPOUND\_SEMICOLON\_STMT & $\to $ COMPOUND\_STMT ; \\
-\rownumber: & STMT\_LIST               & $\to $ $\epsilon$ \\
-\rownumber: & STMT\_LIST               & $\to $ ; STMT STMT\_LIST \\
-\rownumber: & STMT\_E                  & $\to $ STMT STMT\_LIST \\
-\rownumber: & STMT\_E                  & $\to $ $\epsilon$ \\
-\rownumber: & STMT                    & $\to $ id := EXPR \\
-\rownumber: & STMT                    & $\to $ if EXPR then COMPOUND\_STMT IF\_N \\
-\rownumber: & STMT                    & $\to $ while EXPR do COMPOUND\_STMT \\
-\rownumber: & STMT                    & $\to $ repeat STMT STMT\_LIST until EXPR \\
-\rownumber: & STMT                    & $\to $ COMPOUND\_STMT \\
-\rownumber: & STMT                    & $\to $ readln ( id ) \\
-\rownumber: & STMT                    & $\to $ write TERM\_LIST \\
+\rownumber: & \textit{COMPOUND\_STMT}           & $\to $ begin \textit{STMT\_E} end \\
+\rownumber: & \textit{COMPOUND\_SEMICOLON\_STMT} & $\to $ \textit{COMPOUND\_STMT} ; \\
+\rownumber: & \textit{STMT\_LIST}               & $\to $ $\epsilon$ \\
+\rownumber: & \textit{STMT\_LIST}               & $\to $ ; \textit{STMT STMT\_LIST} \\
+\rownumber: & \textit{STMT\_E}                  & $\to $ \textit{STMT STMT\_LIST} \\
+\rownumber: & \textit{STMT\_E}                  & $\to $ $\epsilon$ \\
+\rownumber: & \textit{STMT}                    & $\to $ id := \textit{EXPR} \\
+\rownumber: & \textit{STMT}                    & $\to $ if \textit{EXPR} then \textit{COMPOUND\_STMT IF\_N} \\
+\rownumber: & \textit{STMT}                    & $\to $ while \textit{EXPR} do \textit{COMPOUND\_STMT} \\
+\rownumber: & \textit{STMT}                    & $\to $ repeat \textit{STMT STMT\_LIST} until \textit{EXPR} \\
+\rownumber: & \textit{STMT}                    & $\to $ \textit{COMPOUND\_STMT} \\
+\rownumber: & \textit{STMT}                    & $\to $ readln ( id ) \\
+\rownumber: & \textit{STMT}                    & $\to $ write \textit{TERM\_LIST} \\
 
-\rownumber: & IF\_N                    & $\to $ else COMPOUND\_STMT \\
-\rownumber: & IF\_N                    & $\to $ $\epsilon$
+\rownumber: & \textit{IF\_N}                    & $\to $ else \textit{COMPOUND\_STMT} \\
+\rownumber: & \textit{IF\_N}                    & $\to $ $\epsilon$
 \end{tabular}
 } % scalar
 \end{table}

@@ -137,7 +137,7 @@ Symbol *SymbolFind(Context *funCont, char *name)
 	return item == NULL ? NULL : &(item->data);
 }
 
-Symbol *SymbolAdd(Context *funCont, SymbolType type, char *name, Context *symbolContext, Symbol *foundSymbol)
+Symbol *SymbolAdd(Context *funCont, SymbolType type, char *name, Context *symbolContext, Symbol *foundSymbol, bool skipCheck)
 {
 	Symbol *symbol = foundSymbol?foundSymbol:SymbolFind(funCont, name);
 	if (symbol != NULL)
@@ -152,13 +152,34 @@ Symbol *SymbolAdd(Context *funCont, SymbolType type, char *name, Context *symbol
 		setError(ERR_Allocation);
 		return NULL;
 	}
-
 	// fill newItem
 	newItem->data.type = type;
-	if (funCont == mainContext) // global variables indexed from 1
+	if (funCont == mainContext)
+	{
+		// global variables indexed from 1
 		newItem->data.index = ++(funCont->locCount);
-	else // local variables indexed from 2
+	}
+	else
+	{
+		// local variables indexed from 2
 		newItem->data.index = ++(funCont->locCount) + 1;
+		// Check if var name doesn't collide with function
+		if(!skipCheck)
+		{
+			SymbolList **table = mainContext->locTable;
+			for(int32_t index = 0; index<mainContext->locSize; index++)
+			{
+				for(SymbolList *item = table[index]; item != NULL; item=item->next)
+				{
+					if(item->data.type == T_FunPointer && strcmp(name,item->data.name) == 0)
+					{
+						setError(ERR_VarAsFunc);
+						return NULL;
+					}
+				}
+			}
+		}
+	}
 	newItem->data.name = name;
 	newItem->data.funCont = symbolContext;
 	newItem->data.stateFunc = FS_Undefined;

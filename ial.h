@@ -80,9 +80,10 @@ Symbol *SymbolFind(Context *Cont, char *name);
  * @param  name          Name of symbol
  * @param  SymbolContext Pointer to symbol's Context if type is T_FunPointer
  * @param  foundSymbol   If not null, function dont have to call again SymbolFind
+ * @param  skipCheck	 If false, function will check if symbol name doesn't collide with function
  * @return               Pointer to Symbol, NULL if failed
  */
-Symbol *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext, Symbol *foundSymbol);
+Symbol *SymbolAdd(Context *FunCont, SymbolType type, char *name, Context *SymbolContext, Symbol *foundSymbol, bool skipCheck);
 
 
 
