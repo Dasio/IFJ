@@ -166,12 +166,10 @@ Symbol *SymbolAdd(Context *funCont, SymbolType type, char *name, Context *symbol
 		// Check if var name doesn't collide with function
 		if(!skipCheck)
 		{
-			SymbolList *item;
 			SymbolList **table = mainContext->locTable;
 			for(int32_t index = 0; index<mainContext->locSize; index++)
 			{
-				item = table[index];
-				for(; item != NULL; item=item->next)
+				for(SymbolList *item = table[index]; item != NULL; item=item->next)
 				{
 					if(item->data.type == T_FunPointer && strcmp(name,item->data.name) == 0)
 					{

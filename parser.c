@@ -892,12 +892,10 @@ void addArgToFunc(SymbolType type, char *name)
 }
 void checkFuncDefinitions()
 {
-	SymbolList *item;
 	SymbolList **table = mainContext->locTable;
 	for(int32_t index = 0; index<mainContext->locSize; index++)
 	{
-		item = table[index];
-		for(; item != NULL; item=item->next)
+		for(SymbolList *item = table[index]; item != NULL; item=item->next)
 		{
 			if(item->data.type == T_FunPointer && item->data.stateFunc != FS_Defined)
 			{
