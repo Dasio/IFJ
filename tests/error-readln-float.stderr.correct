@@ -1,0 +1,1 @@
+tests/error-readln-float.pas:8:0: Error: Readed wrong value from stdin Readed '' (type id: 21).

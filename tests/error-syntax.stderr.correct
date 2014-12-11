@@ -1,0 +1,1 @@
+tests/error-syntax.pas:12:3: Error: Expected 'begin' Readed 'var' (type id: 3).

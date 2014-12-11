@@ -352,12 +352,13 @@ static void reduce(ExprTokenVector *expr_vector)
 		{
 			reduce_handle_function(handle);
 		}
-		else if (handle.tokens_count == 3 && handle.first->type == NONTERM) //// 3 tokens... E + E ... ( E )
+		else if (handle.tokens_count == 3) //// 3 tokens... E + E ... ( E )
 		{
 			reduce_handle_three_tokens(handle);
 		}
 		else
 		{
+			//ExprTokenVectorPrint(expr_vector);
 			/*
 			fprintf(stderr, "%d\n", handle.tokens_count);
 			fprintf(stderr, "%s", stringifyToken(top_most_term->token));
@@ -561,7 +562,7 @@ static void reduce_two_constants(THandle handle)
 			case TT_division:
 				if (handle.first[2].E.int_ == 0)
 				{
-					setError(ERR_TypeCompatibility);
+					setError(ERR_DivisionByZero);
 					return;
 				}
 				handle.first[0].E.double_ = (double)handle.first[0].E.int_ / handle.first[2].E.int_;
@@ -605,7 +606,7 @@ static void reduce_two_constants(THandle handle)
 			case TT_division:
 				if (handle.first[2].E.double_ == 0)
 				{
-					setError(ERR_TypeCompatibility);
+					setError(ERR_DivisionByZero);
 					return;
 				}
 				handle.first[0].E.double_ = handle.first[0].E.int_ / handle.first[2].E.double_;
@@ -649,7 +650,7 @@ static void reduce_two_constants(THandle handle)
 			case TT_division:
 				if (handle.first[2].E.int_ == 0)
 				{
-					setError(ERR_TypeCompatibility);
+					setError(ERR_DivisionByZero);
 					return;
 				}
 				handle.first[0].E.double_ = handle.first[0].E.double_ / handle.first[2].E.int_;
@@ -693,7 +694,7 @@ static void reduce_two_constants(THandle handle)
 			case TT_division:
 				if (handle.first[2].E.double_ == 0)
 				{
-					setError(ERR_TypeCompatibility);
+					setError(ERR_DivisionByZero);
 					return;
 				}
 				handle.first[0].E.double_ = handle.first[0].E.double_ / handle.first[2].E.double_;
@@ -1081,7 +1082,7 @@ void ExprTokenVectorPrint(ExprTokenVector *expr_token_vector)
 	for (int64_t i = 0; i < expr_token_vector->used; i++)
 	{
 		expr_token = ExprTokenVectorAt(expr_token_vector, i);
-		if (expr_token->type == NONTERM)
+		if (expr_token->type == NONTERM && expr_token->E.var_type == CONST)
 			ExprTokenPrint(expr_token);
 		else
 			fprintf(stderr, "%s ", stringifyToken(expr_token->token));

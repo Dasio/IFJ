@@ -1,0 +1,1 @@
+tests/div-zero.pas:30:0: Error: Semantic error dividing by 0 Readed '' (type id: 21).

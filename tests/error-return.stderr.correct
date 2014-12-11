@@ -1,0 +1,1 @@
+tests/error-return.pas:19:0: Error: Function return unicialized Readed '' (type id: 21).

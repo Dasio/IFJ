@@ -7110,7 +7110,6 @@ char *stringifyInstructionPtr(InstrFuncPtr ptr) {
 	if(*ptr == Instr_CALL_COPY) return "Instr_CALL_COPY";
 	if(*ptr == Instr_CALL_FIND) return "Instr_CALL_FIND";
 	if(*ptr == Instr_CALL_SORT) return "Instr_CALL_SORT";
-	if(*ptr == Instr_JMP_T) return "Instr_JMP_T";
 	if(*ptr == Instr_JMP_F) return "Instr_JMP_F";
 	if(*ptr == Instr_JMP) return "Instr_JMP";
 	if(*ptr == Instr_HALT) return "Instr_HALT";

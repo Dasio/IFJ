@@ -1,0 +1,1 @@
+tests/error-function-name.pas:4:12: Error: Function already defined Readed 'foo' (type id: 26).

@@ -1,0 +1,1 @@
+tests/error-forward4.pas:11:32: Error: Function forward declaration doesn't match definition Readed 'integer' (type id: 54).

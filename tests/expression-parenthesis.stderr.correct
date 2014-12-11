@@ -1,0 +1,1 @@
+tests/expression-parenthesis.pas:23:2: Error: Got error sign from precedence table Readed 'b' (type id: 26).

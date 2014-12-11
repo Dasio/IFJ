@@ -139,9 +139,6 @@ void generateInstruction(InstructionOp op, Operand* a, Operand* b, Operand* c) {
 					break;
 			}
 			break;
-		case JMP_T:
-			i_ptr = Instr_JMP_T;
-			break;
 		case JMP_F:
 			i_ptr = Instr_JMP_F;
 			break;
@@ -258,7 +255,7 @@ void runInterpretation() {
 	Instruction *first = InstructionVectorFirst(tape);
 	assert(first && "Instruction tape is empty!");
 
-	dumpTape();
+	//dumpTape();
 
 	while(true) {
 		Instruction *i = first + IP;

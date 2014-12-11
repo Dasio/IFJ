@@ -1,0 +1,1 @@
+tests/error-vars.pas:3:5: Error: Variable already defined Readed 'p' (type id: 26).

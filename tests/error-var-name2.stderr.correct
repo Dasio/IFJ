@@ -1,0 +1,1 @@
+tests/error-var-name2.pas:5:8: Error: Variable already defined Readed 'foox' (type id: 26).

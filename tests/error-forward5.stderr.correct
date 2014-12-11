@@ -1,0 +1,1 @@
+tests/error-forward5.pas:11:34: Error: Function forward declaration doesn't match definition Readed '' (type id: 23).

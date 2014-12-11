@@ -1,0 +1,1 @@
+tests/error-semicolon.pas:52:16: Error: Unexpected ';' Readed '' (type id: 24).

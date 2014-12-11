@@ -7,6 +7,9 @@
 
 #include "memory_mgmt.h"
 
+ extern InstructionVector *tape;
+ extern Stack stack;
+
 GenVectorFunctions(MemItem)
 
 static MemItemVector *memory_layout = NULL;
@@ -70,6 +73,9 @@ void implodeMemory() {
 
 void die() {
 	implodeMemory();
+	StackDataVectorFree(stack.vect);
+	InstructionVectorFree(tape);
+
 	int exit_code = 9;
 	if(getError()) {
 		printError();

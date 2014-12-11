@@ -7,6 +7,8 @@
 
 #include "system.h"
 #include "vector.h"
+#include "stack.h"
+#include "instruction.h"
 
 #ifndef MEMORY_MGMT_H
 #define MEMORY_MGMT_H

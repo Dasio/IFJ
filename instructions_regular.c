@@ -13,7 +13,6 @@ Scanner scannerMain;
 extern void *mem_alloc(size_t len);
 extern Stack stack;
 extern int64_t IP;
-extern InstructionVector *tape;
 
 static StackData operand;
 static StackData empty = { .initialized=false };
@@ -594,6 +593,7 @@ void Instr_CALL_LENGTH(Instruction *i) {
 	StackData *op = vectorAt(stack.vect, stack.BP + i->src_2.offset);
 	uint32_t len = op->str->length;
 	(--op)->int_ = len;
+	op->initialized = true;
 }
 
 
@@ -644,6 +644,7 @@ void Instr_CALL_FIND(Instruction *i) {
 	int n = FindString(s,string);
 
 	(--op)->int_ = n;
+	op->initialized = true;
 }
 
 // CALL_SORT
@@ -674,12 +675,6 @@ void Instr_RET(Instruction *i) {
 	IP = (++BP_ptr)->offset;
 }
 
-// JMP_T
-void Instr_JMP_T(Instruction *i) {
-
-	if (vectorAt(stack.vect, stack.BP + i->src_1.offset)->bool_ == true)
-		IP = i->dst.offset;
-}
 
 // JMP_F
 void Instr_JMP_F(Instruction *i) {
@@ -702,9 +697,6 @@ void Instr_HALT(Instruction *i) {
 		destroyTokenVector(tokenVectorMain);
 	if(scanner_initialized)
 		destroyScanner(&scannerMain);
-
-	StackDataVectorFree(stack.vect);
-	InstructionVectorFree(tape);
 
 	implodeMemory();
 	exit(0);

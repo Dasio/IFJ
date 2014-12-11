@@ -1,0 +1,1 @@
+tests/write.pas:6:15: Error: Wrong syntax in expression Readed 'write' (type id: 64).
