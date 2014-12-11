@@ -125,7 +125,7 @@ void var_def(uint8_t next)
 		return;
 	}
 	// Add variable to symbol table
-	SymbolAdd(activeContext, symbolType, name, NULL, NULL);
+	SymbolAdd(activeContext, symbolType, name, NULL, NULL, false);
 
 	if(getError())
 		return;
@@ -791,11 +791,11 @@ void addFunc(char *name)
 		funcContext = InitContext();
 		if(getError())
 			return;
-		funcSymbol = SymbolAdd(mainContext, T_FunPointer, name, funcContext, NULL);
+		funcSymbol = SymbolAdd(mainContext, T_FunPointer, name, funcContext, NULL, false);
 		if(getError())
 			return;
 		funcSymbol->stateFunc = FS_Undefined;
-		SymbolAdd(funcContext, T_Undefined, name, NULL, NULL);
+		SymbolAdd(funcContext, T_Undefined, name, NULL, NULL, true);
 		if(getError())
 			return;
 		inGST=0;
@@ -913,21 +913,21 @@ void addBuiltInFunctions()
 	Symbol *symbol;
 	// length(s : string) : integer
 	funcContext = InitContext();
-	symbol = SymbolAdd(mainContext, T_FunPointer, "length", funcContext, NULL);
+	symbol = SymbolAdd(mainContext, T_FunPointer, "length", funcContext, NULL, false);
 	symbol->index = -1;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_int;
-	SymbolAdd(funcContext, T_int, "length", NULL, NULL);
+	SymbolAdd(funcContext, T_int, "length", NULL, NULL, true);
 	AddArgToContext(funcContext, T_String, "s", NULL);
 	funcContext->locCount--;
 
 	// copy(s : string; i : integer; n : integer) : string
 	funcContext = InitContext();
-	symbol = SymbolAdd(mainContext, T_FunPointer, "copy", funcContext, NULL);
+	symbol = SymbolAdd(mainContext, T_FunPointer, "copy", funcContext, NULL, false);
 	symbol->index = -2;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_String;
-	SymbolAdd(funcContext, T_String, "copy", NULL, NULL);
+	SymbolAdd(funcContext, T_String, "copy", NULL, NULL, true);
 	AddArgToContext(funcContext, T_String, "s", NULL);
 	AddArgToContext(funcContext, T_int, "i", NULL);
 	AddArgToContext(funcContext, T_int, "n", NULL);
@@ -935,22 +935,22 @@ void addBuiltInFunctions()
 
 	// find(s : string; search : string) : integer
 	funcContext = InitContext();
-	symbol = SymbolAdd(mainContext, T_FunPointer, "find", funcContext, NULL);
+	symbol = SymbolAdd(mainContext, T_FunPointer, "find", funcContext, NULL, false);
 	symbol->index = -3;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_int;
-	SymbolAdd(funcContext, T_int, "find", NULL, NULL);
+	SymbolAdd(funcContext, T_int, "find", NULL, NULL, true);
 	AddArgToContext(funcContext, T_String, "s", NULL);
 	AddArgToContext(funcContext, T_String, "search", NULL);
 	funcContext->locCount--;
 
 	// sort(s : string) : string
 	funcContext = InitContext();
-	symbol = SymbolAdd(mainContext, T_FunPointer, "sort", funcContext, NULL);
+	symbol = SymbolAdd(mainContext, T_FunPointer, "sort", funcContext, NULL, false);
 	symbol->index = -4;
 	symbol->stateFunc = FS_Defined;
 	funcContext->returnType = T_String;
-	SymbolAdd(funcContext, T_String, "name", NULL, NULL);
+	SymbolAdd(funcContext, T_String, "name", NULL, NULL, true);
 	AddArgToContext(funcContext, T_String, "s", NULL);
 	funcContext->locCount--;
 
