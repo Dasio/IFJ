@@ -66,7 +66,7 @@
 %http://stackoverflow.com/questions/1788598/how-to-force-two-figures-to-stay-on-the-same-page-in-latex
 \usepackage{float}
 % velikost stranky
-\usepackage[top=3.5cm, left=2.5cm, text={17cm, 24cm}, ignorefoot]{geometry}
+\usepackage[top=3.5cm, left=2.0cm, text={17cm, 24cm}, ignorefoot]{geometry}
 
 \begin{document}
 
@@ -106,6 +106,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Interpret}
+
+\begin{tabularx}{\textwidth}{X|l}
+  \textbf{Symptom} & \textbf{Metric} \\
+\hline
+Class that has many accessor methods and accesses a lot of external data & ATFD is more than a few\\
+Class that is large and complex & WMC is high\\
+Class that has a lot of methods that only operate on a proper subset of the instance variable set & TCC is low\\
+\end{tabularx}
 
 \subsection{Algoritmy}
 	\todo[inline]{Sem dopíše Tomáš postupy postupy riešenia algoritmov etc.}
