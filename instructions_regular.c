@@ -698,6 +698,5 @@ void Instr_HALT(Instruction *i) {
 	if(scanner_initialized)
 		destroyScanner(&scannerMain);
 
-	implodeMemory();
-	exit(0);
+	die(0);
 }
