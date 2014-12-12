@@ -516,7 +516,7 @@ uint8_t stmt(uint8_t empty)
 		case TT_identifier:
 			// Check if was declared
 			id = findVarOrFunc(token->str.data,&scope);
-			if(getError())
+			if(getError() != 0 && getError() != ERR_BuiltFuncAsID)
 				return 0;
 			token++;
 			if(token->type != TT_assignment)
@@ -524,6 +524,9 @@ uint8_t stmt(uint8_t empty)
 				setError(ERR_Syntax);
 				return 0;
 			}
+			// Check for ERR_BuiltFuncAsID
+			if(getError())
+				return 0;
 			exprType = expr();
 			if(getError())
 				return 0;
@@ -972,18 +975,18 @@ Symbol *findVarOrFunc(char *name, VariableType *scope)
 			return NULL;
 		}
 		// Bultin function cant be as identifier
-		if(id->index < 0)
+		if(id->type == T_FunPointer && id->index < 0)
 		{
 			setError(ERR_BuiltFuncAsID);
-			return NULL;
+			return id;
 		}
 		*scope = GLOBAL;
 		return id;
 	}
-	if(id->index < 0)
+	if(id->type == T_FunPointer && id->index < 0)
 	{
 		setError(ERR_BuiltFuncAsID);
-		return NULL;
+		return id;
 	}
 	*scope = activeContext == mainContext ? GLOBAL : LOCAL;
 	return id;
