@@ -18,6 +18,11 @@ void destroyToken(Token *token) {
 		case TT_real:
 		case TT_integer:
 		case TT_bool:
+		case TT_and:
+		case TT_or:
+		case TT_not:
+		case TT_xor:
+		
 			return;
 		default: break;
 	}

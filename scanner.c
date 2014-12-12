@@ -311,11 +311,6 @@ static inline void processSingleCharToken(Scanner *scanner, Token *token, char s
 			token->type = TT_rightBrace;
 			return;
 		}
-		case '}': {
-			scanner->state =  SOS_rightCurlyBrace;
-			token->type = TT_rightCurlyBrace;
-			return;
-		}
 		case ';': {
 			scanner->state =  SOS_semicolon;
 			token->type = TT_semicolon;
@@ -598,14 +593,12 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 		case SOS_less: {
 			if (symbol == '=') {
-				setState(SOS_lessOrEqual);
 				token->type = TT_lessOrEqual;
 				terminalState();
 
 				return true;
 			}
 			else if (symbol == '>') {
-				setState(SOS_inequality);
 				token->type = TT_inequality;
 				terminalState();
 

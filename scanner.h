@@ -60,13 +60,12 @@ typedef enum
 	SOS_realESign,		// 33
 	SOS_realEValue,		// 34
 	SOS_rightBrace,		// 35
-	SOS_rightCurlyBrace,// 36
-	SOS_semicolon,		// 37
-	SOS_string,			// 38 ADD
-	SOS_stringHashtag,	// 39 ADD
-	SOS_stringASCII,	// 40 ADD
-	SOS_stringApostrophe,// 41 ADD
-	SOS_whitespace		// 42
+	SOS_semicolon,		// 36
+	SOS_string,			// 37 ADD
+	SOS_stringHashtag,	// 38 ADD
+	SOS_stringASCII,	// 39 ADD
+	SOS_stringApostrophe,// 40 ADD
+	SOS_whitespace		// 41
 } stateOfScanner;
 
 typedef struct
