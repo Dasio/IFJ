@@ -15,10 +15,13 @@ Stack stack = {.BP = 0};
 
 void initInterpret() {
 	stack.vect = StackDataVectorInit(DEFAULT_STACK_SIZE);
+	initialized_items.stack = true;
 
 	// TODO: Test optimal initial size
-	if(!tape)
+	if(!tape) {
 		tape = InstructionVectorInit(512);
+		initialized_items.tape = true;
+	}
 }
 
 /**

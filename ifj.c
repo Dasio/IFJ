@@ -4,63 +4,46 @@
 #include "interpreter.h"
 #include "memory_mgmt.h"
 
-extern bool scanner_initialized;
-extern bool token_vector_initialized;
+#include "initializer.h"
+
 extern TokenVector *tokenVectorMain;
-extern Scanner scannerMain;
+extern Scanner scannerMain; // Defined in instructions_regular.c
 
 int main(int argc, char *argv[]) {
-	// Error code initialized to success
-	int ecode = 0;
-	scanner_initialized = false;
-	token_vector_initialized = false;
-
+	// Missing parameter
 	if(argc <= 1) {
 		setError(ERR_CannotOpenFile);
-		goto err;
+		die();
 	}
 
 	// Scanner initialization
 	scannerMain = initScanner();
-	scanner_initialized = true;
+	initialized_items.scanner = true;
 
 	assignFile(&scannerMain.input, argv[1]);
 
 	if(getError())
-		goto err;
+		die();
 
 	// Scanner
 	tokenVectorMain = getTokenVector(&scannerMain);
-	token_vector_initialized = true;
+	initialized_items.tokens = true;
 
 	if(getError())
-		goto err;
+		die();
 
 	initInterpret();
 
 	// Recursive descent
 	parse(tokenVectorMain);
 
-	if(getError())
-		goto err;
+	if(getError()) {
+		die();
+	}
 
 	// Interpretation
 	runInterpretation();
 
-	// Error handling
-err:
-	if(getError()) {
-		printError();
-		ecode = getReturnError();
-	}
-
-	// Cleanup done in HALT instruction
-	// if(token_vector_initialized)
-	// 	destroyTokenVector(tokenVectorMain);
-	// if(scanner_initialized)
-	// 	destroyScanner(&scannerMain);
-
-	//implodeMemory();
-
-	return ecode;
+	// Unreachable statement
+	return 0;
 }

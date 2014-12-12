@@ -72,15 +72,16 @@ void implodeMemory() {
 }
 
 void die() {
-	implodeMemory();
-	StackDataVectorFree(stack.vect);
-	InstructionVectorFree(tape);
-
 	int exit_code = 0;
 	if(getError()) {
 		printError();
 		exit_code = getReturnError();
 	}
+
+	// Implosion must be after printing error, printError() may call
+	// stringifyToken() which reads token's string, causing invalid read.
+	deinitRegisteredStructures();
+	implodeMemory();
 
 	exit(exit_code);
 }

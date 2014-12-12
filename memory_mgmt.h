@@ -10,6 +10,8 @@
 #include "stack.h"
 #include "instruction.h"
 
+#include "initializer.h"
+
 #ifndef MEMORY_MGMT_H
 #define MEMORY_MGMT_H
 
