@@ -829,14 +829,15 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 			// In GST is just declaration
 			else
 			{
-				//@todo Adresss Vector
 				funcSymbol->stateFunc = FS_Defined;
 
 				int64_t *address = int64_tVectorFirst(funcSymbol->adressVector);
 				for (int64_t i = 0; i < funcSymbol->adressVector->used; i++)
 				{
+					//fprintf(stderr, "index_tape: %d\n", *address);
 					Instruction *instr = InstructionVectorAt(tape, *address);
 					instr->dst.offset = tape->used - 1;
+					address++;
 				}
 				int64_tVectorFree(funcSymbol->adressVector);
 			}

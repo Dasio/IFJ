@@ -10,7 +10,7 @@ ksucet:integer; sucet:integer;
 function gabs(a : integer) : integer; forward;
 
 function gdiv(a : integer; b : integer) : integer;
-var sign : integer; tmp : integer; 
+var sign : integer; tmp : integer;
 begin
 	if a * b < 0 then
 		begin
@@ -57,13 +57,13 @@ begin
 	readln(n);
 
   k:=0; z:=0; zsucet:=0; ksucet:=0; sucet:=0;
-	
+
 	i := 1;
 	while i <= n do
 		begin
 			write('Napis ', i, '. cislo: ');
 			readln(cislo);
-			if cislo > 0 then 
+			if cislo > 0 then
 				begin
 					k := k + 1;
 					while cislo <> 0 do
@@ -71,7 +71,7 @@ begin
 							ksucet := ksucet + gmod(cislo, 10);
 							cislo := gdiv(cislo, 10)
 						end { while }
-				end 
+				end
 			else
 				begin
 				end; { if-else }
