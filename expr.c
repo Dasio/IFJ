@@ -243,7 +243,11 @@ DataType expr()
 	while (end_of_eval)
 	{
 		convert_to_ExprToken(token, expr_token_vector);
-		if(getError()) return EXPR_ERROR;
+		if(getError())
+		{
+			ExprTokenVectorFree(expr_token_vector);
+			return EXPR_ERROR;
+		}
 
 AFTER_REDUCE:
 		action = precedence(expr_token_vector);
@@ -264,6 +268,7 @@ AFTER_REDUCE:
 					break;
 				}
 				setError(ERR_PrecedenceTable);
+				ExprTokenVectorFree(expr_token_vector);
 				return EXPR_ERROR;
 			case SHIFT:
 				ExprTokenVectorAppend(expr_token_vector, temp_expr_token);
@@ -275,7 +280,11 @@ AFTER_REDUCE:
 				break;
 			case REDUCE:
 				reduce(expr_token_vector);
-				if(getError()) return EXPR_ERROR;
+				if(getError())
+				{
+					ExprTokenVectorFree(expr_token_vector);
+					return EXPR_ERROR;
+				}
 				goto AFTER_REDUCE;
 				break;
 		}
@@ -348,7 +357,7 @@ static void reduce(ExprTokenVector *expr_vector)
 		{
 			reduce_handle_not(handle);
 		}
-		else if (handle.first->token->type == TT_function) // 3, 4, 6, 8 .. tokens
+		else if (handle.first->type != NONTERM && handle.first->token->type == TT_function) // 3, 4, 6, 8 .. tokens
 		{
 			reduce_handle_function(handle);
 		}

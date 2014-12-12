@@ -9,7 +9,7 @@ extern Token *token;
 static const int returnCodeTable[] = {
 	[ERR_None]              = 0,
 	[ERR_Allocation]        = 99,
-	[ERR_CannotOpenFile]    = 9,
+	[ERR_CannotOpenFile]    = 99,
 
 	// Lexical analysis
 	[ERR_Lexical]           = 1,
