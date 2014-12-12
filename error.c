@@ -24,7 +24,7 @@ static const int returnCodeTable[] = {
 	[ERR_NoDefFunc]         = 3,
 	[ERR_VarAsFunc]			= 3,
 	[ERR_ReadBool]			= 4,
-	[ERR_FuncAsID]			= 3,
+	[ERR_FuncAsVar]			= 3,
 	// Expression
 	[ERR_SyntaxExpr]		= 2,
 	[ERR_PrecedenceTable]	= 2,
@@ -112,8 +112,8 @@ void printError()
 		case ERR_VarAsFunc:
 			printErrorDetails("Local variable name can't be same as function name");
 			break;
-		case ERR_FuncAsID:
-			printErrorDetails("Expected identifier instead of function");
+		case ERR_FuncAsVar:
+			printErrorDetails("Expected variable instead of function");
 			break;
 		case ERR_ReadInput:
 			printErrorDetails("Wrong input");

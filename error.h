@@ -29,7 +29,7 @@ typedef enum
 	ERR_NoDefFunc,         /**< Function was declared and no defintion was found */
 	ERR_ReadBool,
 	ERR_VarAsFunc,
-	ERR_FuncAsID,
+	ERR_FuncAsVar,
 
 	// Expression
 	ERR_SyntaxExpr,

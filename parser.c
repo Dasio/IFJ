@@ -516,7 +516,7 @@ uint8_t stmt(uint8_t empty)
 		case TT_identifier:
 			// Check if was declared
 			id = findVar(token->str.data,&scope);
-			if(getError() != ERR_None && getError() != ERR_FuncAsID)
+			if(getError() != ERR_None && getError() != ERR_FuncAsVar)
 				return 0;
 			token++;
 			if(token->type != TT_assignment)
@@ -524,7 +524,7 @@ uint8_t stmt(uint8_t empty)
 				setError(ERR_Syntax);
 				return 0;
 			}
-			// Check for ERR_FuncAsID
+			// Check for ERR_FuncAsVar
 			if(getError())
 				return 0;
 			exprType = expr();
@@ -976,7 +976,7 @@ Symbol *findVar(char *name, VariableType *scope)
 		}
 		if(id->type == T_FunPointer)
 		{
-			setError(ERR_FuncAsID);
+			setError(ERR_FuncAsVar);
 			return NULL;
 		}
 		*scope = GLOBAL;
@@ -984,7 +984,7 @@ Symbol *findVar(char *name, VariableType *scope)
 	}
 	if(id->type == T_FunPointer)
 	{
-		setError(ERR_FuncAsID);
+		setError(ERR_FuncAsVar);
 		return NULL;
 	}
 	*scope = activeContext == mainContext ? GLOBAL : LOCAL;
