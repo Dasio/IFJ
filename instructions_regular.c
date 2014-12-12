@@ -672,8 +672,7 @@ void Instr_RET(Instruction *i) {
 	(void) i;
 	StackData *BP_ptr = vectorAt(stack.vect, stack.BP);
 	stack.BP = BP_ptr->offset;
-	BP_ptr++;
-	IP = BP_ptr->offset;
+	IP = (++BP_ptr)->offset;
 }
 
 

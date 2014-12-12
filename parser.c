@@ -212,13 +212,12 @@ void forward(SymbolType returnType)
 			setError(ERR_Syntax);
 			return;
 		}
-	// Add declaration of function to GST
-	updateFunc(returnType,FS_Declared);
-	if(getError())
-		return;
+		// Add declaration of function to GST
+		updateFunc(returnType,FS_Declared);
+		if(getError())
+			return;
 	}
-	// 2. rule = Function Definition
-	else
+	else // 2. rule = Function Definition
 	{
 		// Add definition of function to GST
 		updateFunc(returnType,FS_Defined);
@@ -848,20 +847,24 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 			return;
 		}
 	}
+	else
+		funcContext->locCount--;
+
 	Symbol *symbol = SymbolFind(mainContext,funcSymbol->name);
 	if(getError())
 		return;
+
 	funcContext = symbol->funCont;
 	Symbol *returnSymbol = SymbolFind(funcContext,funcSymbol->name);
 	if(getError())
 		return;
+
 	if(funcState == FS_Declared)
 	{
 		funcSymbol->adressVector = int64_tVectorInit(256);
 	}
 	returnSymbol->type = returnType;
 	funcContext->returnType = returnType;
-	funcContext->locCount--;
 	funcSymbol->index = tape->used - 1;
 	funcSymbol->stateFunc = funcState;
 	returnSymbol->index = -funcContext->argCount - 1;
