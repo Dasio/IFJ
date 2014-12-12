@@ -56,49 +56,49 @@ void printError()
 			break;
 		case ERR_Lexical:
 			printErrorDetails("Invalid input file, "
-							  "lexical analysis cannot proceed");
+							  "lexical analysis cannot proceed:");
 			break;
 		case ERR_Syntax:
-			printErrorDetails("Syntax error");
+			printErrorDetails("Syntax error:");
 			break;
 		case ERR_Unknown:
-			printErrorDetails("Unknown error");
+			printErrorDetails("Unknown error:");
 			break;
 		case ERR_RedefVar:
-			printErrorDetails("Variable was redefined");
+			printErrorDetails("Variable was redefined:");
 			break;
 		case ERR_RedefFunc:
-			printErrorDetails("Function was already defined, can't be defined again");
+			printErrorDetails("Function was already defined, can't be defined again:");
 			break;
 		case ERR_DeclrFunc:
-			printErrorDetails("Function can't be declared more than one time");
+			printErrorDetails("Function can't be declared more than one time:");
 			break;
 		case ERR_BadDefArg:
-			printErrorDetails("Header of function definition don't match with declaration");
+			printErrorDetails("Header of function definition don't match with declaration:");
 			break;
 		case ERR_NoDefFunc:
-			printErrorDetails("Function was declared, but afterward it wasn't defined");
+			printErrorDetails("Function was declared, but afterward it wasn't defined:");
 			break;
 		case ERR_SyntaxExpr:
-			printErrorDetails("Error in syntax of expression");
+			printErrorDetails("Error in syntax of expression:");
 			break;
 		case ERR_PrecedenceTable:
-			printErrorDetails("Error in syntax detected by precedence table");
+			printErrorDetails("Error in syntax detected by precedence table:");
 			break;
 		case ERR_Reduction:
-			printErrorDetails("Error in syntax detected during reduction");
+			printErrorDetails("Error in syntax detected during reduction:");
 			break;
 		case ERR_TypeCompatibility:
-			printErrorDetails("Error in data type of some operand");
+			printErrorDetails("Error in data type of some operand:");
 			break;
 		case ERR_TypeCompatibilityArg:
-			printErrorDetails("Error in data type of some argument");
+			printErrorDetails("Error in data type of some argument:");
 			break;
 		case ERR_UndefVarOrFunction:
-			printErrorDetails("Undefined variable or function");
+			printErrorDetails("Undefined variable or function:");
 			break;
 		case ERR_ArgCount:
-			printErrorDetails("Bad number of arguments in function call");
+			printErrorDetails("Bad number of arguments in function call:");
 			break;
 		case ERR_DivisionByZero:
 			printErrorDetails("You can't divide by zero !");
@@ -107,22 +107,22 @@ void printError()
 			printErrorDetails("Uninitialized acces.");
 			break;
 		case ERR_ReadBool:
-			printErrorDetails("Cant't read input into bool variable");
+			printErrorDetails("Cant't read input into bool variable:");
 			break;
 		case ERR_VarAsFunc:
-			printErrorDetails("Local variable name can't be same as function name");
+			printErrorDetails("Local variable name can't be same as function name:");
 			break;
 		case ERR_FuncAsVar:
 			printErrorDetails("Expected variable instead of function");
 			break;
 		case ERR_ReadInput:
-			printErrorDetails("Wrong input");
+			printErrorDetails("Wrong input:");
 			break;
 		case ERR_OutOfRange:
-			printErrorDetails("Out of range");
+			printErrorDetails("Out of range:");
 			break;
 		default:
-			printErrorDetails("Unrecognized error");
+			printErrorDetails("Unrecognized error:");
 	}
 }
 
