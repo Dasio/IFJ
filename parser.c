@@ -980,6 +980,11 @@ Symbol *findVarOrFunc(char *name, VariableType *scope)
 		*scope = GLOBAL;
 		return id;
 	}
+	if(id->index < 0)
+	{
+		setError(ERR_BuiltFuncAsID);
+		return NULL;
+	}
 	*scope = activeContext == mainContext ? GLOBAL : LOCAL;
 	return id;
 }
