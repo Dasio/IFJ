@@ -76,7 +76,7 @@ void die() {
 	StackDataVectorFree(stack.vect);
 	InstructionVectorFree(tape);
 
-	int exit_code = 9;
+	int exit_code = 0;
 	if(getError()) {
 		printError();
 		exit_code = getReturnError();
