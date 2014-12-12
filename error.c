@@ -32,6 +32,7 @@ static const int returnCodeTable[] = {
 	[ERR_TypeCompatibility]	= 4,
 	[ERR_TypeCompatibilityArg]	= 4,
 	[ERR_UndefVarOrFunction]= 3,
+	[ERR_ArgCount]			= 4,
 
 	// Interpreter
 	[ERR_UnknownInstruction]= 99,
@@ -98,6 +99,9 @@ void printError()
 			break;
 		case ERR_UndefVarOrFunction:
 			printErrorDetails("Undefined variable or function");
+			break;
+		case ERR_ArgCount:
+			printErrorDetails("Bad number of arguments in function call");
 			break;
 		case ERR_DivisionByZero:
 			printErrorDetails("You can't divide by zero !");

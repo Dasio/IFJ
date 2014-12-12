@@ -38,6 +38,7 @@ typedef enum
 	ERR_TypeCompatibility,
 	ERR_TypeCompatibilityArg,
 	ERR_UndefVarOrFunction,
+	ERR_ArgCount,
 
 	// Interpreter
 	ERR_UnknownInstruction,

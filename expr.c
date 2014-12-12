@@ -838,7 +838,7 @@ static inline void reduce_handle_function(THandle handle)
 		}
 		if (i != context->argCount - 1 && (++temp)->token->type != TT_comma)
 		{
-			setError(ERR_Reduction);
+			setError(ERR_ArgCount);
 			return;
 		}
 		temp++;
