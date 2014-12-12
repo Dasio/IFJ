@@ -22,9 +22,9 @@ static const int returnCodeTable[] = {
 	[ERR_DeclrFunc]         = 3,
 	[ERR_BadDefArg]         = 3,
 	[ERR_NoDefFunc]         = 3,
-	[ERR_BuiltFuncAsID]		= 3,
 	[ERR_VarAsFunc]			= 3,
 	[ERR_ReadBool]			= 4,
+	[ERR_FuncAsID]			= 3,
 	// Expression
 	[ERR_SyntaxExpr]		= 2,
 	[ERR_PrecedenceTable]	= 2,
@@ -79,9 +79,6 @@ void printError()
 		case ERR_NoDefFunc:
 			printErrorDetails("Function was declared, but afterward it wasn't defined");
 			break;
-		case ERR_BuiltFuncAsID:
-			printErrorDetails("Built-in function can't be used where identifier is expected");
-			break;
 		case ERR_SyntaxExpr:
 			printErrorDetails("Error in syntax of expression");
 			break;
@@ -114,6 +111,9 @@ void printError()
 			break;
 		case ERR_VarAsFunc:
 			printErrorDetails("Local variable name can't be same as function name");
+			break;
+		case ERR_FuncAsID:
+			printErrorDetails("Expected identifier instead of function");
 			break;
 		case ERR_ReadInput:
 			printErrorDetails("Wrong input");

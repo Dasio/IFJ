@@ -79,11 +79,11 @@ void checkFuncDefinitions();
 void addBuiltInFunctions();
 /**
  * Find symbol in active context, if not found and active context was not function text, then it search in main context(GST)
- * @param  name Name of variable or function
+ * @param  name Name of variable
  * @param  scope 0-global, 1-local
  * @return      Pointer to symbol or NULL if not found
  */
-Symbol *findVarOrFunc(char *name,VariableType *scope);
+Symbol *findVar(char *name,VariableType *scope);
 
 static inline SymbolType keywordToSymbol (KeywordTokenType key)
 {

@@ -337,7 +337,7 @@ uint32_t term_list()
 		a.offset = (*activeOffset)++;
 		if(current->type == TT_identifier)
 		{
-			symbol = findVarOrFunc(current->str.data,&scope);
+			symbol = findVar(current->str.data,&scope);
 			if(getError())
 				return 0;
 			b.var_type = scope;
@@ -515,8 +515,8 @@ uint8_t stmt(uint8_t empty)
 		// 1. rule = Assignemnt
 		case TT_identifier:
 			// Check if was declared
-			id = findVarOrFunc(token->str.data,&scope);
-			if(getError() != 0 && getError() != ERR_BuiltFuncAsID)
+			id = findVar(token->str.data,&scope);
+			if(getError() != ERR_None && getError() != ERR_FuncAsID)
 				return 0;
 			token++;
 			if(token->type != TT_assignment)
@@ -524,7 +524,7 @@ uint8_t stmt(uint8_t empty)
 				setError(ERR_Syntax);
 				return 0;
 			}
-			// Check for ERR_BuiltFuncAsID
+			// Check for ERR_FuncAsID
 			if(getError())
 				return 0;
 			exprType = expr();
@@ -732,7 +732,7 @@ void readln()
 		setError(ERR_Syntax);
 		return;
 	}
-	Symbol *symbol = findVarOrFunc(token->str.data,&scope);
+	Symbol *symbol = findVar(token->str.data,&scope);
 	if(getError())
 		return;
 
@@ -961,7 +961,7 @@ void addBuiltInFunctions()
 
 	funcContext = NULL;
 }
-Symbol *findVarOrFunc(char *name, VariableType *scope)
+Symbol *findVar(char *name, VariableType *scope)
 {
 	Symbol *id = SymbolFind(activeContext,name);
 	if(id == NULL)
@@ -974,19 +974,18 @@ Symbol *findVarOrFunc(char *name, VariableType *scope)
 			setError(ERR_UndefVarOrFunction);
 			return NULL;
 		}
-		// Bultin function cant be as identifier
-		if(id->type == T_FunPointer && id->index < 0)
+		if(id->type == T_FunPointer)
 		{
-			setError(ERR_BuiltFuncAsID);
-			return id;
+			setError(ERR_FuncAsID);
+			return NULL;
 		}
 		*scope = GLOBAL;
 		return id;
 	}
-	if(id->type == T_FunPointer && id->index < 0)
+	if(id->type == T_FunPointer)
 	{
-		setError(ERR_BuiltFuncAsID);
-		return id;
+		setError(ERR_FuncAsID);
+		return NULL;
 	}
 	*scope = activeContext == mainContext ? GLOBAL : LOCAL;
 	return id;
