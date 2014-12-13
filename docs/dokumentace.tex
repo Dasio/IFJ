@@ -11,6 +11,9 @@
 % font
 \usepackage{times}
 
+\usepackage{pdflscape}
+\usepackage{afterpage}
+
 % balicky pro odkazy
 \usepackage[bookmarksopen,colorlinks,plainpages=false,urlcolor=blue,unicode]{hyperref}
 \usepackage{url}
@@ -19,29 +22,12 @@
 %\usepackage{verbatim}
 %\usepackage{amsmath}
 
+\usepackage{array}% http://ctan.org/pkg/array
+\newcolumntype{C}[1]{>{\centering\arraybackslash$}p{#1}<{$}}
+
 \usepackage[titletoc]{appendix}
 
 \usepackage{tabularx}
-% angles
-\usepackage{graphics}
-
-\newcommand{\langl}{\begin{picture}(4.5,7)
-\put(1.1,2.5){\rotatebox{60}{\line(1,0){5.5}}}
-\put(1.1,2.5){\rotatebox{300}{\line(1,0){5.5}}}
-\end{picture}}
-\newcommand{\rangl}{\begin{picture}(4.5,7)
-\put(.9,2.5){\rotatebox{120}{\line(1,0){5.5}}}
-\put(.9,2.5){\rotatebox{240}{\line(1,0){5.5}}}
-\end{picture}}
-
-\newcommand{\lang}{\begin{picture}(5,7)
-\put(1.1,2.5){\rotatebox{45}{\line(1,0){6.0}}}
-\put(1.1,2.5){\rotatebox{315}{\line(1,0){6.0}}}
-\end{picture}}
-\newcommand{\rang}{\begin{picture}(5,7)
-\put(.1,2.5){\rotatebox{135}{\line(1,0){6.0}}}
-\put(.1,2.5){\rotatebox{225}{\line(1,0){6.0}}}
-\end{picture}}
 
 % coloring
 \usepackage{xcolor}
@@ -244,11 +230,14 @@ systéme.
 \input{grammar.tex}
 
 %
-\section{Precedenčná tabuľka} \label{precedencna_tabulka}
+\clearpage
+\begin{landscape}
+	\section{Precedenčná tabuľka} \label{precedencna_tabulka}
+	\input{prec_table.tex}
+\end{landscape}
+\clearpage
+\newpage
 
-\input{prec_table.tex}
-
-\todo[inline]{Doplniť popisok k skratkám v tabuľke}
 
 
 \end{document}

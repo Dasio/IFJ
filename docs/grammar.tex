@@ -8,23 +8,23 @@
 \rownumber: & \textit{VAR\_DEF}                  $\to $ id : type ; \textit{VAR\_DEFN} \\
 \rownumber: & \textit{VAR\_DEFN}                 $\to $ id : type ; \textit{VAR\_DEFN} \\
 \rownumber: & \textit{VAR\_DEFN}                 $\to $ $\epsilon$ \\
-
+& \\
 \rownumber: & \textit{FUNC}                     $\to $ function id \textit{PARAM\_DEF\_LIST} : type ; \textit{FORWARD FUNC} \\
 \rownumber: & \textit{FUNC}                     $\to $ $\epsilon$ \\
 \rownumber: & \textit{FORWARD}                  $\to $ forward ; \\
 \rownumber: & \textit{FORWARD}                  $\to $ \textit{VAR\_DECLR COMPOUND\_SEMICOLON\_STMT} \\
-
+& \\
 \rownumber: & \textit{PARAM\_DEF\_LIST}           $\to $ ( \textit{PARAMS\_DEF} ) \\
 \rownumber: & \textit{PARAMS\_DEF}               $\to $ id : type \textit{PARAMS\_DEF\_N} \\
 \rownumber: & \textit{PARAMS\_DEF}               $\to $ $\epsilon$ \\
 \rownumber: & \textit{PARAMS\_DEF\_N}             $\to $ ; id : type \textit{PARAMS\_DEF\_N} \\
 \rownumber: & \textit{PARAMS\_DEF\_N}             $\to $ $\epsilon$ \\
-
+& \\
 \rownumber: & \textit{TERM\_LIST}                $\to $ ( \textit{TERMS} ) \\
 \rownumber: & \textit{TERMS}                    $\to $ term \textit{TERMS\_N} \\
 \rownumber: & \textit{TERMS\_N}                  $\to $ , term \textit{TERMS\_N} \\
 \rownumber: & \textit{TERMS\_N}                  $\to $ $\epsilon$ \\
-
+& \\
 \rownumber: & \textit{COMPOUND\_STMT}            $\to $ begin \textit{STMT\_E} end \\
 \rownumber: & \textit{COMPOUND\_SEMICOLON\_STMT}  $\to $ \textit{COMPOUND\_STMT} ; \\
 \rownumber: & \textit{STMT\_LIST}                $\to $ $\epsilon$ \\
@@ -38,7 +38,7 @@
 \rownumber: & \textit{STMT}                     $\to $ \textit{COMPOUND\_STMT} \\
 \rownumber: & \textit{STMT}                     $\to $ readln ( id ) \\
 \rownumber: & \textit{STMT}                     $\to $ write \textit{TERM\_LIST} \\
-
+& \\
 \rownumber: & \textit{IF\_N}                     $\to $ else \textit{COMPOUND\_STMT} \\
 \rownumber: & \textit{IF\_N}                     $\to $ $\epsilon$
 \end{tabular}
