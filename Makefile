@@ -13,7 +13,7 @@ LDLIBS=
 # make release RELEASE=1
 ifeq ($(RELEASE),1)
 	# Release
-	CFLAGS+=-Ofast
+	CFLAGS+=-Ofast -DNDEBUG
 	LDLIBS+=-s # Strip binary
 else
 	# Debug
