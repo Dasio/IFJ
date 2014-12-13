@@ -29,7 +29,7 @@ LEADER_NAME=xmikus15
 all: $(BIN)
 
 release: all
-	zip $(LEADER_NAME).zip *.c *.h Makefile rozdeleni
+	zip $(LEADER_NAME).zip *.c *.h Makefile rozdeleni rozsireni
 
 $(BIN): $(OBJS) lib.a
 	$(CC) $(LDFLAGS) -o $(BIN) $(BIN).o lib.a $(LDLIBS)
