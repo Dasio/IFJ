@@ -832,7 +832,11 @@ void updateFunc(SymbolType returnType,FuncState funcState)
 			else
 			{
 				funcSymbol->stateFunc = FS_Defined;
-
+				if(funcContext->returnType != returnType)
+				{
+					setError(ERR_BadDefArg);
+					return;
+				}
 				int64_t *address = int64_tVectorFirst(funcSymbol->adressVector);
 				for (int64_t i = 0; i < funcSymbol->adressVector->used; i++)
 				{
