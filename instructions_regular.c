@@ -214,7 +214,8 @@ void Instr_WRITE(Instruction *i) {
 		switch(op->data_type)
 		{
 			case STRING:
-				printf("%s", op->str->data);
+				if(op->str->length != 0)
+					printf("%s", op->str->data);
 				break;
 			case DOUBLE:
 				printf("%g", op->double_);
@@ -616,6 +617,8 @@ void Instr_CALL_COPY(Instruction *i) {
 	}
 	else
 	{
+		if(n+pos > length)
+			n = length - pos + 1;
 		memcpy(str->data,s->data+pos-1,n);
 		str->data[n] = '\0';
 		str->length = n;
