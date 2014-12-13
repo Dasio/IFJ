@@ -132,7 +132,7 @@ static const int type_table[OPERATORS_COUNT][num_of_data_types][num_of_data_type
 /***************************************************************/
 /*     TT_minus     *   STRING    DOUBLE    INT       BOOL   ***/
 /***************************************************************/
-	      /* STRING */{ STRING ,  UNDEF  ,  UNDEF  ,  UNDEF },
+	      /* STRING */{ UNDEF  ,  UNDEF  ,  UNDEF  ,  UNDEF },
 	      /* DOUBLE */{ UNDEF  ,  DOUBLE ,  DOUBLE ,  UNDEF },
 	      /*    INT */{ UNDEF  ,  DOUBLE ,  INT    ,  UNDEF },
 	      /*   BOOL */{ UNDEF  ,  UNDEF  ,  UNDEF  ,  UNDEF }
