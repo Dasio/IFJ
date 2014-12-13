@@ -5,6 +5,7 @@
 % cestina a fonty
 \usepackage[slovak]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 % balicky pro odkazy
 \usepackage[bookmarksopen,colorlinks,plainpages=false,urlcolor=blue,unicode]{hyperref}
 \usepackage{url}
@@ -118,14 +119,90 @@ Táto dokumentácia pojednáva o základných princípoch použitých pri rieše
 \subsection{Generovanie inštrukcií}
 
 \subsection{Interpret}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Algoritmy a datové štruktúry}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Quicksort}
+Funkcia na zoradenia prvkov v poli. Ako prvé si zadefinujeme indexy okrajových
+hodnôt medzi ktorými sa nachádzaju prvky na zoradenie spolu so strednou hodnotou
+indexu ktorý určíme ako pivot.
 
-\subsection{Algoritmy}
-	\todo[inline]{Sem dopíše Tomáš postupy riešenia algoritmov etc.}
+Následne posúvame ukazovatele  z pravej a ľavej strany smerom k pivotu,
+ v prípade že nevyhovujú postupnosti z ľavej strany od najnižšej hodnoty.
+Vtedy tieto dve okrajové hodnoty prehodíme, až kým neprejdeme celým polom.
+Takýmto spôsobom presne definujeme pozíciu pivota v poli. Všetky prvky na ľavej
+ strane od neho sú menšie a na pravej väčšie ako jeho hodnota, avšak nie sú
+ v správnom poradí. Preto sa rekurzívne volá rovnaká funkcia, avšak už len nad
+ pravou a ľavou stranou ktoré sú menšie. Takýmto spôsobom prejdeme celé pole
+ ktoré sa stane usporiadaným.
 
+\subsection{Knuth-Morris-Pratt}
+Vyhľadávanie podreťazca v reťazci je vo vstavanej funkcií riešené algoritmom
+ Knuth-Morris-Pratt, ktorý je založený na vytvorení masky hľadaného textu.
+Maska určuje programu ako sa má chovať v prípade, že sa písmeno hľadaného
+ textu nezhoduje.
+\begin{table}[H]
+ \centering
+ \begin{tabular}{cccccccc}
+ 	1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \\
+ 	A & T & T & A & T & A & C & A \\
+ 	0 & 0 & 0 & 1 & 2 & 1 & 0 & 2
+ \end{tabular}
+ \caption{Príklad masky algoritmu KMP}
+ \label{tab:kmp}
+\end{table}
+
+Maska je pole o dĺžke hľadaného textu a obsahuje celočíselné nezáporne čísla.
+Ku každému písmenu je priradené číslo ktoré udáva index, kam sa má program
+ vrátiť v prípade, že nenastane zhoda na danej pozícií. Príklad takej masky
+ pre slovo \uv{ATTATACA} sa nachádza v tabuľke \ref{tab:kmp}.
+
+Význam tohto algoritmu vidíme v prípade, že uprostred slova sa nachádza
+ rovnaká sekvencia ako na začiatku prehľadávaného textu.
+To znamená, že ak vo vstupnom texte nastane nezhoda na indexe 6, avšak
+ predchádzajúcich 5 znakov už bolo skontrolovaných, podľa masky vieme vyčítať
+ posun na index 2. Inak povedané, písmena s indexami 4..5 sú zhodné s 1..2
+ a preto ich netreba kontrolovať znovu, ale môžeme pokračovať na indexe 3.
+Ak ani na treťom indexe neuspelo porovnanie, vraciame sa na začiatok, t.j.
+index \uv{0}. Takto pokračujeme až kým nedosiahneme koniec vstupu alebo
+nenájdeme celý reťazec vo vstupnom texte.
+
+\subsection{Tabuľka s rozptýlenými položkami}
+Táto dátová štruktúra bola použitá na uschovávanie lokálnych symbolov v danej
+ funkcií. Jej výhodou je rýchlosť hľadania symbolov. 
+Základom celej tabuľky je pole ukazovateľov na jednosmerne viazané zoznamy.
+Každá položka v zozname obsahuje ukazovateľ na následníka a samotný symbol.
+
+Na základe symbolu sa získa index do pola ukazovateľov, v ktorom sa ďalej
+ sekvenčne prechádza, až dokým sa nenájde požadovaná položka, alebo nie je
+ dosiahnutý koniec zoznamu.
+ 
+\subsection{Vector - pole s neobmedzenou kapacitou}
+Pre účely interpretu bolo nevyhnutné vytvoriť vlastný datový typ pre prácu
+s polami rôznych dĺžok, ktoré bežné polia neumožňujú, definovali sme si
+typ \texttt{Vector}, inšpirovaný vektorom z jazyka C++. 
+
+\texttt{Vector} je štruktúra, ktorá si nesie informácie o alokovanom a použitom 
+počte položiek spolu so samotným ukazovateľom na začiatok alokovaného priestoru. 
+Pre prácu s vektorom sú definované špeciálne funkcie, ktoré v prípade zaplnenia
+realokujú potrebný priestor na zápis položky. Realokuje sa vždy na dvojnásobok
+predchádzajúcej veľkosti.
+
+
+\subsection{Reťazec}
+Podobne ako datový typ \texttt{Vector} bolo nutné vytvoriť aj \texttt{String},
+ktorý funguje na prakticky tom istom základe realokácie v prípade potreby,
+avšak s odlišnými operáciami (konkatenácia, dĺžka).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Práca v tíme}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Vývoj na projekte sa započal dňa 25. augusta prvým commitom. Pred samotným
 zadaním projektu sa započala práca na základných štruktúrach a prekladovom
 systéme.
+
+\todo[inline]{Doplniť použivanie Gitu, rozdelenie práce}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % přílohy
@@ -158,7 +235,7 @@ systéme.
 
 \input{prec_table.tex}
 
-
+\todo[inline]{Doplniť popisok k skratkám v tabuľke}
 
 
 \end{document}
