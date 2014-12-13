@@ -607,7 +607,7 @@ void Instr_CALL_COPY(Instruction *i) {
 
 	int32_t length = s->length;
 	if(n > length)
-		n=length;
+		n = length;
 	// If Index is larger than the length of the string S or index is negative,
 	// then an empty string is returned.
 	if(pos > length)
@@ -617,6 +617,8 @@ void Instr_CALL_COPY(Instruction *i) {
 	}
 	else
 	{
+		if(pos < 1)
+			pos = 1;
 		if(n+pos > length)
 			n = length - pos + 1;
 		memcpy(str->data,s->data+pos-1,n);
