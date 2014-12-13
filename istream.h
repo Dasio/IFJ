@@ -6,11 +6,11 @@
  * https://github.com/Dasio/IFJ
  *
  * Team:
- * Dávid Mikúš			(xmikus15)
+ * Dávid Mikuš			(xmikus15)
  * Peter Hostačný		(xhosta03)
  * Tomáš Kello			(xkello00)
  * Adam Lučanský		(xlucan01)
- * Michaela Lukášova	(xlukas09)
+ * Michaela Lukášová		(xlukas09)
  */
 
 /**
