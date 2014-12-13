@@ -5,9 +5,20 @@ else
 endif
 
 RM=rm -f
-CFLAGS= -g -ffast-math -Ofast -std=c11 -pedantic -Wall -Wextra -fstack-protector-all -funsigned-char
+CFLAGS= -std=c11 -pedantic -Wall -Wextra -funsigned-char
 LDFLAGS=
 LDLIBS=
+
+# To make release:
+# make release RELEASE=1
+ifeq ($(RELEASE),1)
+	# Release
+	CFLAGS+=-Ofast
+	LDLIBS+=-s # Strip binary
+else
+	# Debug
+	CFLAGS+=-g -fstack-protector-all
+endif
 
 BIN=ifj
 SRCS=$(wildcard *.c)
