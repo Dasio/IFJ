@@ -60,7 +60,7 @@ Symbol *AddArgToContext(Context *funCont, SymbolType type, char *name, Context *
 	if(funCont->argCount >= funCont->argMax)
 	{
 		funCont->argMax *= 2;
-		funCont->arg = realloc(funCont->arg, funCont->argMax);
+		funCont->arg = realloc(funCont->arg, sizeof(Symbol*)*funCont->argMax);
 	}
 
 	Symbol *symbol = SymbolAdd(funCont, type, name, symbolContext, NULL, false);
