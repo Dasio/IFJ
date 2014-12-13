@@ -5,7 +5,7 @@ else
 endif
 
 RM=rm -f
-CFLAGS= -std=c11 -pedantic -Wall -Wextra -funsigned-char
+CFLAGS= -std=c11 -Ofast -pedantic -Wall -Wextra -funsigned-char
 LDFLAGS=
 LDLIBS=
 
@@ -13,7 +13,7 @@ LDLIBS=
 # make release RELEASE=1
 ifeq ($(RELEASE),1)
 	# Release
-	CFLAGS+=-Ofast -DNDEBUG
+	CFLAGS+=-DNDEBUG
 	LDLIBS+=-s # Strip binary
 else
 	# Debug
