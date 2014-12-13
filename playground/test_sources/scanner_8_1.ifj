@@ -1,0 +1,11 @@
+program booll;
+var 
+a : integer;
+b : integer;
+c : integer;
+begin
+	a := 1;
+	b := 5;
+	c := b or a;
+	writeLn (c);
+end.

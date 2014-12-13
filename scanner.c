@@ -123,22 +123,23 @@ Token getToken(Scanner *scanner)
 		}
 		case TT_integer: {
 			String str = token.str;
+			
+			if (scanner->state != SOS_error) { 
+				char *err = NULL;
 
-			char *err = NULL;
+				if(scanner->base == 10 || scanner->base == 2 ||
+					scanner->base == 8 || scanner->base == 16) {
 
-			if(scanner->base == 10 || scanner->base == 2 ||
-				scanner->base == 8 || scanner->base == 16) {
-
-				token.n = (int32_t) strtol(str.data, &err, scanner->base);
-				if(*err != 0) {
+					token.n = (int32_t) strtol(str.data, &err, scanner->base);
+					if(*err != 0) {
+						setError(ERR_LexicalConversion);
+						fprintf(stderr, "strtol() conversion failed\n");
+					}
+				} 
+				else {
 					setError(ERR_LexicalConversion);
-					fprintf(stderr, "strtol() conversion failed\n");
 				}
 			}
-			else {
-				setError(ERR_LexicalConversion);
-			}
-
 			destroyString(&str);
 
 			token.type = TT_integer;
@@ -227,7 +228,7 @@ TokenVector* getTokenVector(Scanner *scanner)
 		t = getToken(scanner);
 
 		if(getError()) {
-			printError();
+			//printError();
 			// In case of incomplete token; must be also free'd
 			TokenVectorAppend(tokVect, t);
 			break;
@@ -848,7 +849,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 				}
 			}
 			//Value is not specified
-			if (atString(&token->str,0) == '\0') {
+			if (token->str.length == 0) {
 				setState(SOS_error);
 				fprintf(stderr, "Unspecified constant\n");
 
