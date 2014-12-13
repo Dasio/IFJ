@@ -1,8 +1,17 @@
-// file for IAL 21.11.2014
-// function: FindString (find substring in string and return index) xkello00
-// 					used: Knuth-Moris-Prattuv algorithm
-// function: QuickSort make ordered array of chars
-// 					used: QuickSort algorithm
+/*
+ * Project name:
+ * Implementace interpretu imperativního jazyka IFJ14
+ *
+ * Repository:
+ * https://github.com/Dasio/IFJ
+ *
+ * Team:
+ * Dávid Mikúš			(xmikus15)
+ * Peter Hostačný		(xhosta03)
+ * Tomáš Kello			(xkello00)
+ * Adam Lučanský		(xlucan01)
+ * Michaela Lukášova	(xlukas09)
+ */
 
 #include "system.h"
 #include "string.h"

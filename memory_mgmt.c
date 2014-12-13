@@ -1,8 +1,16 @@
 /*
- * memory_mgmt.c
+ * Project name:
+ * Implementace interpretu imperativního jazyka IFJ14
  *
- *  Created on: 31.8.2014
- *      Author: Adam Lucansky <xlucan01@stud.fit.vutbr.cz>
+ * Repository:
+ * https://github.com/Dasio/IFJ
+ *
+ * Team:
+ * Dávid Mikúš			(xmikus15)
+ * Peter Hostačný		(xhosta03)
+ * Tomáš Kello			(xkello00)
+ * Adam Lučanský		(xlucan01)
+ * Michaela Lukášova	(xlukas09)
  */
 
 #include "memory_mgmt.h"

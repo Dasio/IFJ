@@ -1,9 +1,18 @@
-/* Implementation of scanner
+/*
+ * Project name:
+ * Implementace interpretu imperativního jazyka IFJ14
  *
+ * Repository:
+ * https://github.com/Dasio/IFJ
  *
- *  Created on: 28.9.2014
- *      Author:
+ * Team:
+ * Dávid Mikúš			(xmikus15)
+ * Peter Hostačný		(xhosta03)
+ * Tomáš Kello			(xkello00)
+ * Adam Lučanský		(xlucan01)
+ * Michaela Lukášova	(xlukas09)
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

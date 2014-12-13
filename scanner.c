@@ -1,3 +1,18 @@
+/*
+ * Project name:
+ * Implementace interpretu imperativního jazyka IFJ14
+ *
+ * Repository:
+ * https://github.com/Dasio/IFJ
+ *
+ * Team:
+ * Dávid Mikúš			(xmikus15)
+ * Peter Hostačný		(xhosta03)
+ * Tomáš Kello			(xkello00)
+ * Adam Lučanský		(xlucan01)
+ * Michaela Lukášova	(xlukas09)
+ */
+
 #include "scanner.h"
 
 void scannerInfo(Scanner *scanner)
@@ -119,7 +134,7 @@ Token getToken(Scanner *scanner)
 					setError(ERR_LexicalConversion);
 					fprintf(stderr, "strtol() conversion failed\n");
 				}
-			} 
+			}
 			else {
 				setError(ERR_LexicalConversion);
 			}
@@ -685,7 +700,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 					scanner->state = SOS_baseInString;
 					scanner->base = 16;
 
-					return true;					
+					return true;
 				}
 				//another characters are not possible
 				default:
@@ -702,7 +717,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 
 				return true;
 			}
-			//test for valid escape sequention 
+			//test for valid escape sequention
 			if (scanner->ascii_to_char_val < 1 || scanner->ascii_to_char_val > 255) {
 				setState(SOS_error);
 				fprintf(stderr, "Wrong value to specify escape sequention (1-255)\n");
@@ -729,7 +744,7 @@ bool processNextSymbol(Scanner *scanner, Token *token, char symbol)
 		case SOS_baseInString: {
 			//skipping first nulls
 			if (symbol == '0' && scanner->ascii_to_char_val == 0) {
-				
+
 				return true;
 			}
 			switch (scanner->base) {
@@ -864,10 +879,10 @@ KeywordTokenType identifierToKeyword(String *str)
 	switch (str->data[0]) {
 		case 'a': {
 			if(keyword_cmp("and")) {
-				return Key_and;			
+				return Key_and;
 			}
 			return Key_none;
-		}			
+		}
 		case 'b': {
 			if(keyword_cmp("begin")) {
 				return Key_begin;
@@ -915,13 +930,13 @@ KeywordTokenType identifierToKeyword(String *str)
 		}
 		case 'n': {
 			if(keyword_cmp("not")) {
-				return Key_not;			
+				return Key_not;
 			}
 			return Key_none;
 		}
 		case 'o': {
 			if(keyword_cmp("or")) {
-				return Key_or;			
+				return Key_or;
 			}
 			return Key_none;
 		}
@@ -934,7 +949,7 @@ KeywordTokenType identifierToKeyword(String *str)
 			}
 			if(keyword_cmp("repeat")) {
 				return Key_repeat;
-			}			
+			}
 			return Key_none;
 		}
 		case 's': {
@@ -955,7 +970,7 @@ KeywordTokenType identifierToKeyword(String *str)
 		case 'u': {
 			if(keyword_cmp("until")) {
 				return Key_until;
-			}			
+			}
 		}
 		case 'v': {
 			if(keyword_cmp("var")) {
@@ -974,7 +989,7 @@ KeywordTokenType identifierToKeyword(String *str)
 		}
 		case 'x': {
 			if(keyword_cmp("xor")) {
-				return Key_xor;			
+				return Key_xor;
 			}
 			return Key_none;
 		}
