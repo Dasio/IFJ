@@ -109,21 +109,58 @@ O túto činnosť sa stará tzv. \uv{scanner}, ktorý je reprezentovaný konečn
 automatom (viz prílohu \ref{chap:scanner}). Dosiahnutie koncového stavu
 značí úspešný nález tokenu.
 
-Konverzie medzi reťazcami a číslami sa ihneď po vrátení platného tokenu.
+Konverzie medzi reťazcami a číslami sa vykonávajú ihneď po vrátení platného tokenu.
 Konverzie v rámci escape sekvencie v reťazcovom literáli sa vykonávajú
  priamo v automate pri prechode medzi stavmi.
 
 \subsection{Syntaktická a sémantická analýza}
+Syntaktická analýza bola riešená zadaním cez rekurzívny zostup podľa gramatiky
+v prílohe \ref{gramatika}. 
+%Sémantická analýza prebieha
+Inštrukcie pre interpret sú generované okamžite na inštrukčnú pásku,
+ bez dodatočného medzivýstupu.
 
-\subsection{Inštrukcie}
+\subsection{Inštrukcie a interpret}
+Ako najzaujímavejšia časť celého interpretu je generovanie a vykonávanie inštrukcií
+z inštrukčnej pásky vzhľadom k voľnosti riešenia tejto časti.
 
-\subsection{Interpret}
+Interpret pri svojej činnosti pracuje so zásobníkom (o neobmedzenej veľkosti) a
+inštrukčnou páskou, ktorá obsahuje inštrukcie v trojadresnom kóde.
+Každý operand obsahuje informáciu o tom 
+\begin{itemize}
+	\item kde sa nachádzajú údaje (ďalej len lokalita):
+		\begin{itemize}
+			\item globálne
+			\item lokálne (Base Pointer + Offset)
+			\item konštanta (okamžitá hodnota)
+		\end{itemize}
+	\item akého sú dátového typu (integer, real, boolean, string)
+\end{itemize}
+
+Kedže interpret spracováva inštrukcie na úrovni C funkcií, pri každej inštrukcií
+ sa najprv musí rozhodnúť akého je dátového typu a kde sa nachádzajú údaje pre 
+ každý operand, čo stojí veľké množstvo času pri samotnom behu v porovnaní 
+ s efektívnym výpočtom.
+Rozhodli sme sa teda vyriešiť tento problém elegantným spôsobom, 
+ a to zaťažiť parser o jednu činnosť navyše - generovanie konkrétnych 
+ inštrukcií pre interpret, obsahujúce v sebe zakódované lokality a dátové typy.
+
+Vzhľadom k charakteru inštrukcií sme pomocou napísaného skriptu v jazyku Ruby
+ vygenerovali 358 inštrukcií, 
+ ktoré priamo v mene obsahujú lokalitu a typy operandov.
+Inštrukcie sú uložené v poli ukazovateľov na funkcie (inštrukcie).
+ Pri vykonávaní programu sa teda volá C funkcia pomocou ukazovateľa ktorý 
+ v sebe obsahuje.
+
+Interpret beží v nekonečnom cykle, pričom končí v momente keď narazí na inštrukciu
+\texttt{HALT}.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Algoritmy a datové štruktúry}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Quicksort}
 Funkcia na zoradenia prvkov v poli. Ako prvé si zadefinujeme indexy okrajových
-hodnôt medzi ktorými sa nachádzaju prvky na zoradenie spolu so strednou hodnotou
+hodnôt medzi ktorými sa nachádzajú prvky na zoradenie spolu so strednou hodnotou
 indexu ktorý určíme ako pivot.
 
 Následne posúvame ukazovatele  z pravej a ľavej strany smerom k pivotu,
@@ -160,7 +197,7 @@ Význam tohto algoritmu vidíme v prípade, že uprostred slova sa nachádza
  rovnaká sekvencia ako na začiatku prehľadávaného textu.
 To znamená, že ak vo vstupnom texte nastane nezhoda na indexe 6, avšak
  predchádzajúcich 5 znakov už bolo skontrolovaných, podľa masky vieme vyčítať
- posun na index 2. Inak povedané, písmena s indexami 4..5 sú zhodné s 1..2
+ posun na index 2. Inak povedané, písmena s indexmi 4..5 sú zhodné s 1..2
  a preto ich netreba kontrolovať znovu, ale môžeme pokračovať na indexe 3.
 Ak ani na treťom indexe neuspelo porovnanie, vraciame sa na začiatok, t.j.
 index \uv{0}. Takto pokračujeme až kým nedosiahneme koniec vstupu alebo
@@ -189,7 +226,7 @@ predchádzajúcej veľkosti.
 
 
 \subsection{Reťazec}
-Podobne ako datový typ \texttt{Vector} bolo nutné vytvoriť aj \texttt{String},
+Podobne ako dátový typ \texttt{Vector} bolo nutné vytvoriť aj \texttt{String},
 ktorý funguje na prakticky tom istom základe realokácie v prípade potreby,
 avšak s odlišnými operáciami (konkatenácia, dĺžka).
 
