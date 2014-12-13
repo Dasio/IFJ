@@ -3,16 +3,21 @@
 \documentclass[12pt,a4paper,titlepage,final]{article}
 
 % cestina a fonty
-\usepackage[slovak]{babel}
-\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[slovak]{babel}
+\usepackage{lmodern}  
+
+% font
+%\usepackage{times}
+
 % balicky pro odkazy
 \usepackage[bookmarksopen,colorlinks,plainpages=false,urlcolor=blue,unicode]{hyperref}
 \usepackage{url}
 % obrazky
 \usepackage[dvipdf]{graphicx}
-\usepackage{verbatim}
-\usepackage{amsmath}
+%\usepackage{verbatim}
+%\usepackage{amsmath}
 
 \usepackage[titletoc]{appendix}
 
@@ -61,9 +66,6 @@
 %todo
 \usepackage[colorinlistoftodos,prependcaption]{todonotes}
 
-%\usepackage[T1]{fontenc}
-\usepackage{times}
-
 %http://stackoverflow.com/questions/1788598/how-to-force-two-figures-to-stay-on-the-same-page-in-latex
 \usepackage{float}
 % velikost stranky
@@ -111,12 +113,23 @@ Táto dokumentácia pojednáva o základných princípoch použitých pri rieše
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Riešenie projektu} \label{riesenie}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+V tejto kapitole budú rozpísané jednotlivé časti s dôrazom na vlastné riešenie.
 
+Vstupom interpretu je zdrojový súbor, ktorý je priamo vykonaný, namiesto
+generovania výstupného spustiteľného súboru.
 \subsection{Lexikálna analýza}
+Vstupný súbor reprezentovaný znakmi je nutné rozdeliť na \uv{tokeny}.
+O túto činnosť sa stará tzv. \uv{scanner}, ktorý je reprezentovaný konečným
+automatom (viz prílohu \ref{chap:scanner}). Dosiahnutie koncového stavu
+značí úspešný nález tokenu.
+
+Konverzie medzi reťazcami a číslami sa ihneď po vrátení platného tokenu.
+Konverzie v rámci escape sekvencie v reťazcovom literáli sa vykonávajú
+ priamo v automate pri prechode medzi stavmi.
 
 \subsection{Syntaktická a sémantická analýza}
 
-\subsection{Generovanie inštrukcií}
+\subsection{Inštrukcie}
 
 \subsection{Interpret}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -214,7 +227,7 @@ systéme.
 \paragraph{Veľkosť spustiteľného programu:} 13294B
 \todo[inline]{Aktualizovať metriky po dopísani projektu}
 
-\section{Konečný automat lexikálneho analyzátora}
+\section{Konečný automat lexikálneho analyzátora}\label{chap:scanner}
 
 \begin{figure}[H]
 \begin{center}
