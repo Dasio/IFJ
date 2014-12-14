@@ -101,34 +101,36 @@ int *GetFormula(String *find)
 // get length of string and call QuickSortRecursive function
 void QuickSort(String *string)
 {
-	QuickSortRecursive(string->data, string->length);
+	QuickSortRecursive(string->data, 0, string->length - 1);
 }
 
 //QuickSort which use recursive function
-void QuickSortRecursive(char *arr, uint32_t n)
+void QuickSortRecursive(char *arr, int left, int right)
 {
-	if(n<=1)
-		return;// if arr include only one number
-	char *l=arr, *r=arr+n-1; //prepare index on border of group
-	char p = arr[n/2]; //set pivot (center value)
-
-	while (l <= r) { // while left and right border finished
-		if (*l < p) l++; //skip left number if is smaller
-		else if (*r > p) r--; //skip right number if is smaller
-		else {
-			if (l!=r) //if the numbers are different change their value
-			{
-				*l += *r;
-				*r = *l - *r;
-				*l -= *r;
-			}
-			l++; r--; //goto next numbers
+	int i = left;
+	int j = right;
+	int pm = arr[(i+j)/2];
+	char swap;
+	do
+	{
+		while (arr[i] < pm)
+			i = i + 1;
+		while (arr[j] > pm)
+			j = j - 1;
+		if (i <= j)
+		{
+			swap = arr[i];
+			arr[i] = arr[j];
+			arr[j] = swap;
+			i++;
+			j--;
 		}
-	}
+	}while (i<=j);
 
-	//recursive call for array on left and right side from the pivot
-	QuickSortRecursive(arr, r-arr+1);
-	QuickSortRecursive(l, arr+n-l);
+	if (left < j)
+		QuickSortRecursive(arr,left,j);
+	if (i < right)
+		QuickSortRecursive(arr,i,right);
 }
 
 // Calculate index for HashFunction
