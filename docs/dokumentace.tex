@@ -40,6 +40,11 @@
   \textbf{\arabic{magicrownumbers}}
 }
 
+\newcounter{magicrownumbersexpr}
+\newcommand\rownumberexpr{\stepcounter{magicrownumbersexpr}
+  \textbf{\arabic{magicrownumbersexpr}}
+}
+
 \usepackage{hyperref}
 \hypersetup{%
     pdfborder = {0 0 0},
@@ -150,7 +155,7 @@ precedenčnej analýzy.
 \subsection{Optimalizácie}
 Vzhľadom k~možnosti sútaže o~najrýchlejší interpret sme sa rozhodli zaviesť aj
 istú formu optimalizácií, a to hlavne výpočet hodnôt, ktoré sú známe ešte pri
-parsovaní, t.j. operácie s~konštantnými hodnotami, mnohonásobné unárne mínus.
+parsovaní, t.j. operácie s~konštantnými hodnotami, viacnásobné unárne mínus a not.
 
 \subsection{Inštrukcie a interpret}
 Ako najzaujímavejšia časť celého interpretu je generovanie a vykonávanie inštrukcií
@@ -351,6 +356,11 @@ Brno: Vysoké učení technické, 2014.
 \section{LL Gramatika} \label{gramatika}
 
 \input{grammar.tex}
+%
+\section{Gramatika pre výrazy} \label{gramatika_expr}
+
+\input{grammar_expr.tex}
+
 
 %
 \clearpage

@@ -10,7 +10,7 @@ LDFLAGS=
 LDLIBS=
 
 # Uncomment for release
-# RELEASE:=1
+RELEASE:=1
 
 ifeq ($(RELEASE),1)
 	# Release
@@ -30,7 +30,7 @@ LEADER_NAME=xmikus15
 all: $(BIN)
 
 zip:
-	rm $(LEADER_NAME).zip
+	rm $(LEADER_NAME).zip || true
 	cp docs/dokumentace.pdf dokumentace.pdf
 	zip $(LEADER_NAME).zip *.c *.h Makefile rozdeleni rozsireni dokumentace.pdf
 	rm dokumentace.pdf
@@ -74,7 +74,7 @@ dist-clean: clean
 TESTFILES=$(patsubst tests/%.pas, tests/%, $(shell ls tests/*.pas));
 
 
-# Test
+
 tests: ifj $(TESTFILES)
 	# Done
 
