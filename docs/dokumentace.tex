@@ -3,10 +3,11 @@
 \documentclass[12pt,a4paper,titlepage,final]{article}
 
 % cestina a fonty
-\usepackage[T1]{fontenc}
+
 \usepackage[utf8]{inputenc}
 \usepackage[slovak]{babel}
-\usepackage{lmodern}  
+\usepackage[T1]{fontenc}
+%\usepackage{lmodern}  
 
 % font
 \usepackage{times}
@@ -91,7 +92,7 @@
 Cieľom projektu bolo vytvoriť funkčný interpret jazyka IFJ14, ktorý má veľmi
  podobnú syntax ako jazyk Pascal.
 
-Táto dokumentácia pojednáva o základných princípoch použitých pri riešení.
+Táto dokumentácia pojednáva o~základných princípoch použitých pri riešení.
 % Doplnit info o tom, že sa jedná len o vybrané časti
 
 %\todo[inline]{Domyslieť text}
@@ -99,34 +100,35 @@ Táto dokumentácia pojednáva o základných princípoch použitých pri rieše
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Riešenie projektu} \label{riesenie}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-V tejto kapitole budú rozpísané jednotlivé časti s dôrazom na vlastné riešenie.
+V~tejto kapitole budú rozpísané jednotlivé časti s~dôrazom na vlastné riešenie.
 
 Vstupom interpretu je zdrojový súbor, ktorý je priamo vykonaný, namiesto
 generovania výstupného spustiteľného súboru.
 \subsection{Lexikálna analýza}
 Vstupný súbor reprezentovaný znakmi je nutné rozdeliť na \uv{tokeny}.
-O túto činnosť sa stará tzv. \uv{scanner}, ktorý je reprezentovaný konečným
+O~túto činnosť sa stará tzv. \uv{scanner}, ktorý je reprezentovaný konečným
 automatom (viz prílohu \ref{chap:scanner}). Dosiahnutie koncového stavu
 značí úspešný nález tokenu.
 
-Každý načítaný token je pripojený na koniec vektoru. Z hľadiska interpretu sa
-najprv načítajú všetky tokeny, až potom sa s nimi ďalej pracuje v syntaktickej
+Každý načítaný token je pripojený na koniec vektoru. Z~hľadiska interpretu sa
+najprv načítajú všetky tokeny, až potom sa s~nimi ďalej pracuje v~syntaktickej
 analýze, kvôli jednoduchšiemu spracovávaniu chýb. Ak by sa nachádzala
- lexikálna chyba na konci zdrojového súboru, mohlo by dôjsť k syntaktickej chybe
+ lexikálna chyba na konci zdrojového súboru, mohlo by dôjsť k~syntaktickej chybe
  skôr než by bolo detekovaná lexikálna.
 
 Konverzie medzi reťazcami a číslami sa vykonávajú ihneď po vrátení platného tokenu.
-Konverzie v rámci escape sekvencie v reťazcovom literáli sa vykonávajú
- priamo v automate pri prechode medzi stavmi.
+Konverzie v~rámci escape sekvencie v~reťazcovom literáli sa vykonávajú
+ priamo v~automate pri prechode medzi stavmi.
 
 \subsection{Syntaktická a sémantická analýza}
 Syntaktická analýza (parser) bola riešená zadaním cez rekurzívny zostup 
- podľa gramatiky v prílohe \ref{gramatika}.
+ podľa gramatiky v~prílohe \ref{gramatika}.
 Parser kontroluje pri svojej činnosti zároveň aj sémantiku (datové typy),
 definície a deklarácie funkcií.
 %Sémantická analýza prebieha
 Vyhodnocovanie výrazov zabezpečuje precedenčná tabuľka 
- (viz. príloha \ref{precedencna_tabulka}).
+ (viz. príloha \ref{precedencna_tabulka}). Pre účely rozšírenia bol
+ pridaný operátor unárne mínus.
 
 Inštrukcie pre interpret sú generované okamžite na inštrukčnú pásku,
  bez dodatočného medzivýstupu.
@@ -150,17 +152,17 @@ Inštrukcie pre interpret sú generované okamžite na inštrukčnú pásku,
 %    funkcia ktorá nebola definovaná.
 
 \subsection{Optimalizácie}
-Vzhľadom k možnosti sútaže o najrýchlejší interpret sme sa rozhodli zaviesť aj
+Vzhľadom k~možnosti sútaže o~najrýchlejší interpret sme sa rozhodli zaviesť aj
 istú formu optimalizácií, a to hlavne výpočet hodnôt, ktoré sú známe ešte pri
-parsovaní, t.j. operácie s konštantnými hodnotami a mnohonásobné unárne mínus.
+parsovaní, t.j. operácie s~konštantnými hodnotami a mnohonásobné unárne mínus.
 
 \subsection{Inštrukcie a interpret}
 Ako najzaujímavejšia časť celého interpretu je generovanie a vykonávanie inštrukcií
-z inštrukčnej pásky vzhľadom k voľnosti riešenia tejto časti.
+z~inštrukčnej pásky vzhľadom k~voľnosti riešenia tejto časti.
 
-Interpret pri svojej činnosti pracuje so zásobníkom (o neobmedzenej veľkosti) a
-inštrukčnou páskou, ktorá obsahuje inštrukcie v trojadresnom kóde.
-Každý operand obsahuje informáciu o tom 
+Interpret pri svojej činnosti pracuje so zásobníkom (o~neobmedzenej veľkosti) a
+inštrukčnou páskou, ktorá obsahuje inštrukcie v~trojadresnom kóde.
+Každý operand obsahuje informáciu o~tom 
 \begin{itemize}
 	\item kde sa nachádzajú údaje (ďalej len lokalita):
 		\begin{itemize}
@@ -173,110 +175,120 @@ Každý operand obsahuje informáciu o tom
 
 Kedže interpret spracováva inštrukcie na úrovni C funkcií, pri každej inštrukcií
  sa najprv musí rozhodnúť akého je dátového typu a kde sa nachádzajú údaje pre 
- každý operand, čo stojí veľké množstvo času pri samotnom behu v porovnaní 
+ každý operand, čo stojí veľké množstvo času pri samotnom behu v~porovnaní 
  so samotným výpočtom.
 Rozhodli sme sa teda vyriešiť tento problém elegantným spôsobom, 
- a to zaťažiť parser o jednu činnosť navyše - generovanie konkrétnych 
- inštrukcií pre interpret, obsahujúce v sebe zakódované lokality a dátové typy.
+ a to zaťažiť parser o~jednu činnosť navyše - generovanie konkrétnych 
+ inštrukcií pre interpret, obsahujúce v~sebe zakódované lokality a dátové typy.
 
-Vzhľadom k charakteru inštrukcií sme pomocou napísaného skriptu v jazyku Ruby
+Vzhľadom k~charakteru inštrukcií sme pomocou napísaného skriptu v~jazyku Ruby
  vygenerovali 358 inštrukcií, 
- ktoré priamo v názve obsahujú lokalitu a typy operandov.
-Inštrukcie sú uložené v poli ukazovateľov na funkcie (inštrukcie).
- Pri vykonávaní programu sa teda volá C funkcia pomocou ukazovateľa na danú 
- funkciu ktorú v sebe obsahuje, čo zabezpečuje vysokú efektivitu výpočtu,
+ ktoré priamo v~názve obsahujú lokalitu a typy operandov.
+Inštrukcie sú uložené v~poli ukazovateľov na funkcie (inštrukcie).
+ Pri vykonávaní programu sa volá C funkcia pomocou ukazovateľa na danú 
+ funkciu ktorú v~sebe obsahuje, čo zabezpečuje vysokú efektivitu výpočtu,
  kedy nie je nutné rozhodovať nad akými operandmi sa má daná činnosť vykonať.
- Jediné rozhodovanie v inštrukcií je pri testovaní inicializovanosti operandov a pri delení nulou.
+ Jediné rozhodovanie v~inštrukcií je pri testovaní inicializovanosti operandov a pri delení nulou. Celkovo bolo použitých 15 základných inštrukcií (\texttt{CALL}, \texttt{RET}, \texttt{MOV} \ldots) a 
+ 15 aritmetických (nerozvetvených na jednotlivé dátové typy a lokality).
 
-Interpret beží v nekonečnom cykle, pričom končí v momente keď narazí na inštrukciu
+Interpret beží v~nekonečnom cykle, pričom končí v~momente keď narazí na inštrukciu
 \texttt{HALT}.
 
+\subsection{Prekladový systém}
+Pre vlastnú potrebu projektu sme sa rozhodli využiť modulárny preklad
+z dôvodu testov pre jednotlivé moduly, kedy sa všetky objektové súbory (.o)
+okrem modulu obsahujúceho funkciu \texttt{main()} zabalia do archívu (.a)
+utilitou \texttt{ar}. Pre unit testy, ako aj spustiteľný interpret
+obsahujúci \texttt{main()} sa nalinkuje archív, ktorý obsahuje potrebné moduly.
+
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Algoritmy a datové štruktúry}
+\section{Algoritmy a dátové štruktúry}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Quicksort}
-Funkcia na zoradenia prvkov v poli. Ako prvé si zadefinujeme indexy okrajových
+Funkcia na zoradenie prvkov v~poli. Ako prvé si zadefinujeme indexy okrajových
 hodnôt medzi ktorými sa nachádzajú prvky na zoradenie spolu so strednou hodnotou
 indexu ktorý určíme ako pivot.
 
-Následne posúvame ukazovatele  z pravej a ľavej strany smerom k pivotu,
- v prípade že nevyhovujú postupnosti z ľavej strany od najnižšej hodnoty, 
+Následne posúvame ukazovatele  z~pravej a ľavej strany smerom k~pivotu,
+ v~prípade že nevyhovujú postupnosti z~ľavej strany od najnižšej hodnoty, 
  vtedy tieto dve okrajové hodnoty prehodíme, až kým neprejdeme celým polom.
-Takýmto spôsobom presne definujeme pozíciu pivota v poli. Všetky prvky na ľavej
+Takýmto spôsobom presne definujeme pozíciu pivota v~poli. Všetky prvky na ľavej
  strane od neho sú menšie a na pravej väčšie ako jeho hodnota, avšak nie sú
- v správnom poradí. Preto sa rekurzívne volá rovnaká funkcia, avšak už len nad
+ v~správnom poradí. Preto sa rekurzívne volá rovnaká funkcia, avšak už len nad
  pravou a ľavou stranou ktoré sú menšie. Takýmto spôsobom prejdeme celé pole
  ktoré sa stane usporiadaným.
 
 \subsection{Knuth-Morris-Pratt}
-Vyhľadávanie podreťazca v reťazci je vo vstavanej funkcií riešené algoritmom
+Vyhľadávanie podreťazca v~reťazci je vo vstavanej funkcií riešené algoritmom
  Knuth-Morris-Pratt, ktorý je založený na vytvorení masky hľadaného textu.
-Maska určuje programu ako sa má chovať v prípade, že sa písmeno hľadaného
+Maska určuje programu ako sa má chovať v~prípade, že sa písmeno hľadaného
  textu nezhoduje.
 \begin{table}[H]
  \centering
  \begin{tabular}{cccccccc}
  	1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \\
- 	A & T & T & A & T & A & C & A \\
+ 	A~& T & T & A~& T & A~& C & A~\\
  	0 & 0 & 0 & 1 & 2 & 1 & 0 & 2
  \end{tabular}
  \caption{Príklad masky algoritmu KMP}
  \label{tab:kmp}
 \end{table}
 
-Maska je pole o dĺžke hľadaného textu a obsahuje celočíselné nezáporne čísla.
+Maska je pole o~dĺžke hľadaného textu a obsahuje celočíselné nezáporne čísla.
 Ku každému písmenu je priradené číslo ktoré udáva index, kam sa má program
- vrátiť v prípade, že nenastane zhoda na danej pozícií. Príklad takej masky
- pre slovo \uv{ATTATACA} sa nachádza v tabuľke \ref{tab:kmp}.
+ vrátiť v~prípade, že nenastane zhoda na danej pozícií. Príklad takej masky
+ pre slovo \uv{ATTATACA} sa nachádza v~tabuľke \ref{tab:kmp}.
 
-Význam tohto algoritmu vidíme v prípade, že uprostred slova sa nachádza
+Význam tohto algoritmu vidíme v~prípade, že uprostred slova sa nachádza
  rovnaká sekvencia ako na začiatku prehľadávaného textu.
 To znamená, že ak vo vstupnom texte nastane nezhoda na indexe 6, avšak
  predchádzajúcich 5 znakov už bolo skontrolovaných, podľa masky vieme vyčítať
- posun na index 2. Inak povedané, písmena s indexmi 4..5 sú zhodné s 1..2
+ posun na index 2. Inak povedané, písmena s~indexmi 4..5 sú zhodné s~1..2
  a preto ich netreba kontrolovať znovu, ale môžeme pokračovať na indexe 3.
 Ak ani na treťom indexe neuspelo porovnanie, vraciame sa na začiatok, t.j.
 index \uv{0}. Takto pokračujeme až kým nedosiahneme koniec vstupu alebo
 nenájdeme celý reťazec vo vstupnom texte.
 
-\subsection{Tabuľka s rozptýlenými položkami}
-Táto dátová štruktúra bola použitá na uschovávanie lokálnych symbolov v danej
+\subsection{Tabuľka s~rozptýlenými položkami}
+Táto dátová štruktúra bola použitá na uschovávanie lokálnych symbolov v~danej
  funkcií. Jej výhodou je rýchlosť hľadania symbolov. 
 Základom celej tabuľky je pole ukazovateľov na jednosmerne viazané zoznamy.
-Každá položka v zozname obsahuje ukazovateľ na následníka a samotný symbol.
+Každá položka v~zozname obsahuje ukazovateľ na následníka a samotný symbol.
 
-Na základe symbolu sa získa index do pola ukazovateľov, v ktorom sa ďalej
- sekvenčne prechádza, až dokým sa nenájde požadovaná položka, alebo nie je
- dosiahnutý koniec zoznamu.
+Na základe symbolu sa pomocou tzv. \emph{hashovacej} funkcie, 
+ ktorá mapuje vstupný reťazec na index získa ukazovateľ na prvú položku
+ v~zozname, od ktorej sa sekvenčne prechádza až dokým sa nenájde požadovaná
+ položka, alebo nie je dosiahnutý koniec zoznamu.
  
-\subsection{Vector - pole s neobmedzenou kapacitou}
+\subsection{Vector - pole s~neobmedzenou kapacitou}
 Pre účely interpretu bolo nevyhnutné vytvoriť vlastný datový typ pre prácu
-s polami rôznych dĺžok, ktoré bežné polia neumožňujú, definovali sme si
-typ \texttt{Vector}, inšpirovaný vektorom z jazyka C++. 
+s~polami rôznych dĺžok, ktoré bežné polia neumožňujú, definovali sme si
+typ \texttt{Vector}, inšpirovaný vektorom z~jazyka C++. 
 
-\texttt{Vector} je štruktúra, ktorá si nesie informácie o alokovanom a použitom 
+\texttt{Vector} je štruktúra, ktorá si nesie informácie o~alokovanom a použitom 
 počte položiek spolu so samotným ukazovateľom na začiatok alokovaného priestoru. 
-Pre prácu s vektorom sú definované špeciálne funkcie, ktoré v prípade zaplnenia
+Pre prácu s~vektorom sú definované špeciálne funkcie, ktoré v~prípade zaplnenia
 realokujú potrebný priestor na zápis položky. Realokuje sa vždy na dvojnásobok
 predchádzajúcej veľkosti.
 
 
 \subsection{Reťazec}
 Podobne ako dátový typ \texttt{Vector} bolo nutné vytvoriť aj \texttt{String},
-ktorý funguje na prakticky tom istom základe realokácie v prípade potreby,
-avšak s odlišnými operáciami (konkatenácia, dĺžka).
+ktorý funguje na prakticky tom istom základe realokácie v~prípade potreby,
+avšak s~odlišnými operáciami (konkatenácia, dĺžka).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Práca v tíme}
+\section{Práca v~tíme}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Vývoj na projekte sa započal dňa 25. augusta prvým commitom v Git repozitári.
+Vývoj na projekte sa započal dňa 25. augusta prvým commitom v~Git repozitári.
  Pred samotným zadaním projektu sa započala práca na na prekladovom systéme
  a hneď potom na základných štruktúrach ako 
  napr. \texttt{Vector} a \texttt{String}.
 Počas riešenia projektu boli 3 schôdze celého tímu, kde sa stanovil plán na
 nadchádzajúce týždne, pričom prvá schôdza bola 30.9.2014.
-Rozsah projektu tvoril isté problémy s načasovaním schôdzí, na ktorých bolo
+Rozsah projektu tvoril isté problémy s~načasovaním schôdzí, na ktorých bolo
 nutné aby sa jej zúčastnili všetci členovia. Počas samotného vývoja
 činila problém časová náročnosť projektu a náväznosť na prednášky, tak sme sa
 rozhodli dopredu naštudovať problematiku, aby sme mohli posledný týždeň testovať
@@ -297,10 +309,10 @@ a odstraňovať chyby.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Záver}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Projekt sa nám podarilo úspešne vyvinúť a otestovať v požadovanom čase
-s optimalizáciami a mnohými rozšíreniami. Projekt bol náročný a mnohokrát 
+Projekt sa nám podarilo úspešne dokončiť a otestovať v~požadovanom čase
+s~optimalizáciami a mnohými rozšíreniami. Projekt bol náročný a mnohokrát 
 išlo \uv{do tuhého}. Berieme to ako veľkú skúsenosť do budúcna, hlavne
-prácu v tíme.
+prácu v~tíme.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -308,8 +320,8 @@ prácu v tíme.
 \appendix
 
 \section{Metriky kódu} \label{metriky}
-\paragraph{Počet riadkov zdrojového textu:} 11423 riadkov
-\paragraph{Veľkosť statických dát:} 440B
+\paragraph{Počet riadkov zdrojového textu:} 11439 riadkov
+%\paragraph{Veľkosť statických dát:} 456B
 \paragraph{Veľkosť spustiteľného programu:} 149.8KiB
 
 \section{Konečný automat lexikálneho analyzátora}\label{chap:scanner}
