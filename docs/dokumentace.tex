@@ -174,26 +174,35 @@ Každý operand obsahuje informáciu o~tom
 	\item akého sú dátového typu (integer, real, boolean, string)
 \end{itemize}
 
-Kedže interpret spracováva inštrukcie na úrovni C funkcií, pri každej inštrukcií
+Kedže interpret spracováva inštrukcie na úrovni programových funkcií, 
+ pri každej inštrukcií
  sa najprv musí rozhodnúť akého je dátového typu a kde sa nachádzajú údaje pre 
- každý operand, čo stojí veľké množstvo času pri samotnom behu v~porovnaní 
+ každý operand, čo stojí veľké množstvo času pri samotnom behu, v~porovnaní 
  so samotným výpočtom.
 Rozhodli sme sa teda vyriešiť tento problém elegantným spôsobom, 
- a to zaťažiť parser o~jednu činnosť navyše - generovanie konkrétnych 
- inštrukcií pre interpret, obsahujúce v~sebe zakódované lokality a dátové typy.
+ a to zaťažiť parser miesto interpretu. Cieľom bolo, aby parser pre každú 
+ možnú kombináciu operandov pridal na inštrukčnú pásku ukazovateľ na správnu
+ obslužnú funkciu. Takže bolo potreba vygenerovať obslužné funkcie pre všetky
+ možné kombinácie. 
 
-Vzhľadom k~charakteru inštrukcií sme pomocou napísaného skriptu v~jazyku Ruby
- vygenerovali 358 inštrukcií, 
- ktoré priamo v~názve obsahujú lokalitu a typy operandov.
-Inštrukcie sú uložené v~poli ukazovateľov na funkcie (inštrukcie).
- Pri vykonávaní programu sa volá C funkcia pomocou ukazovateľa na danú 
- funkciu ktorú v~sebe obsahuje, čo zabezpečuje vysokú efektivitu výpočtu,
- kedy nie je nutné rozhodovať nad akými operandmi sa má daná činnosť vykonať.
- Jediné rozhodovanie v~inštrukcií je pri testovaní inicializácie operandov a pri delení nulou. Celkovo bolo použitých 15 základných inštrukcií (\texttt{CALL}, \texttt{RET}, \texttt{MOV} \ldots) a 
- 15 aritmetických (nerozvetvených na jednotlivé dátové typy a lokality).
+Toto bolo realizované pomocou napísaného skriptu v~jazyku Ruby, 
+ dokopy 358 obslužných funkcií pre výrazy, ktoré v~názve 
+ obsahujú lokalitu a typy operandov.
 
-Interpret beží v~nekonečnom cykle, pričom končí v~momente keď narazí na inštrukciu
-\texttt{HALT}.
+Takýto návrh inštrukcií umožnil prácu so zásobníkom bez nutnosti
+ použitia ukazovateľa na vrchol zásobníku (\emph{SP}) -- počas spracovávania výrazov
+ a využívania pomocných premenných parser určuje kde sa čo uloží, takže vždy vie
+ čo sa nachádza na ktorom indexe.
+ 
+%Inštrukcie sú uložené v~poli ukazovateľov na funkcie (inštrukcie).
+ Pri vykonávaní programu sa volajú obslužné funkcie inštrukcií pomocou ukazovateľov,
+ z inštrukčnej pásky. Každá je určená na jednu kombináciu operandov, takže odpadá
+ povinnosť kontrolovať lokalitu a dátové typy.
+ Jediné rozhodovanie v~inštrukcií je pri testovaní inicializácie operandov a
+ kontrola delenia nulou. Celkovo bolo použitých 15 základných inštrukcií (\texttt{CALL}, \texttt{RET}, \texttt{MOV} \ldots) a 15 aritmetických (nerozvetvených na jednotlivé dátové typy a lokality).
+
+Interpret beží v~nekonečnom cykle (inštrukcia \texttt{HALT} uvoľňuje zdroje a 
+ukončuje program).
 
 \subsection{Prekladový systém}
 Pre vlastnú potrebu projektu sme sa rozhodli využiť modulárny preklad
@@ -304,7 +313,7 @@ a odstraňovať chyby.
 	\centering
 	\begin{tabular}{rl}
 		Dávid Mikuš        & Vedúci tímu, parser, testovanie \\
-		Peter Hostačný     & Vyhodnocovanie výrazov, testovanie \\
+		Peter Hostačný     & Vyhodnocovanie výrazov, interpret, testovanie \\
 		Tomáš Kello        & Algoritmy, pomocné štruktúry, dokumentácia \\
 		Adam Lučanský      & Scanner, interpret, dokumentácia \\
 		Michaela Lukášová  & Scanner, dokumentácia
