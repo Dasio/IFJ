@@ -9,8 +9,9 @@ CFLAGS= -std=c11 -Ofast -pedantic -Wall -Wextra -funsigned-char
 LDFLAGS=
 LDLIBS=
 
-# To make release:
-# make release RELEASE=1
+# Uncomment for release
+# RELEASE:=1
+
 ifeq ($(RELEASE),1)
 	# Release
 	CFLAGS+=-DNDEBUG
@@ -28,8 +29,11 @@ LEADER_NAME=xmikus15
 
 all: $(BIN)
 
-release: all
-	zip $(LEADER_NAME).zip *.c *.h Makefile rozdeleni rozsireni
+zip:
+	rm $(LEADER_NAME).zip
+	cp docs/dokumentace.pdf dokumentace.pdf
+	zip $(LEADER_NAME).zip *.c *.h Makefile rozdeleni rozsireni dokumentace.pdf
+	rm dokumentace.pdf
 
 $(BIN): $(OBJS) lib.a
 	$(CC) $(LDFLAGS) -o $(BIN) $(BIN).o lib.a $(LDLIBS)
