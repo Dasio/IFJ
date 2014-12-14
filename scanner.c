@@ -90,6 +90,31 @@ Token getToken(Scanner *scanner)
 
 	}
 
+	// Check whether scanner is not in final state when reached EOF 
+	if (symbol == EOF) {
+		switch(scanner->state) {
+			case SOS_baseExtract: if (token.str.length != 0) break;// last character from input was &/%/$
+			case SOS_baseInString:
+			case SOS_leftCurlyBrace:
+			case SOS_realDot:
+			case SOS_realE:
+			case SOS_realESign:
+			case SOS_string:
+			case SOS_stringHashtag:
+			case SOS_stringASCII: {
+
+				setError(ERR_Lexical);
+				fprintf(stderr,"Scanner reached EOF, but is not in final state\n");
+				destroyString(&token.str);
+				resetScanner(scanner);
+
+				return token;
+			}
+			default: 
+				break;
+		}
+	}
+
 	/**
 	 * Identifier -> Keyword conversion,
 	 * identifierToKeyword(String) returns TT_identifier if not keyword
@@ -207,11 +232,6 @@ Token getToken(Scanner *scanner)
 				break;
 			}
 		}
-	}
-
-	if (scanner->state == SOS_leftCurlyBrace) {
-		setError(ERR_Lexical);
-		fprintf(stderr, "Missing right curly brace to finish comment\n");
 	}
 
 	// Cleanup
