@@ -23,6 +23,7 @@ String initEmptyString()
 		.data    = malloc(STRING_INIT_ALLOC_SIZE * sizeof(char))
 	};
 	MALLOC_TEST(str.data);
+	str.data[0] = '\0';
 
 	return str;
 }
@@ -35,6 +36,7 @@ String initStringSize(uint32_t size)
 		.data    = malloc(size * sizeof(char))
 	};
 	MALLOC_TEST(str.data);
+	str.data[0] = '\0';
 
 	return str;
 }
