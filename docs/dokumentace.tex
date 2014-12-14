@@ -114,11 +114,39 @@ Konverzie v rámci escape sekvencie v reťazcovom literáli sa vykonávajú
  priamo v automate pri prechode medzi stavmi.
 
 \subsection{Syntaktická a sémantická analýza}
-Syntaktická analýza bola riešená zadaním cez rekurzívny zostup podľa gramatiky
-v prílohe \ref{gramatika}. 
+Syntaktická analýza (parser) bola riešená zadaním cez rekurzívny zostup 
+ podľa gramatiky v prílohe \ref{gramatika}.
+Parser kontroluje pri svojej činnosti zároveň aj sémantiku (datové typy),
+definície a deklarácie funkcií.
 %Sémantická analýza prebieha
+Vyhodnocovanie výrazov zabezpečuje precedenčná tabuľka 
+ (viz. príloha \ref{precedencna_tabulka}).
+
 Inštrukcie pre interpret sú generované okamžite na inštrukčnú pásku,
  bez dodatočného medzivýstupu.
+
+%    Parser zároveň kontroluje aj sémantiku.
+%    Pri pridávani identifikátorov do tabuľky symbolov, kontroluje či sa tam už
+%    daný identifikátor nenachádza.
+     
+%    Kedže nenastáva žiadna implicitná konverzia,
+%    overuje návratovy typ výrazu. V podmienkach očakáva typ BOOL a pri priradení sa vyhľadá
+%    v tabuľke symbolov daný identifátor a skontroluje či sa typ zhoduje.
+     
+%    Na miestách kde sa očakáva identifikátor(priradenie, write, readln, výrazy), kontroluje
+%    v tabuľke symbolov či sa tam daný identifikátor vyskytuje a či to není identifikátor pre funkciu.
+     
+%    Ďalej overuje, či funkcia má práve jednu definíciu.
+%    Ak sa našla definícia funkcie a predtym sa už vyskytla dopredna deklarácia, tak sa skontroluje
+%    počet, typ, mená argumentov a návratovy typ funkcie.
+     
+%    Po skončení rekurzivného zostupu sa ešte kontroluje či sa v tabuľke symbolov nenachádza
+%    funkcia ktorá nebola definovaná.
+
+\subsection{Optimalizácie}
+Vzhľadom k možnosti sútaže o najrýchlejší interpret sme sa rozhodli zaviesť aj
+istú formu optimalizácií, a to hlavne výpočet hodnôt, ktoré sú známe ešte pri
+parsovaní, t.j. operácie s konštantnými hodnotami a mnohonásobné unárne mínus.
 
 \subsection{Inštrukcie a interpret}
 Ako najzaujímavejšia časť celého interpretu je generovanie a vykonávanie inštrukcií
@@ -140,17 +168,19 @@ Každý operand obsahuje informáciu o tom
 Kedže interpret spracováva inštrukcie na úrovni C funkcií, pri každej inštrukcií
  sa najprv musí rozhodnúť akého je dátového typu a kde sa nachádzajú údaje pre 
  každý operand, čo stojí veľké množstvo času pri samotnom behu v porovnaní 
- s efektívnym výpočtom.
+ so samotným výpočtom.
 Rozhodli sme sa teda vyriešiť tento problém elegantným spôsobom, 
  a to zaťažiť parser o jednu činnosť navyše - generovanie konkrétnych 
  inštrukcií pre interpret, obsahujúce v sebe zakódované lokality a dátové typy.
 
 Vzhľadom k charakteru inštrukcií sme pomocou napísaného skriptu v jazyku Ruby
  vygenerovali 358 inštrukcií, 
- ktoré priamo v mene obsahujú lokalitu a typy operandov.
+ ktoré priamo v názve obsahujú lokalitu a typy operandov.
 Inštrukcie sú uložené v poli ukazovateľov na funkcie (inštrukcie).
- Pri vykonávaní programu sa teda volá C funkcia pomocou ukazovateľa ktorý 
- v sebe obsahuje.
+ Pri vykonávaní programu sa teda volá C funkcia pomocou ukazovateľa na danú 
+ funkciu ktorú v sebe obsahuje, čo zabezpečuje vysokú efektivitu výpočtu,
+ kedy nie je nutné rozhodovať nad akými operandmi sa má daná činnosť vykonať.
+ Jediné rozhodovanie v inštrukcií je pri testovaní inicializovanosti operandov a pri delení nulou.
 
 Interpret beží v nekonečnom cykle, pričom končí v momente keď narazí na inštrukciu
 \texttt{HALT}.
@@ -234,21 +264,38 @@ avšak s odlišnými operáciami (konkatenácia, dĺžka).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Práca v tíme}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Vývoj na projekte sa započal dňa 25. augusta prvým commitom. Pred samotným
-zadaním projektu sa započala práca na základných štruktúrach a prekladovom
-systéme.
+Vývoj na projekte sa započal dňa 25. augusta prvým commitom v Git repozitári.
+ Pred samotným zadaním projektu sa započala práca na na prekladovom systéme
+ a hneď potom na základných štruktúrach ako 
+ napr. \texttt{Vector} a \texttt{String}.
+Počas riešenia projektu boli 4 schôdze celého tímu, kde sa stanovil plán na
+nadchádzajúce týždne, pričom prvá schôdza bola \todo[inline]{Doplnit datum}.
+Rozsah projektu tvoril isté problémy s načasovaním schôdzí, na ktorých bolo
+nutné aby sa jej zúčastnili všetci členovia. Počas samotného vývoja
+bol problém časová náročnosť projektu a náväznosť na prednášky, tak sme sa
+rozhodli dopredu naštudovať problematiku, aby sme mohli posledný týždeň testovať
+a odstraňovať chyby.
 
-\todo[inline]{Doplniť použivanie Gitu, rozdelenie práce}
+\subsection{Rozdelenie práce}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{rl}
+		Dávid Mikúš        & Vedúci tímu, parser, testovanie \\
+		Peter Hostačný     & Vyhodnocovanie výrazov, testovanie \\
+		Tomáš Kello        & Algoritmy, pomocné štruktúry \\
+		Adam Lučanský      & Scanner, interpret, dokumentácia \\
+		Michaela Lukášová  & Scanner, dokumentácia
+	\end{tabular}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % přílohy
 \appendix
 
 \section{Metriky kódu} \label{metriky}
-\paragraph{Počet riadkov zdrojového textu:} 12689 riadkov
-\paragraph{Veľkosť statických dát:} 6147B
-\paragraph{Veľkosť spustiteľného programu:} 13294B
-\todo[inline]{Aktualizovať metriky po dopísani projektu}
+\paragraph{Počet riadkov zdrojového textu:} 11423 riadkov
+\paragraph{Veľkosť statických dát:} 440B
+\paragraph{Veľkosť spustiteľného programu:} 149.8KiB
 
 \section{Konečný automat lexikálneho analyzátora}\label{chap:scanner}
 
