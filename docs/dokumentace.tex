@@ -121,7 +121,7 @@ Konverzie v~rámci escape sekvencie v~reťazcovom literáli sa vykonávajú
 \subsection{Syntaktická a sémantická analýza}
 Syntaktická analýza (parser) bola riešená zadaním cez rekurzívny zostup 
  podľa gramatiky v~prílohe \ref{gramatika}.
-Parser kontroluje pri svojej činnosti zároveň aj sémantiku (datové typy),
+Parser kontroluje pri svojej činnosti zároveň aj sémantiku (dátové typy),
 definície a deklarácie funkcií.
 %Sémantická analýza prebieha
 Vyhodnocovanie výrazov zabezpečuje precedenčná tabuľka 
@@ -199,16 +199,15 @@ okrem modulu obsahujúceho funkciu \texttt{main()} zabalia do archívu (.a)
 utilitou \texttt{ar}. Pre unit testy, ako aj spustiteľný interpret
 obsahujúci \texttt{main()} sa nalinkuje archív, ktorý obsahuje potrebné moduly.
 
-\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Algoritmy a dátové štruktúry}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Quicksort}
 Funkcia na zoradenie prvkov v~poli. Ako prvé si zadefinujeme indexy okrajových
-hodnôt medzi ktorými sa nachádzajú prvky na zoradenie spolu so strednou hodnotou
-indexu ktorý určíme ako pivot.
+hodnôt medzi ktorými sa nachádzajú prvky na zoradenie spolu s indexom
+prostrednej hodnoty ktorú určíme ako pivot.
 
-Následne posúvame ukazovatele  z~pravej a ľavej strany smerom k~pivotu,
+Následne posúvame indexy z~pravej a ľavej strany smerom k~pivotu,
  v~prípade že nevyhovujú postupnosti z~ľavej strany od najnižšej hodnoty, 
  vtedy tieto dve okrajové hodnoty prehodíme, až kým neprejdeme celým polom.
 Takýmto spôsobom presne definujeme pozíciu pivota v~poli. Všetky prvky na ľavej
@@ -216,6 +215,11 @@ Takýmto spôsobom presne definujeme pozíciu pivota v~poli. Všetky prvky na ľ
  v~správnom poradí. Preto sa rekurzívne volá rovnaká funkcia, avšak už len nad
  pravou a ľavou stranou ktoré sú menšie. Takýmto spôsobom prejdeme celé pole
  ktoré sa stane usporiadaným.
+
+Algoritmus je založený na mechanizme rozdeľovania (partition), ktorý preskupí
+prvky pola do dvoch častí tak, že v ľavej časti sú všetky prvky menšie 
+(alebo rovné) istej hodnote a v pravej časti sú všetky prvky väčšie než táto 
+hodnota \cite{honzik}.
 
 \subsection{Knuth-Morris-Pratt}
 Vyhľadávanie podreťazca v~reťazci je vo vstavanej funkcií riešené algoritmom
@@ -312,14 +316,26 @@ s~optimalizáciami a mnohými rozšíreniami. Projekt bol náročný a mnohokrá
 išlo \uv{do tuhého}. Berieme to ako veľkú skúsenosť do budúcna, hlavne
 prácu v~tíme.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{thebibliography}{1}
+
+% jedna citace:
+%\bibitem{kalendar}
+%BLACKBURN, B.~J.; HOLFORD-STREVENS, L.: \emph{The Oxford Companion to the
+%  Year}. Oxford: Oxford University Press, 1999, ISBN 0-19-214231-3.
+\bibitem{honzik} 
+HONZÍK, Jan. \emph{Algoritmy -- studijní opora}. 
+Brno: Vysoké učení technické, 2014.
+
+\end{thebibliography}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % přílohy
 \appendix
 
 \section{Metriky kódu} \label{metriky}
-\paragraph{Počet riadkov zdrojového textu:} 11439 riadkov
-%\paragraph{Veľkosť statických dát:} 456B
+\paragraph{Počet riadkov zdrojového textu:} 11429 riadkov
+\paragraph{Veľkosť statických dát:} 456B
 \paragraph{Veľkosť spustiteľného programu:} 149.8KiB
 
 \section{Konečný automat lexikálneho analyzátora}\label{chap:scanner}
