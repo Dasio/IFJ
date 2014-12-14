@@ -109,6 +109,12 @@ O túto činnosť sa stará tzv. \uv{scanner}, ktorý je reprezentovaný konečn
 automatom (viz prílohu \ref{chap:scanner}). Dosiahnutie koncového stavu
 značí úspešný nález tokenu.
 
+Každý načítaný token je pripojený na koniec vektoru. Z hľadiska interpretu sa
+najprv načítajú všetky tokeny, až potom sa s nimi ďalej pracuje v syntaktickej
+analýze, kvôli jednoduchšiemu spracovávaniu chýb. Ak by sa nachádzala
+ lexikálna chyba na konci zdrojového súboru, mohlo by dôjsť k syntaktickej chybe
+ skôr než by bolo detekovaná lexikálna.
+
 Konverzie medzi reťazcami a číslami sa vykonávajú ihneď po vrátení platného tokenu.
 Konverzie v rámci escape sekvencie v reťazcovom literáli sa vykonávajú
  priamo v automate pri prechode medzi stavmi.
