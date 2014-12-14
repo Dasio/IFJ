@@ -101,6 +101,8 @@ int *GetFormula(String *find)
 // get length of string and call QuickSortRecursive function
 void QuickSort(String *string)
 {
+	if(string->length < 1)
+		return;
 	QuickSortRecursive(string->data, 0, string->length - 1);
 }
 
