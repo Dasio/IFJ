@@ -34,6 +34,8 @@ extern Context *mainContext;
 
 int FindString(String *input, String *find)
 {
+	if(find->length == 0)
+		return 1;
 	int *Mask = GetFormula(find);
 	if(Mask == NULL)
 	{
